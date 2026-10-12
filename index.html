@@ -159,6 +159,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
 .note { color: var(--muted); font-size: 14px; margin-top: 26px; }
 
+.chip.small { min-height: 32px; padding: 2px 12px; font-size: 14px; }
+.langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
 </head>
@@ -948,7 +950,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     } });
     form.appendChild(h('h2', { text: draft.editing ? t('editTitle') : t('planAddTitle') }));
     form.appendChild(h('label', { class: 'f' }, t('fName'),
-      h('input', { type: 'text', value: draft.title, placeholder: t('fNamePh'), oninput: function (e) { draft.title = e.target.value; } })));
+      h('input', { type: 'text', dir: 'auto', value: draft.title, placeholder: t('fNamePh'), oninput: function (e) { draft.title = e.target.value; } })));
     form.appendChild(h('label', { class: 'f' }, t('fLink'),
       h('input', { type: 'url', dir: 'ltr', inputmode: 'url', value: draft.url, placeholder: 'https://', oninput: function (e) { draft.url = e.target.value; } })));
 
@@ -1097,7 +1099,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       if (q) openUrl('https://www.youtube.com/results?search_query=' + encodeURIComponent(q));
     } });
     free.appendChild(h('h2', { text: t('sFree') }));
-    free.appendChild(h('input', { type: 'text', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree'), oninput: function (e) { sug.free = e.target.value; } }));
+    free.appendChild(h('input', { type: 'text', dir: 'auto', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree'), oninput: function (e) { sug.free = e.target.value; } }));
     free.appendChild(h('div', { class: 'acts' },
       h('button', { type: 'button', class: 'btn small solid', onclick: function () { var q = sug.free.trim(); if (q) openUrl('https://www.youtube.com/results?search_query=' + encodeURIComponent(q)); } }, t('sFreeYT')),
       h('button', { type: 'button', class: 'btn small', onclick: function () { var q = sug.free.trim(); if (q) openUrl('https://podcasts.apple.com/search?term=' + encodeURIComponent(q)); } }, t('sFreeAP'))));
@@ -1162,7 +1164,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function viewTopics(app) {
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('tTitle') }), h('p', { text: t('tSub') })));
 
-    var input = h('input', { type: 'text', placeholder: t('tNewPh'), 'aria-label': t('tNewPh') });
+    var input = h('input', { type: 'text', dir: 'auto', placeholder: t('tNewPh'), 'aria-label': t('tNewPh') });
     function addTopic(name) {
       name = (name || '').trim();
       if (!name) return;
@@ -1221,11 +1223,20 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about'))));
   }
 
+  function langBar() {
+    var bar = h('div', { class: 'langbar', role: 'group', 'aria-label': 'Language' });
+    Object.keys(LANGS).forEach(function (k) {
+      bar.appendChild(h('button', { type: 'button', class: 'chip small', lang: k, 'aria-pressed': state.ui === k ? 'true' : 'false', onclick: function () { state.ui = k; save(); applyLang(); render(); } }, LANGS[k]));
+    });
+    return bar;
+  }
+
   function render() {
     var app = document.getElementById('app');
     var y = window.scrollY;
     app.textContent = '';
     document.querySelector('nav.tabs').style.display = view === 'welcome' ? 'none' : '';
+    if (view !== 'welcome') app.appendChild(langBar());
     if (view === 'welcome') viewWelcome(app);
     else if (view === 'today') viewToday(app);
     else if (view === 'plan') viewPlan(app);
