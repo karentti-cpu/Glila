@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>בדיקת מקורות – גלילה חכמה</title>
+<style>
+  body{font-family:system-ui,sans-serif;margin:0;padding:16px;background:#faf7f2;color:#222}
+  h1{font-size:20px;margin:0 0 4px}
+  p{margin:4px 0 12px;color:#555;font-size:14px}
+  button{font-size:16px;padding:10px 18px;border:0;border-radius:10px;background:#2f6f5e;color:#fff}
+  .row{background:#fff;border-radius:10px;padding:10px 12px;margin:8px 0;box-shadow:0 1px 2px #0002}
+  .ok{color:#1b7a3a;font-weight:700}.bad{color:#b3261e;font-weight:700}.wait{color:#888}
+  small{display:block;color:#666;margin-top:4px;word-break:break-all;direction:ltr;text-align:left}
+  pre{white-space:pre-wrap;background:#fff;border-radius:10px;padding:10px;font-size:12px;direction:ltr;text-align:left}
+</style>
+</head>
+<body>
+<h1>בדיקת מקורות החיפוש</h1>
+<p>הדף בודק מהדפדפן שלך (בדיוק כמו האפליקציה) אם כל מקור מחזיר תוצאות. פתחי אותו ב-Chrome מהכתובת באינטרנט, לא מתוך WhatsApp או Claude.</p>
+<button id="go">הפעל בדיקה</button>
+<div id="out"></div>
+<p>תוצאה להעתקה ולשליחה אליי:</p>
+<pre id="sum">(עדיין לא הורצה בדיקה)</pre>
+<script>
+(function () {
+  var PAGE = 3;
+  function T(p, ms) {
+    return new Promise(function (res, rej) {
+      var t = setTimeout(function () { rej(new Error('timeout')); }, ms || 9000);
+      p.then(function (v) { clearTimeout(t); res(v); }, function (e) { clearTimeout(t); rej(e); });
+    });
+  }
+  function getJson(u) {
+    return T(fetch(u).then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); }));
+  }
+  function jsonp(u) {
+    return new Promise(function (res, rej) {
+      var cb = '__c' + Math.random().toString(36).slice(2), s = document.createElement('script');
+      var t = setTimeout(function () { clean(); rej(new Error('timeout')); }, 9000);
+      function clean() { clearTimeout(t); try { delete window[cb]; } catch (e) {} if (s.parentNode) s.parentNode.removeChild(s); }
+      window[cb] = function (d) { clean(); res(d); };
+      s.onerror = function () { clean(); rej(new Error('script blocked')); };
+      s.src = u + (u.indexOf('?') < 0 ? '?' : '&') + 'callback=' + cb;
+      document.head.appendChild(s);
+    });
+  }
+  var E = encodeURIComponent;
+  var tests = [
+    ['Apple Podcasts – תוכניות', function () { return getJson('https://itunes.apple.com/search?term=' + E('history') + '&media=podcast&entity=podcast&limit=3').then(function (d) { return d.results.map(function (x) { return x.collectionName; }); }); }],
+    ['Apple Podcasts – פרקים', function () { return getJson('https://itunes.apple.com/search?term=' + E('history') + '&media=podcast&entity=podcastEpisode&limit=3').then(function (d) { return d.results.map(function (x) { return x.trackName; }); }); }],
+    ['Apple Podcasts – JSONP', function () { return jsonp('https://itunes.apple.com/search?term=history&media=podcast&entity=podcast&limit=3').then(function (d) { return d.results.map(function (x) { return x.collectionName; }); }); }],
+    ['Apple TV – סרטים', function () { return getJson('https://itunes.apple.com/search?media=movie&entity=movie&term=' + E('game') + '&limit=3').then(function (d) { return d.results.map(function (x) { return x.trackName; }); }); }],
+    ['ויקיפדיה עברית (עמוד 2)', function () { return getJson('https://he.wikipedia.org/w/api.php?action=query&list=search&format=json&srlimit=' + PAGE + '&sroffset=' + PAGE + '&srsearch=' + E('הורות') + '&origin=*').then(function (d) { return d.query.search.map(function (x) { return x.title; }); }); }],
+    ['ויקיפדיה צרפתית', function () { return getJson('https://fr.wikipedia.org/w/api.php?action=query&list=search&format=json&srlimit=' + PAGE + '&srsearch=' + E('poésie') + '&origin=*').then(function (d) { return d.query.search.map(function (x) { return x.title; }); }); }],
+    ['ויקיפדיה אנגלית + "התכוונת ל"', function () { return getJson('https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srinfo=suggestion&srlimit=' + PAGE + '&srsearch=' + E('parentng') + '&origin=*').then(function (d) { return ['הצעת תיקון: ' + ((d.query.searchinfo || {}).suggestion || '(אין)')].concat(d.query.search.map(function (x) { return x.title; })); }); }],
+    ['Open Library (עמוד 2)', function () { return getJson('https://openlibrary.org/search.json?limit=' + PAGE + '&page=2&fields=key,title,author_name&q=poetry').then(function (d) { return d.docs.map(function (x) { return x.title; }); }); }],
+    ['Google Books', function () { return getJson('https://www.googleapis.com/books/v1/volumes?maxResults=' + PAGE + '&q=poetry').then(function (d) { return d.items.map(function (x) { return x.volumeInfo.title; }); }); }],
+    ['Internet Archive', function () { return getJson('https://archive.org/advancedsearch.php?q=history&fl%5B%5D=identifier&fl%5B%5D=title&sort%5B%5D=downloads+desc&rows=' + PAGE + '&page=2&output=json').then(function (d) { return d.response.docs.map(function (x) { return x.title; }); }); }],
+    ['Dailymotion', function () { return getJson('https://api.dailymotion.com/videos?limit=' + PAGE + '&page=2&fields=title,url&search=history').then(function (d) { return d.list.map(function (x) { return x.title; }); }); }]
+  ];
+  var out = document.getElementById('out'), sum = document.getElementById('sum'), lines = [];
+  document.getElementById('go').onclick = function () {
+    out.innerHTML = ''; lines = []; sum.textContent = 'בודק…';
+    var pending = tests.length;
+    tests.forEach(function (t) {
+      var row = document.createElement('div'); row.className = 'row';
+      row.innerHTML = '<b></b> <span class="wait">בודק…</span><small></small>';
+      row.firstChild.textContent = t[0]; out.appendChild(row);
+      var st = row.querySelector('span'), sm = row.querySelector('small');
+      var done = function (ok, msg) {
+        st.className = ok ? 'ok' : 'bad'; st.textContent = ok ? '✓ עובד' : '✗ לא עובד';
+        sm.textContent = msg; lines.push((ok ? 'OK   ' : 'FAIL ') + t[0] + ' | ' + msg);
+        if (--pending === 0) sum.textContent = lines.sort().join('\n') + '\n\n' + navigator.userAgent;
+      };
+      var p; try { p = t[1](); } catch (e) { p = Promise.reject(e); }
+      p.then(function (a) { done(a.length > 0, a.length ? a.slice(0, 3).join(' · ') : 'ללא תוצאות'); },
+             function (e) { done(false, String(e && e.message || e)); });
+    });
+  };
+})();
+</script>
+</body>
+</html>
