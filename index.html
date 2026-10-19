@@ -239,7 +239,16 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       site: 'אתר', searchBtn: 'חיפוש', ask: 'שאלה',
       sNote: 'ההצעות מבוססות על הידע של Claude ולא על חיפוש חי, ולכן הכפתורים פותחים ישירות את האתר (כשהכתובת ידועה) או חיפוש בתוך YouTube או Apple Podcasts, ולא קישור לפרק מסוים.',
       gAsk: 'לא בטוחה מה לבחור? שאלי על כל ההצעות', qOwn: 'או כתבי שאלה משלך', qAria: 'שאלה', qSend: 'שאלי', thinking: 'חושבת…',
-      c1: 'למי זה מתאים?', c2: 'כמה זמן זה לוקח?', c3: 'במה זה שונה מהאחרות?',
+      c1: 'למי זה מתאים?', c2: 'כמה זמן זה לוקח?', c3: 'במה זה שונה מהאחרות?', c4: 'על מה זה?',
+      dMin: 'כ־{0} דקות', dHour: '{0} שעות ו־{1} דקות', dHour1: 'שעה ו־{0} דקות', dHours: '{0} שעות', dHours1: 'שעה', dShort: 'פחות מדקה', dLen: 'אורך: {0}.',
+      dWords: 'כ־{0} דקות קריאה ({1} מילים).', dPages: '{0} עמודים, כ־{1} שעות קריאה.',
+      dNews: 'כתבת חדשות. כתבות כאלה נקראות בדרך כלל בכמה דקות.', dShow: 'זו תוכנית שלמה עם פרקים רבים. אורך הפרקים משתנה, ואפשר להתחיל מפרק אחד.',
+      dUnknown: 'האורך לא ידוע מראש. אפשר לפתוח ולבדוק.',
+      wvideo: 'מתאים לצפייה.', wpodcast: 'מתאים להאזנה, גם בדרכים או בהליכה.', wshow: 'מתאים להאזנה או לצפייה לאורך זמן.', warticle: 'מתאים לקריאה.',
+      wShort: 'קצר, אפשר גם בהפסקה קצרה.', wLong: 'ארוך, כדאי לשמור לזמן פנוי.', wLang: 'בשפה: {0}.',
+      wWiki: 'סקירה כללית, טובה כדי להתחיל להכיר את הנושא.', wBook: 'ספר, למי שרוצה להעמיק.', wNews: 'למי שרוצה להתעדכן במה שקורה עכשיו.',
+      wMovie: 'סרט או סדרה באורך מלא.', wWeb: 'דף מהאתר {0}.', wForYou: 'דומה לדברים שסימנת שאהבת.',
+      abNone: 'אין תיאור. אפשר לפתוח ולראות.', abSrc: 'מקור: {0}.',
       a1: 'מה הכי מתאים להתחלה?', a2: 'מה הכי קצר?', a3: 'השוואה קצרה בין כולן',
       errNoAccess: 'ההצעות לא אושרו או לא זמינות בחשבון הזה.', errRate: 'הגעת למגבלת השימוש. אפשר לנסות שוב מאוחר יותר.', errGeneric: 'משהו השתבש בדרך. אפשר לנסות שוב.',
       tTitle: 'נושאים', tSub: 'מה מעניין אותך. את הפריטים משייכים לנושאים בלשונית התכנון.', tNewPh: 'שם נושא חדש', tAdd: 'הוספה',
@@ -304,7 +313,16 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       site: 'Site', searchBtn: 'Rechercher', ask: 'Question',
       sNote: 'Les idées reposent sur les connaissances de Claude, pas sur une recherche en direct. Les boutons ouvrent donc le site (quand l’adresse est connue) ou une recherche dans YouTube ou Apple Podcasts, pas un lien vers un épisode précis.',
       gAsk: 'Pas sûr de votre choix ? Posez une question sur toutes les idées', qOwn: 'Ou écrivez votre question', qAria: 'Question', qSend: 'Demander', thinking: 'Je réfléchis…',
-      c1: 'À qui cela convient-il ?', c2: 'Combien de temps cela prend-il ?', c3: 'En quoi est-ce différent des autres ?',
+      c1: 'À qui cela convient-il ?', c2: 'Combien de temps cela prend-il ?', c3: 'En quoi est-ce différent des autres ?', c4: 'De quoi ça parle ?',
+      dMin: 'environ {0} minutes', dHour: '{0} h {1} min', dHour1: '1 h {0} min', dHours: '{0} h', dHours1: '1 h', dShort: 'moins d’une minute', dLen: 'Durée : {0}.',
+      dWords: 'Environ {0} minutes de lecture ({1} mots).', dPages: '{0} pages, environ {1} heures de lecture.',
+      dNews: 'Article d’actualité, qui se lit en général en quelques minutes.', dShow: 'C’est une émission entière avec de nombreux épisodes. Leur durée varie ; on peut commencer par un seul.',
+      dUnknown: 'La durée n’est pas connue d’avance. Ouvrez pour voir.',
+      wvideo: 'À regarder.', wpodcast: 'À écouter, aussi en route ou en marchant.', wshow: 'À suivre sur la durée.', warticle: 'À lire.',
+      wShort: 'Court, même pour une petite pause.', wLong: 'Long, plutôt pour un moment libre.', wLang: 'En : {0}.',
+      wWiki: 'Une vue d’ensemble, bien pour découvrir le sujet.', wBook: 'Un livre, pour approfondir.', wNews: 'Pour suivre l’actualité.',
+      wMovie: 'Un film ou une série complète.', wWeb: 'Une page du site {0}.', wForYou: 'Proche de ce que vous avez aimé.',
+      abNone: 'Pas de description. Ouvrez pour voir.', abSrc: 'Source : {0}.',
       a1: 'Que choisir pour commencer ?', a2: 'Quel est le plus court ?', a3: 'Une courte comparaison',
       errNoAccess: 'Les idées n’ont pas été autorisées ou ne sont pas disponibles avec ce compte.', errRate: 'Limite d’utilisation atteinte. Réessayez plus tard.', errGeneric: 'Un problème est survenu. Vous pouvez réessayer.',
       tTitle: 'Sujets', tSub: 'Ce qui vous intéresse. Vous associez les éléments aux sujets dans l’onglet Plan.', tNewPh: 'Nouveau sujet', tAdd: 'Ajouter',
@@ -369,7 +387,16 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       site: 'Website', searchBtn: 'Search', ask: 'Question',
       sNote: 'Ideas come from Claude’s knowledge, not a live web search, so the buttons open the website directly (when the address is known) or a search inside YouTube or Apple Podcasts, not a link to a specific episode.',
       gAsk: 'Not sure what to pick? Ask about all the ideas', qOwn: 'Or write your own question', qAria: 'Question', qSend: 'Ask', thinking: 'Thinking…',
-      c1: 'Who is it for?', c2: 'How long does it take?', c3: 'How is it different from the others?',
+      c1: 'Who is it for?', c2: 'How long does it take?', c3: 'How is it different from the others?', c4: 'What is it about?',
+      dMin: 'about {0} minutes', dHour: '{0} h {1} min', dHour1: '1 h {0} min', dHours: '{0} h', dHours1: '1 h', dShort: 'under a minute', dLen: 'Length: {0}.',
+      dWords: 'About {0} minutes of reading ({1} words).', dPages: '{0} pages, about {1} hours of reading.',
+      dNews: 'A news story; these usually take a few minutes to read.', dShow: 'A whole show with many episodes. Episode length varies; you can start with one.',
+      dUnknown: 'The length isn’t known in advance. Open it to see.',
+      wvideo: 'For watching.', wpodcast: 'For listening, also on the go or on a walk.', wshow: 'To follow over time.', warticle: 'For reading.',
+      wShort: 'Short, fits a quick break.', wLong: 'Long, better kept for free time.', wLang: 'In: {0}.',
+      wWiki: 'An overview, good for getting to know the topic.', wBook: 'A book, for going deeper.', wNews: 'For keeping up with what’s happening now.',
+      wMovie: 'A full-length film or series.', wWeb: 'A page from {0}.', wForYou: 'Similar to things you liked.',
+      abNone: 'No description. Open it to see.', abSrc: 'Source: {0}.',
       a1: 'What fits best to start with?', a2: 'Which is the shortest?', a3: 'A short comparison of all',
       errNoAccess: 'Ideas weren’t allowed or aren’t available for this account.', errRate: 'Usage limit reached. Try again later.', errGeneric: 'Something went wrong. You can try again.',
       tTitle: 'Topics', tSub: 'What interests you. You link items to topics in the Plan tab.', tNewPh: 'New topic', tAdd: 'Add',
@@ -1364,10 +1391,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       if (!rs[0] && !rs[1]) throw new Error('apple');
       var out = [];
       ((rs[0] && rs[0].results) || []).forEach(function (x) {
-        if (x.collectionName) out.push({ source: 'Apple Podcasts', kind: 'podcast', title: x.collectionName, creator: x.artistName || '', url: x.collectionViewUrl || '' });
+        if (x.collectionName) out.push({ source: 'Apple Podcasts', kind: 'podcast', whole: true, title: x.collectionName, creator: x.artistName || '', url: x.collectionViewUrl || '' });
       });
       ((rs[1] && rs[1].results) || []).forEach(function (x) {
-        if (x.trackName) out.push({ source: 'Apple Podcasts', kind: 'podcast', title: x.trackName, creator: x.collectionName || '', url: x.trackViewUrl || x.collectionViewUrl || '' });
+        if (x.trackName) out.push({ source: 'Apple Podcasts', kind: 'podcast', title: x.trackName, creator: x.collectionName || '', dur: (x.trackTimeMillis || 0) / 1000, url: x.trackViewUrl || x.collectionViewUrl || '' });
       });
       return out;
     });
@@ -1376,7 +1403,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var u = 'https://itunes.apple.com/search?media=movie&entity=movie&term=' + encodeURIComponent(q) + '&limit=' + (PAGE * (page + 1));
     return either(u).then(function (d) {
       return (d.results || []).filter(function (x) { return x.trackName; }).map(function (x) {
-        return { source: 'Apple TV', kind: 'video', title: x.trackName, creator: x.artistName || '', why: strip(x.shortDescription || '').slice(0, 160), url: x.trackViewUrl || '' };
+        return { source: 'Apple TV', kind: 'video', title: x.trackName, creator: x.artistName || '', why: strip(x.shortDescription || '').slice(0, 160), dur: (x.trackTimeMillis || 0) / 1000, url: x.trackViewUrl || '' };
       });
     });
   }
@@ -1384,7 +1411,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var base = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&list=search&format=json&srinfo=suggestion&srlimit=' + PAGE + '&sroffset=' + (page * PAGE) + '&srsearch=' + encodeURIComponent(q);
     return either(base + '&origin=*', base).then(function (d) {
       var out = ((d.query && d.query.search) || []).map(function (x) {
-        return { source: 'Wikipedia', kind: 'article', lang: lang, title: x.title, creator: '', why: strip(x.snippet),
+        return { source: 'Wikipedia', kind: 'article', lang: lang, title: x.title, creator: '', why: strip(x.snippet), words: x.wordcount || 0,
           url: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(String(x.title).replace(/ /g, '_')) };
       });
       out.suggestion = (d.query && d.query.searchinfo && d.query.searchinfo.suggestion) || '';
@@ -1392,10 +1419,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     });
   }
   function srcBooks(q, page) {
-    var u = 'https://openlibrary.org/search.json?limit=' + PAGE + '&page=' + (page + 1) + '&fields=key,title,author_name,first_publish_year&q=' + encodeURIComponent(q);
+    var u = 'https://openlibrary.org/search.json?limit=' + PAGE + '&page=' + (page + 1) + '&fields=key,title,author_name,first_publish_year,number_of_pages_median&q=' + encodeURIComponent(q);
     return either(u).then(function (d) {
       return (d.docs || []).map(function (x) {
-        return { source: 'Open Library', kind: 'article', title: x.title, creator: (x.author_name || []).slice(0, 2).join(', '), why: x.first_publish_year ? String(x.first_publish_year) : '', url: 'https://openlibrary.org' + x.key };
+        return { source: 'Open Library', kind: 'article', title: x.title, creator: (x.author_name || []).slice(0, 2).join(', '), why: x.first_publish_year ? String(x.first_publish_year) : '', pages: x.number_of_pages_median || 0, url: 'https://openlibrary.org' + x.key };
       });
     });
   }
@@ -1407,7 +1434,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         return !l || state.langs.indexOf(l) !== -1;
       }).map(function (x) {
         var v = x.volumeInfo || {};
-        return { source: 'Google Books', kind: 'article', lang: LANGS[v.language] ? v.language : '', title: v.title, creator: (v.authors || []).slice(0, 2).join(', '), why: strip(v.description || '').slice(0, 160), url: v.infoLink || '' };
+        return { source: 'Google Books', kind: 'article', lang: LANGS[v.language] ? v.language : '', title: v.title, creator: (v.authors || []).slice(0, 2).join(', '), why: strip(v.description || '').slice(0, 160), pages: v.pageCount || 0, url: v.infoLink || '' };
       });
     });
   }
@@ -1421,10 +1448,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     });
   }
   function srcDaily(q, page) {
-    var u = 'https://api.dailymotion.com/videos?limit=' + PAGE + '&page=' + (page + 1) + '&fields=title,url,owner.screenname&search=' + encodeURIComponent(q);
+    var u = 'https://api.dailymotion.com/videos?limit=' + PAGE + '&page=' + (page + 1) + '&fields=title,url,owner.screenname,duration&search=' + encodeURIComponent(q);
     return getJson(u).then(function (d) {
       return (d.list || []).map(function (x) {
-        return { source: 'Dailymotion', kind: 'video', title: x.title, creator: x['owner.screenname'] || '', url: x.url };
+        return { source: 'Dailymotion', kind: 'video', title: x.title, creator: x['owner.screenname'] || '', dur: x.duration || 0, url: x.url };
       });
     });
   }
@@ -1480,7 +1507,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
             var link = tag(it, 'link'), enc = it.getElementsByTagName('enclosure')[0];
             // many feeds give every episode the show's site as its link; the audio file is the episode itself
             if ((!link || link === tag(it.parentNode, 'link')) && enc) link = enc.getAttribute('url') || link;
-            return { source: 'Podcast', kind: 'podcast', title: tag(it, 'title'), creator: show.collectionName || '',
+            return { source: 'Podcast', kind: 'podcast', title: tag(it, 'title'), creator: show.collectionName || '', dur: secs(tag(it, 'itunes:duration')),
               why: strip(tag(it, 'description')).slice(0, 160), url: link || show.collectionViewUrl || '' };
           });
         }, function () { return []; });
@@ -1501,8 +1528,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         for (var k in o) walk(o[k]);
       })(JSON.parse(m[1]));
       return found.slice(page * PAGE, (page + 1) * PAGE).map(function (v) {
-        return { source: 'YouTube', kind: 'video', title: ytText(v.title), creator: ytText(v.ownerText),
-          why: [ytText(v.lengthText), ytText(v.publishedTimeText)].filter(Boolean).join(' · '), url: 'https://www.youtube.com/watch?v=' + v.videoId };
+        var desc = ((v.detailedMetadataSnippets || [])[0] || {}).snippetText;
+        return { source: 'YouTube', kind: 'video', title: ytText(v.title), creator: ytText(v.ownerText), dur: secs(ytText(v.lengthText)), about: ytText(desc),
+          why: ytText(desc) || [ytText(v.lengthText), ytText(v.publishedTimeText)].filter(Boolean).join(' · '), url: 'https://www.youtube.com/watch?v=' + v.videoId };
       });
     });
   }
@@ -1600,6 +1628,56 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     render();
   }
 
+  // ---------------- quick questions about a result, answered from what is known about it ----------------
+  // "4:35", "1:02:03" or a number of seconds
+  function secs(x) {
+    if (typeof x === 'number') return x;
+    var p = String(x || '').trim().split(':').map(Number);
+    if (!p.length || p.some(isNaN)) return 0;
+    return p.reduce(function (a, b) { return a * 60 + b; }, 0);
+  }
+  function fmtDur(sec) {
+    var m = Math.round(sec / 60);
+    if (m < 1) return t('dShort');
+    if (m < 60) return t('dMin', m);
+    var hr = Math.floor(m / 60), mn = m % 60;
+    if (!mn) return hr === 1 ? t('dHours1') : t('dHours', hr);
+    return hr === 1 ? t('dHour1', mn) : t('dHour', hr, mn);
+  }
+  function minutesOf(r) {
+    if (r.dur) return r.dur / 60;
+    if (r.words) return r.words / 200;
+    if (r.pages) return r.pages * 2;
+    return 0;
+  }
+  function answerFor(r, q) {
+    var out = [];
+    if (q === 'c2') {
+      if (r.dur) out.push(t('dLen', fmtDur(r.dur)));
+      else if (r.words) out.push(t('dWords', Math.max(1, Math.round(r.words / 200)), r.words));
+      else if (r.pages) out.push(t('dPages', r.pages, Math.max(1, Math.round(r.pages * 2 / 60))));
+      else if (r.source === 'Google News') out.push(t('dNews'));
+      else if (r.whole || (!r.direct && (r.kind === 'podcast' || r.kind === 'show'))) out.push(t('dShow'));
+      else out.push(t('dUnknown'));
+    } else if (q === 'c1') {
+      if (r.source === 'Wikipedia') out.push(t('wWiki'));
+      else if (r.source === 'Google Books' || r.source === 'Open Library') out.push(t('wBook'));
+      else if (r.source === 'Google News') out.push(t('wNews'));
+      else if (r.source === 'Apple TV') out.push(t('wMovie'));
+      else if (r.source === 'Web' && r.creator) out.push(t('wWeb', r.creator));
+      out.push(t('w' + (KIND_OK[r.kind] && r.kind !== 'idea' && r.kind !== 'other' ? r.kind : 'article')));
+      var m = minutesOf(r);
+      if (m && m <= 10) out.push(t('wShort'));
+      else if (m >= 45) out.push(t('wLong'));
+      if (r.lang && LANGS[r.lang]) out.push(t('wLang', LANGS[r.lang]));
+      if (r.forYou) out.push(t('wForYou'));
+    } else {
+      out.push((r.about !== undefined ? r.about : whyOf(r)) || t('abNone'));
+      if (r.source) out.push('\n' + t('abSrc', r.source));
+    }
+    return out.join(' ');
+  }
+
   // ---------------- one card for any kind of result ----------------
   function cardFor(r) {
     var li = h('li', { class: 'sg' });
@@ -1614,6 +1692,14 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       r.mine ? h('span', { class: 'tag', text: r.liked ? '\u2665 ' + t('like') : t('lMine') }) : null,
       (r.mine && r.topic) ? h('span', { text: r.topic }) : null));
     if (whyOf(r)) li.appendChild(h('p', { class: 'why', text: whyOf(r) }));
+    if (!r.mine) {
+      var qc = h('div', { class: 'chips' });
+      ['c2', 'c1', 'c4'].forEach(function (q) {
+        qc.appendChild(h('button', { type: 'button', class: 'chip small', 'aria-pressed': r.ask === q ? 'true' : 'false', onclick: function () { r.ask = r.ask === q ? '' : q; render(); } }, t(q)));
+      });
+      li.appendChild(qc);
+      if (r.ask) li.appendChild(h('p', { class: 'ans', role: 'status', text: answerFor(r, r.ask) }));
+    }
     var a = h('div', { class: 'acts' });
     links(r).forEach(function (l) {
       a.appendChild(h('a', { class: 'btn small', href: l[1], target: '_blank', rel: 'noopener noreferrer', onclick: function () {
