@@ -19,8 +19,17 @@ import android.widget.Toast;
 
 import androidx.webkit.WebViewAssetLoader;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Shows the web app from the APK's assets. The assets are served from an https origin
@@ -42,6 +51,10 @@ public class MainActivity extends Activity {
         + "fetch(a.href).then(function(r){return r.text();})"
         + ".then(function(t){GlilaAndroid.saveFile(a.download,t);});return;}"
         + "return c.apply(this,arguments);};})();";
+
+    // Feeds and news are read by the app, because those sites don't let a web page read them.
+    private static final int MAX_BYTES = 3 * 1024 * 1024;
+    private final ExecutorService net = Executors.newFixedThreadPool(4);
 
     private WebView web;
     private WebViewAssetLoader assets;
@@ -124,6 +137,17 @@ public class MainActivity extends Activity {
 
     private class Bridge {
         @JavascriptInterface
+        public void fetchText(String id, String address) {
+            net.execute(() -> {
+                try {
+                    reply(id, true, download(address));
+                } catch (Exception e) {
+                    reply(id, false, String.valueOf(e.getMessage()));
+                }
+            });
+        }
+
+        @JavascriptInterface
         public void saveFile(String name, String text) {
             runOnUiThread(() -> {
                 pendingSave = text;
@@ -138,6 +162,54 @@ public class MainActivity extends Activity {
                 }
             });
         }
+    }
+
+    // A plain GET of a public https address: no cookies, nothing sent, and never an address
+    // inside the phone or the home network.
+    private static String download(String address) throws Exception {
+        URL url = new URL(address);
+        for (int hops = 0; hops < 5; hops++) {
+            if (!"https".equals(url.getProtocol())) throw new Exception("https only");
+            for (InetAddress a : InetAddress.getAllByName(url.getHost())) {
+                if (a.isLoopbackAddress() || a.isSiteLocalAddress() || a.isLinkLocalAddress()
+                        || a.isAnyLocalAddress() || a.isMulticastAddress()
+                        || (a.getAddress().length == 16 && (a.getAddress()[0] & 0xfe) == 0xfc)) {
+                    throw new Exception("local address");
+                }
+            }
+            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            c.setInstanceFollowRedirects(false);
+            c.setConnectTimeout(8000);
+            c.setReadTimeout(10000);
+            c.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) Glila");
+            try {
+                int code = c.getResponseCode();
+                if (code >= 300 && code < 400 && c.getHeaderField("Location") != null) {
+                    url = new URL(url, c.getHeaderField("Location"));
+                    continue;
+                }
+                if (code != 200) throw new Exception("http " + code);
+                try (InputStream in = c.getInputStream()) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] buf = new byte[16384];
+                    int n;
+                    while ((n = in.read(buf)) != -1) {
+                        out.write(buf, 0, n);
+                        if (out.size() > MAX_BYTES) throw new Exception("too big");
+                    }
+                    return out.toString("UTF-8");
+                }
+            } finally {
+                c.disconnect();
+            }
+        }
+        throw new Exception("too many redirects");
+    }
+
+    private void reply(String id, boolean ok, String text) {
+        String js = "window.__glilaFetched&&window.__glilaFetched(" + JSONObject.quote(id) + ","
+            + ok + "," + JSONObject.quote(text) + ")";
+        runOnUiThread(() -> web.evaluateJavascript(js, null));
     }
 
     @Override
