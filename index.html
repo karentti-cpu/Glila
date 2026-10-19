@@ -398,7 +398,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     like: 'אהבתי', liked: 'נשמר בספרייה',
     tab_ideas: 'תכנון והצעות', tab_history: 'היסטוריה',
     ideasTitle: 'תכנון והצעות', ideasSub: 'כותבים נושא, בוחרים מההצעות ומתכננים לפי ימים – הכול במקום אחד.', mgTopics: 'ניהול נושאים',
-    sGoSearch: 'חיפוש', sGoogle: 'חיפוש בגוגל', sToday: 'להיום', sDays: 'לימים אחרים', sSeePlan: 'לתכנון', tToPlan: 'לתכנון ({0})', sForYou: 'לפי מה שאהבת', sAlso: 'לחפש גם ב:', sGoogleVideos: 'סרטונים בגוגל', sGoogleNews: 'חדשות', sResultsFor: 'תוצאות עבור "{0}"', sSearching: 'מחפשת…',
+    sGoSearch: 'חיפוש', sGoogle: 'חיפוש בגוגל', sToday: 'להיום', sDays: 'לימים אחרים', sSeePlan: 'לתכנון', tToPlan: 'לתכנון ({0})', sForYou: 'לפי מה שאהבת', sAlso: 'לחפש גם ב:', sGoogleVideos: 'סרטונים בגוגל', sGoogleNews: 'חדשות', sAll: 'הכול', sWeb: 'אתרים', sVideos: 'סרטונים', sShow: 'להציג:', sResultsFor: 'תוצאות עבור "{0}"', sSearching: 'מחפשת…',
     sNoResults: 'לא נמצאו תוצאות. אפשר לנסות ניסוח אחר או סוג תוכן נוסף.',
     sSugFor: 'הצעות עבור "{0}"', sSugAll: 'הצעות מהרשימה', sPickTopic: 'בחרי נושא כדי לראות גם תוצאות חיפוש עבורו.',
     sOffline: 'לא הצלחתי להביא תוצאות חיות. כנראה שהדף נפתח בתצוגה מקדימה, למשל בתוך Claude, שחוסמת חיבור לאינטרנט. פתחי אותו בכרום.',
@@ -421,7 +421,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     like: 'J’aime', liked: 'Dans la bibliothèque',
     tab_ideas: 'Plan et idées', tab_history: 'Historique',
     ideasTitle: 'Plan et idées', ideasSub: 'Écrivez un sujet, choisissez parmi les idées et planifiez par jour – tout au même endroit.', mgTopics: 'Gérer les sujets',
-    sGoSearch: 'Rechercher', sGoogle: 'Chercher sur Google', sToday: 'Pour aujourd’hui', sDays: 'Autres jours', sSeePlan: 'Voir le plan', tToPlan: 'Planning ({0})', sForYou: 'D’après vos goûts', sAlso: 'Chercher aussi sur :', sGoogleVideos: 'Vidéos Google', sGoogleNews: 'Actualités', sResultsFor: 'Résultats pour « {0} »', sSearching: 'Recherche…',
+    sGoSearch: 'Rechercher', sGoogle: 'Chercher sur Google', sToday: 'Pour aujourd’hui', sDays: 'Autres jours', sSeePlan: 'Voir le plan', tToPlan: 'Planning ({0})', sForYou: 'D’après vos goûts', sAlso: 'Chercher aussi sur :', sGoogleVideos: 'Vidéos Google', sGoogleNews: 'Actualités', sAll: 'Tout', sWeb: 'Sites web', sVideos: 'Vidéos', sShow: 'Afficher :', sResultsFor: 'Résultats pour « {0} »', sSearching: 'Recherche…',
     sNoResults: 'Aucun résultat. Essayez une autre formulation ou un autre type de contenu.',
     sSugFor: 'Idées pour « {0} »', sSugAll: 'Idées de la liste', sPickTopic: 'Choisissez un sujet pour voir aussi des résultats de recherche.',
     sOffline: 'Impossible d’obtenir des résultats en direct. La page est probablement ouverte dans un aperçu (par exemple dans Claude) qui bloque Internet. Ouvrez-la dans Chrome.',
@@ -444,7 +444,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     like: 'Like', liked: 'In library',
     tab_ideas: 'Plan & ideas', tab_history: 'History',
     ideasTitle: 'Plan and ideas', ideasSub: 'Write a topic, pick from the ideas and plan by day – all in one place.', mgTopics: 'Manage topics',
-    sGoSearch: 'Search', sGoogle: 'Search on Google', sToday: 'For today', sDays: 'Other days', sSeePlan: 'See plan', tToPlan: 'Plan ({0})', sForYou: 'Based on what you liked', sAlso: 'Also search on:', sGoogleVideos: 'Google Videos', sGoogleNews: 'News', sResultsFor: 'Results for “{0}”', sSearching: 'Searching…',
+    sGoSearch: 'Search', sGoogle: 'Search on Google', sToday: 'For today', sDays: 'Other days', sSeePlan: 'See plan', tToPlan: 'Plan ({0})', sForYou: 'Based on what you liked', sAlso: 'Also search on:', sGoogleVideos: 'Google Videos', sGoogleNews: 'News', sAll: 'All', sWeb: 'Websites', sVideos: 'Videos', sShow: 'Show:', sResultsFor: 'Results for “{0}”', sSearching: 'Searching…',
     sNoResults: 'No results. Try another wording or another content type.',
     sSugFor: 'Ideas for “{0}”', sSugAll: 'Ideas from the list', sPickTopic: 'Pick a topic to also see search results for it.',
     sOffline: 'Couldn’t get live results. The page is probably open in a preview (for example inside Claude) that blocks the internet. Open it in Chrome.',
@@ -1148,7 +1148,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   var libUi = {};
   var libDraft = { title: '', url: '', kind: 'podcast', lang: '', topic: '', error: '', editing: null };
   var topicHint = null, topicEditId = null, mgOpen = false;
-  var sr = { q: '', topic: '', status: 'idle', items: [], notes: [], token: 0, page: 0, added: 0, suggest: '' };
+  var sr = { q: '', topic: '', status: 'idle', items: [], notes: [], token: 0, page: 0, added: 0, suggest: '', only: '' };
   var topicChecking = false;
 
   // ---- spelling help for topic names
@@ -1480,6 +1480,43 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     }).then(function (lists) { return [].concat.apply([], lists); });
   }
 
+  // YouTube's own results page carries its results as JSON (ytInitialData)
+  function ytText(x) { return x ? (x.simpleText || (x.runs || []).map(function (r) { return r.text; }).join('')) : ''; }
+  function srcYouTube(q, page) {
+    return nativeText('https://www.youtube.com/results?sp=EgIQAQ%3D%3D&hl=' + state.ui + '&search_query=' + encodeURIComponent(q)).then(function (text) {
+      var m = text.match(/ytInitialData\s*=\s*(\{[\s\S]*?\});\s*<\/script>/);
+      if (!m) throw new Error('youtube');
+      var found = [];
+      (function walk(o) {
+        if (!o || typeof o !== 'object') return;
+        if (o.videoRenderer && o.videoRenderer.videoId) { found.push(o.videoRenderer); return; }
+        for (var k in o) walk(o[k]);
+      })(JSON.parse(m[1]));
+      return found.slice(page * PAGE, (page + 1) * PAGE).map(function (v) {
+        return { source: 'YouTube', kind: 'video', title: ytText(v.title), creator: ytText(v.ownerText),
+          why: [ytText(v.lengthText), ytText(v.publishedTimeText)].filter(Boolean).join(' · '), url: 'https://www.youtube.com/watch?v=' + v.videoId };
+      });
+    });
+  }
+  // web pages from DuckDuckGo's plain page (Google's needs a full browser)
+  function srcWeb(q, page) {
+    var kl = /[֐-׿]/.test(q) ? 'il-he' : ({ fr: 'fr-fr', en: 'us-en' }[state.ui] || 'wt-wt');
+    return nativeText('https://html.duckduckgo.com/html/?kl=' + kl + '&q=' + encodeURIComponent(q)).then(function (text) {
+      var doc = new DOMParser().parseFromString(text, 'text/html'), out = [];
+      Array.prototype.forEach.call(doc.querySelectorAll('.result'), function (el) {
+        var a = el.querySelector('a.result__a');
+        if (!a || /result--ad/.test(el.className)) return;
+        var href = a.getAttribute('href') || '', m = href.match(/[?&]uddg=([^&]+)/);
+        var url = m ? decodeURIComponent(m[1]) : href;
+        if (!/^https?:/.test(url)) return;
+        var sn = el.querySelector('.result__snippet');
+        out.push({ source: 'Web', kind: 'article', title: a.textContent.trim(), creator: hostOf(url), why: sn ? sn.textContent.trim().slice(0, 160) : '', url: url });
+      });
+      if (!out.length && !doc.querySelector('.no-results')) throw new Error('web');
+      return out.slice(page * PAGE, (page + 1) * PAGE);
+    });
+  }
+
   // spelling help from Wikipedia's own "did you mean" (works for Hebrew, French and English)
   function wikiLang(text) { return /[\u0590-\u05FF]/.test(text) ? 'he' : (state.ui === 'fr' ? 'fr' : 'en'); }
   function wikiSuggest(name) {
@@ -1497,7 +1534,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var key = searchKey(q);
     var my = ++sr.token;
     if (page === 0) {
-      sr.q = q; sr.topic = topic || ''; sr.notes = []; sr.suggest = ''; sr.page = 0; sr.added = 0;
+      sr.q = q; sr.topic = topic || ''; sr.notes = []; sr.suggest = ''; sr.page = 0; sr.added = 0; sr.only = '';
       if (!force && srCache[key]) {
         var c = srCache[key];
         sr.items = c.items; sr.page = c.page; sr.suggest = c.suggest; sr.status = 'done'; render(); return;
@@ -1517,10 +1554,14 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (kinds.indexOf('article') !== -1) {
       state.langs.forEach(function (l) { jobs.push(srcWiki(q, l, page)); });
       if (nativeWait) state.langs.forEach(function (l) { if (NEWS_EDITION[l]) jobs.push(srcNews(q, l, page)); });
+      if (nativeWait) jobs.push(srcWeb(q, page));
       jobs.push(srcBooks(q, page));
       jobs.push(srcGBooks(q, page));
     }
-    if (wantsVideo) { jobs.push(srcDaily(q, page)); jobs.push(srcMovies(q, page)); }
+    if (wantsVideo) {
+      if (nativeWait) jobs.push(srcYouTube(q, page));
+      jobs.push(srcDaily(q, page)); jobs.push(srcMovies(q, page));
+    }
     jobs.push(srcArchive(q, page));
     var pending = jobs.length, today = new Date().getDay(), srcCount = {}, T = taste();
     function finish() {
@@ -1608,6 +1649,12 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
   // ---------------- the screen ----------------
   var filtersOpen = false, autoDone = false;
+  var ONLY = {
+    web: function (r) { return r.source === 'Web'; },
+    youtube: function (r) { return r.source === 'YouTube'; },
+    video: function (r) { return r.kind === 'video'; },
+    news: function (r) { return r.source === 'Google News'; }
+  };
 
   function curTopic() { return sug.topics.length ? state.topics.filter(function (x) { return x.id === sug.topics[0]; })[0] : null; }
   function selectTopic(tp) {
@@ -1731,7 +1778,15 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.appendChild(h('div', { id: 'sr-anchor' }));
     if (sr.status !== 'idle') {
       if (sr.items.length || sr.status === 'loading') app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: t('sResultsFor', sr.q) }));
-      if (sr.q) {
+      if (sr.q && nativeWait) {
+        // in the app every source's results are already here: these only narrow the list
+        var art = sug.kinds.indexOf('article') !== -1, vid = sug.kinds.indexOf('video') !== -1 || sug.kinds.indexOf('show') !== -1;
+        var oc = h('div', { class: 'chips', style: 'margin:6px 0 10px' }, h('span', { class: 'meta', text: t('sShow') }));
+        [['', t('sAll'), true], ['web', t('sWeb'), art], ['youtube', 'YouTube', vid], ['video', t('sVideos'), vid], ['news', t('sGoogleNews'), art]].forEach(function (f) {
+          if (f[2]) oc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': (sr.only || '') === f[0] ? 'true' : 'false', onclick: function () { sr.only = f[0]; render(); } }, f[1]));
+        });
+        app.appendChild(oc);
+      } else if (sr.q) {
         var eq = encodeURIComponent(sr.q);
         app.appendChild(h('div', { class: 'acts', style: 'margin:6px 0 10px' },
           h('span', { class: 'meta', text: t('sAlso') }),
@@ -1747,9 +1802,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
           h('p', { style: 'margin:0', text: t('tHint', sr.suggest) }),
           h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { runSearch(sr.suggest, sr.topic); } }, t('tHintYes', sr.suggest)))));
       }
-      if (sr.items.length) {
+      var shown = sr.only ? sr.items.filter(ONLY[sr.only]) : sr.items;
+      if (shown.length) {
         var rul = h('ul', { class: 'list' });
-        sr.items.forEach(function (r) { rul.appendChild(cardFor(r)); });
+        shown.forEach(function (r) { rul.appendChild(cardFor(r)); });
         app.appendChild(rul);
       }
       if (sr.status === 'done' && sr.items.length) {
@@ -1759,7 +1815,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         if (state.langs.length < 3) app.appendChild(h('p', { class: 'none-line', style: 'margin-top:8px', text: t('sMoreLangs') }));
       }
       if (sr.status === 'loading') app.appendChild(h('p', { class: 'status', role: 'status', text: t('sSearching') }));
-      if (sr.status === 'done' && !sr.items.length) {
+      if (sr.status === 'done' && !shown.length) {
         app.appendChild(h('p', { class: 'none-line', style: 'margin-top:10px', text: sr.notes.length ? t('sOffline') : t('sNoResults') }));
       }
     }

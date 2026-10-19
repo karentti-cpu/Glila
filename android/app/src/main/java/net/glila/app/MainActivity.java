@@ -54,6 +54,8 @@ public class MainActivity extends Activity {
 
     // Feeds and news are read by the app, because those sites don't let a web page read them.
     private static final int MAX_BYTES = 3 * 1024 * 1024;
+    private static final String USER_AGENT =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36";
     private final ExecutorService net = Executors.newFixedThreadPool(4);
 
     private WebView web;
@@ -164,8 +166,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    // A plain GET of a public https address: no cookies, nothing sent, and never an address
-    // inside the phone or the home network.
+    // A plain GET of a public https address: none of the browser's cookies, nothing sent,
+    // and never an address inside the phone or the home network.
     private static String download(String address) throws Exception {
         URL url = new URL(address);
         for (int hops = 0; hops < 5; hops++) {
@@ -181,7 +183,11 @@ public class MainActivity extends Activity {
             c.setInstanceFollowRedirects(false);
             c.setConnectTimeout(8000);
             c.setReadTimeout(10000);
-            c.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) Glila");
+            // an ordinary browser's headers, so sites send their usual page
+            c.setRequestProperty("User-Agent", USER_AGENT);
+            c.setRequestProperty("Accept-Language", "he,fr;q=0.9,en;q=0.8");
+            // YouTube asks about cookies first in some countries; this answers "reject all"
+            if (url.getHost().endsWith("youtube.com")) c.setRequestProperty("Cookie", "SOCS=CAI");
             try {
                 int code = c.getResponseCode();
                 if (code >= 300 && code < 400 && c.getHeaderField("Location") != null) {
