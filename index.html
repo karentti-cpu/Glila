@@ -160,6 +160,14 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .note { color: var(--muted); font-size: 14px; margin-top: 26px; }
 
 .chip.small { min-height: 32px; padding: 2px 12px; font-size: 14px; }
+.filterbar { margin-top: 12px; border: 1.5px solid var(--accent); border-radius: 14px; background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.filterbar .fb-head { width: 100%; display: flex; align-items: center; gap: 12px; background: transparent; border: 0; padding: 12px 14px; min-height: 56px; text-align: start; color: inherit; }
+.filterbar .fb-head svg { width: 24px; height: 24px; flex: none; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.filterbar .fb-text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.filterbar .fb-title { font-weight: 700; }
+.filterbar .fb-sum { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+.filterbar .fb-go { font-weight: 700; color: var(--accent); flex: none; }
+.filterbar .fb-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 14px; }
 .langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
@@ -402,7 +410,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     sNoResults: 'לא נמצאו תוצאות. אפשר לנסות ניסוח אחר או סוג תוכן נוסף.',
     sSugFor: 'הצעות עבור "{0}"', sSugAll: 'הצעות מהרשימה', sPickTopic: 'בחרי נושא כדי לראות גם תוצאות חיפוש עבורו.',
     sOffline: 'לא הצלחתי להביא תוצאות חיות. כנראה שהדף נפתח בתצוגה מקדימה, למשל בתוך Claude, שחוסמת חיבור לאינטרנט. פתחי אותו בכרום.',
-    mgFilters: 'שפות וסוגי תוכן', sMore: 'עוד הצעות', sNoMore: 'אין עוד תוצאות לחיפוש הזה.', tEditCur: 'עריכת הנושא', tDelCur: 'מחיקת הנושא', lItems: 'הספרייה שלי ({0})', lEmpty: 'עדיין ריקה. לחצי ♡ על הצעה, או הוסיפי פריט למטה.', sRecommended: 'מומלץ',
+    mgFilters: 'שפות וסוגי תוכן', mgChange: 'לבחירה', mgClose: 'סגירה', mgNone: 'לא נבחר', sMore: 'עוד הצעות', sNoMore: 'אין עוד תוצאות לחיפוש הזה.', tEditCur: 'עריכת הנושא', tDelCur: 'מחיקת הנושא', lItems: 'הספרייה שלי ({0})', lEmpty: 'עדיין ריקה. לחצי ♡ על הצעה, או הוסיפי פריט למטה.', sRecommended: 'מומלץ',
     tHint: 'התכוונת ל"{0}"?', tHintYes: 'כן, "{0}"', tHintNo: 'להשאיר "{0}"',
     sFree: 'חיפוש חופשי', sFreePh: 'כתבי מה לחפש', sFreeYT: 'חיפוש ביוטיוב', sFreeAP: 'חיפוש ב-Apple Podcasts',
     sLibNone: 'אין בספרייה תוכן שמתאים לבחירה. אפשר לבחור עוד שפות או סוגים, או להשתמש בחיפוש החופשי.',
@@ -425,7 +433,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     sNoResults: 'Aucun résultat. Essayez une autre formulation ou un autre type de contenu.',
     sSugFor: 'Idées pour « {0} »', sSugAll: 'Idées de la liste', sPickTopic: 'Choisissez un sujet pour voir aussi des résultats de recherche.',
     sOffline: 'Impossible d’obtenir des résultats en direct. La page est probablement ouverte dans un aperçu (par exemple dans Claude) qui bloque Internet. Ouvrez-la dans Chrome.',
-    mgFilters: 'Langues et types', sMore: 'Plus d’idées', sNoMore: 'Plus de résultats pour cette recherche.', tEditCur: 'Modifier le sujet', tDelCur: 'Supprimer le sujet', lItems: 'Ma bibliothèque ({0})', lEmpty: 'Encore vide. Touchez ♡ sur une idée, ou ajoutez un élément ci-dessous.', sRecommended: 'Recommandé',
+    mgFilters: 'Langues et types', mgChange: 'Modifier', mgClose: 'Fermer', mgNone: 'Aucun', sMore: 'Plus d’idées', sNoMore: 'Plus de résultats pour cette recherche.', tEditCur: 'Modifier le sujet', tDelCur: 'Supprimer le sujet', lItems: 'Ma bibliothèque ({0})', lEmpty: 'Encore vide. Touchez ♡ sur une idée, ou ajoutez un élément ci-dessous.', sRecommended: 'Recommandé',
     tHint: 'Vous vouliez écrire « {0} » ?', tHintYes: 'Oui, « {0} »', tHintNo: 'Garder « {0} »',
     sFree: 'Recherche libre', sFreePh: 'Saisissez ce que vous cherchez', sFreeYT: 'Chercher sur YouTube', sFreeAP: 'Chercher sur Apple Podcasts',
     sLibNone: 'Aucun contenu de la liste ne correspond à ce choix. Ajoutez des langues ou des types, ou utilisez la recherche libre.',
@@ -448,7 +456,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     sNoResults: 'No results. Try another wording or another content type.',
     sSugFor: 'Ideas for “{0}”', sSugAll: 'Ideas from the list', sPickTopic: 'Pick a topic to also see search results for it.',
     sOffline: 'Couldn’t get live results. The page is probably open in a preview (for example inside Claude) that blocks the internet. Open it in Chrome.',
-    mgFilters: 'Languages and types', sMore: 'More ideas', sNoMore: 'No more results for this search.', tEditCur: 'Edit topic', tDelCur: 'Delete topic', lItems: 'My library ({0})', lEmpty: 'Still empty. Tap ♡ on an idea, or add an item below.', sRecommended: 'Recommended',
+    mgFilters: 'Languages and types', mgChange: 'Change', mgClose: 'Close', mgNone: 'None', sMore: 'More ideas', sNoMore: 'No more results for this search.', tEditCur: 'Edit topic', tDelCur: 'Delete topic', lItems: 'My library ({0})', lEmpty: 'Still empty. Tap ♡ on an idea, or add an item below.', sRecommended: 'Recommended',
     tHint: 'Did you mean “{0}”?', tHintYes: 'Yes, “{0}”', tHintNo: 'Keep “{0}”',
     sFree: 'Free search', sFreePh: 'Type what to look for', sFreeYT: 'Search YouTube', sFreeAP: 'Search Apple Podcasts',
     sLibNone: 'Nothing in the list matches this choice. Add more languages or types, or use free search.',
@@ -1716,16 +1724,31 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
             if (armedCur) deleteTopic(cur.id); else { armed = 'topic:' + cur.id; render(); }
           } }, armedCur ? (curCount ? t('delWith', curCount) : t('sure')) : t('tDelCur'))));
       }
-      app.appendChild(h('div', { class: 'acts', style: 'margin-top:10px' },
-        h('button', { type: 'button', class: 'btn small', 'aria-expanded': filtersOpen ? 'true' : 'false', onclick: function () { filtersOpen = !filtersOpen; render(); } }, t('mgFilters'))));
-    } else {
-      app.appendChild(h('div', { class: 'acts', style: 'margin-top:10px' },
-        h('button', { type: 'button', class: 'btn small', 'aria-expanded': filtersOpen ? 'true' : 'false', onclick: function () { filtersOpen = !filtersOpen; render(); } }, t('mgFilters'))));
     }
 
-    // filters (collapsed by default, to keep the screen simple)
+    // ---- free search (for anything that is not one of my topics)
+    var free = h('form', { class: 'topic-add', style: 'margin-top:18px', novalidate: true, onsubmit: function (e) {
+      e.preventDefault();
+      sug.topics = [];
+      runSearch(sug.free, '');
+    } });
+    free.appendChild(h('input', { type: 'text', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') }));
+    free.children[0].addEventListener('input', function (e) { sug.free = e.target.value; });
+    free.appendChild(h('button', { type: 'submit', class: 'btn' }, t('sGoSearch')));
+    app.appendChild(free);
+
+    // languages and content types: always in sight with what is chosen now; the choices open below it
+    var fb = h('div', { class: 'filterbar' });
+    var fbHead = h('button', { type: 'button', class: 'fb-head', 'aria-expanded': filtersOpen ? 'true' : 'false', onclick: function () { filtersOpen = !filtersOpen; render(); } },
+      icon('<svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>'),
+      h('span', { class: 'fb-text' },
+        h('span', { class: 'fb-title', text: t('mgFilters') }),
+        h('span', { class: 'fb-sum', text: (Object.keys(LANGS).filter(function (k) { return state.langs.indexOf(k) !== -1; }).map(function (k) { return LANGS[k]; }).join(', ') || t('mgNone')) +
+          ' · ' + (SKINDS.filter(function (k) { return sug.kinds.indexOf(k) !== -1; }).map(function (k) { return t('kp_' + k); }).join(', ') || t('mgNone')) })),
+      h('span', { class: 'fb-go', text: filtersOpen ? t('mgClose') + ' \u25B4' : t('mgChange') + ' \u25BE' }));
+    fb.appendChild(fbHead);
     if (filtersOpen) {
-      var card = h('div', { class: 'card', style: 'margin-top:12px' });
+      var card = h('div', { class: 'fb-body' });
       var lf = h('fieldset', null, h('legend', { text: t('sLangs') }));
       var lc = h('div', { class: 'chips' });
       Object.keys(LANGS).forEach(function (k) {
@@ -1739,19 +1762,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       });
       kf.appendChild(kc); card.appendChild(kf);
       card.appendChild(h('div', { class: 'chips' }, h('button', { type: 'button', class: 'chip', 'aria-pressed': sug.all ? 'true' : 'false', onclick: function () { sug.all = !sug.all; render(); } }, t('sFullList'))));
-      app.appendChild(card);
+      fb.appendChild(card);
     }
-
-    // ---- free search (for anything that is not one of my topics)
-    var free = h('form', { class: 'topic-add', style: 'margin-top:18px', novalidate: true, onsubmit: function (e) {
-      e.preventDefault();
-      sug.topics = [];
-      runSearch(sug.free, '');
-    } });
-    free.appendChild(h('input', { type: 'text', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') }));
-    free.children[0].addEventListener('input', function (e) { sug.free = e.target.value; });
-    free.appendChild(h('button', { type: 'submit', class: 'btn' }, t('sGoSearch')));
-    app.appendChild(free);
+    app.appendChild(fb);
 
     // ---- 2. SUGGESTIONS: the ready list for this topic first, then live results
     var explicit = !!cur;
