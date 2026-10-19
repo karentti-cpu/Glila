@@ -1394,7 +1394,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function srcGBooks(q, page) {
     var u = 'https://www.googleapis.com/books/v1/volumes?maxResults=' + PAGE + '&startIndex=' + (page * PAGE) + '&q=' + encodeURIComponent(q);
     return getJson(u).then(function (d) {
-      return (d.items || []).map(function (x) {
+      return (d.items || []).filter(function (x) {
+        var l = (x.volumeInfo || {}).language;
+        return !l || state.langs.indexOf(l) !== -1;
+      }).map(function (x) {
         var v = x.volumeInfo || {};
         return { source: 'Google Books', kind: 'article', lang: LANGS[v.language] ? v.language : '', title: v.title, creator: (v.authors || []).slice(0, 2).join(', '), why: strip(v.description || '').slice(0, 160), url: v.infoLink || '' };
       });
@@ -1416,6 +1419,65 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         return { source: 'Dailymotion', kind: 'video', title: x.title, creator: x['owner.screenname'] || '', url: x.url };
       });
     });
+  }
+
+  // ---- sources only the Android app can read: the app fetches them for the page ----
+  var nativeWait = (window.GlilaAndroid && window.GlilaAndroid.fetchText) ? {} : null, nativeId = 0, feedCache = {};
+  if (nativeWait) window.__glilaFetched = function (id, ok, text) {
+    var w = nativeWait[id]; if (!w) return;
+    delete nativeWait[id];
+    if (ok) w[0](text); else w[1](new Error(text));
+  };
+  function nativeText(url) {
+    if (!nativeWait) return Promise.reject(new Error('web'));
+    if (feedCache[url]) return Promise.resolve(feedCache[url]);
+    var id = 'f' + (++nativeId);
+    return withTimeout(new Promise(function (resolve, reject) {
+      nativeWait[id] = [resolve, reject];
+      window.GlilaAndroid.fetchText(id, url);
+    }), 20000).then(function (text) { feedCache[url] = text; return text; }, function (e) { delete nativeWait[id]; throw e; });
+  }
+  function xmlItems(text) {
+    var doc = new DOMParser().parseFromString(text, 'text/xml');
+    return Array.prototype.slice.call(doc.getElementsByTagName('item'));
+  }
+  function tag(el, name) { var x = el.getElementsByTagName(name)[0]; return x ? String(x.textContent || '').trim() : ''; }
+  function dateOf(s) { var d = new Date(s); return isNaN(d) ? '' : d.toLocaleDateString(state.ui); }
+  var NEWS_EDITION = { he: 'hl=he&gl=IL&ceid=IL:he', fr: 'hl=fr&gl=FR&ceid=FR:fr', en: 'hl=en-US&gl=US&ceid=US:en' };
+  function srcNews(q, lang, page) {
+    return nativeText('https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&' + NEWS_EDITION[lang]).then(function (text) {
+      // fewer per page than other sources: there is a feed per language and they'd fill the list
+      return xmlItems(text).slice(page * 4, (page + 1) * 4).map(function (it) {
+        var pub = tag(it, 'source'), title = tag(it, 'title');
+        // Google News ends each title with " - publisher"
+        if (pub && title.slice(-pub.length - 3) === ' - ' + pub) title = title.slice(0, -pub.length - 3);
+        return { source: 'Google News', kind: 'article', lang: lang, title: title, creator: pub, why: dateOf(tag(it, 'pubDate')), url: tag(it, 'link') };
+      });
+    });
+  }
+  // episodes from the podcasts' own feeds: the ones that mention the search, else the latest
+  function srcEpisodes(q, page) {
+    var u = 'https://itunes.apple.com/search?media=podcast&entity=podcast&limit=15&term=' + encodeURIComponent(q) + (/[֐-׿]/.test(q) ? '&country=il' : '');
+    var words = q.toLowerCase().split(/\s+/).filter(function (w) { return w.length > 1; });
+    return either(u).then(function (d) {
+      var shows = (d.results || []).filter(function (x) { return x.feedUrl; }).slice(page * 3, page * 3 + 3);
+      return Promise.all(shows.map(function (show) {
+        return nativeText(show.feedUrl).then(function (text) {
+          var items = xmlItems(text);
+          var hits = items.filter(function (it) {
+            var s = (tag(it, 'title') + ' ' + tag(it, 'description')).toLowerCase();
+            return words.some(function (w) { return s.indexOf(w) !== -1; });
+          });
+          return (hits.length ? hits : items).slice(0, 3).map(function (it) {
+            var link = tag(it, 'link'), enc = it.getElementsByTagName('enclosure')[0];
+            // many feeds give every episode the show's site as its link; the audio file is the episode itself
+            if ((!link || link === tag(it.parentNode, 'link')) && enc) link = enc.getAttribute('url') || link;
+            return { source: 'Podcast', kind: 'podcast', title: tag(it, 'title'), creator: show.collectionName || '',
+              why: strip(tag(it, 'description')).slice(0, 160), url: link || show.collectionViewUrl || '' };
+          });
+        }, function () { return []; });
+      }));
+    }).then(function (lists) { return [].concat.apply([], lists); });
   }
 
   // spelling help from Wikipedia's own "did you mean" (works for Hebrew, French and English)
@@ -1448,10 +1510,15 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var before = sr.items.length;
     var kinds = sug.kinds, jobs = [];
     var wantsVideo = kinds.indexOf('video') !== -1 || kinds.indexOf('show') !== -1;
-    if (kinds.indexOf('podcast') !== -1) jobs.push(srcApple(q, page));
+    if (kinds.indexOf('podcast') !== -1) {
+      jobs.push(srcApple(q, page));
+      if (nativeWait) jobs.push(srcEpisodes(q, page));
+    }
     if (kinds.indexOf('article') !== -1) {
       state.langs.forEach(function (l) { jobs.push(srcWiki(q, l, page)); });
+      if (nativeWait) state.langs.forEach(function (l) { if (NEWS_EDITION[l]) jobs.push(srcNews(q, l, page)); });
       jobs.push(srcBooks(q, page));
+      jobs.push(srcGBooks(q, page));
     }
     if (wantsVideo) { jobs.push(srcDaily(q, page)); jobs.push(srcMovies(q, page)); }
     jobs.push(srcArchive(q, page));
