@@ -1,0 +1,55 @@
+plugins {
+    id 'com.android.application'
+}
+
+// The app ships the same files as the website, copied from the repo root at build time.
+def webDir = layout.buildDirectory.dir('generated/web')
+def copyWeb = tasks.register('copyWeb', Copy) {
+    from(rootProject.file('..')) {
+        include 'index.html', 'manifest.webmanifest', 'sw.js', 'icon-192.png', 'icon-512.png'
+    }
+    into webDir
+}
+preBuild.dependsOn copyWeb
+
+android {
+    namespace 'net.glila.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'net.glila.app'
+        minSdk 24
+        targetSdk 34
+        versionCode((System.getenv('VERSION_CODE') ?: '1') as int)
+        versionName "1.0.${System.getenv('VERSION_CODE') ?: '1'}"
+    }
+
+    signingConfigs {
+        release {
+            storeFile rootProject.file('keystore/glila.jks')
+            storePassword 'glila-android'
+            keyAlias 'glila'
+            keyPassword 'glila-android'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    sourceSets {
+        main.assets.srcDirs += webDir
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+}

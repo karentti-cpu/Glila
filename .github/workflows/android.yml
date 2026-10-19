@@ -1,0 +1,51 @@
+name: Android app
+
+on:
+  push:
+    branches: [main, 'claude/**']
+    paths:
+      - index.html
+      - manifest.webmanifest
+      - sw.js
+      - icon-*.png
+      - android/**
+      - .github/workflows/android.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build APK
+        working-directory: android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk ../glila.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: glila-apk
+          path: glila.apk
+
+      - name: Publish release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-v1.0.${{ github.run_number }}
+          name: גלילה חכמה לאנדרואיד 1.0.${{ github.run_number }}
+          body: 'להתקנה: להוריד את glila.apk בטלפון ולפתוח אותו.'
+          files: glila.apk
+          make_latest: true
