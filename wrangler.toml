@@ -1,0 +1,6 @@
+# Cloudflare builds the relay from this repository (see relay/worker.js).
+# "name" must match the Worker's name in the Cloudflare dashboard.
+name = "glila-relay"
+main = "relay/worker.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
