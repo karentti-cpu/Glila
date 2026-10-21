@@ -1474,16 +1474,25 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     });
   }
 
-  // ---- sources only the Android app can read: the app fetches them for the page ----
+  // ---- sources a web page can't read by itself: in the Android app the app fetches them;
+  // on the website, Glila's own relay does (relay/worker.js, on Cloudflare). Empty = no relay yet.
+  var RELAY = '';
   var nativeWait = (window.GlilaAndroid && window.GlilaAndroid.fetchText) ? {} : null, nativeId = 0, feedCache = {};
   if (nativeWait) window.__glilaFetched = function (id, ok, text) {
     var w = nativeWait[id]; if (!w) return;
     delete nativeWait[id];
     if (ok) w[0](text); else w[1](new Error(text));
   };
-  function nativeText(url) {
-    if (!nativeWait) return Promise.reject(new Error('web'));
+  var canFetch = !!(nativeWait || RELAY);
+  function fetchText(url) {
     if (feedCache[url]) return Promise.resolve(feedCache[url]);
+    if (!nativeWait) {
+      if (!RELAY) return Promise.reject(new Error('web'));
+      return withTimeout(fetch(RELAY + '?url=' + encodeURIComponent(url)).then(function (r) {
+        if (!r.ok) throw new Error('http ' + r.status);
+        return r.text();
+      }), 20000).then(function (text) { feedCache[url] = text; return text; });
+    }
     var id = 'f' + (++nativeId);
     return withTimeout(new Promise(function (resolve, reject) {
       nativeWait[id] = [resolve, reject];
@@ -1498,7 +1507,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function dateOf(s) { var d = new Date(s); return isNaN(d) ? '' : d.toLocaleDateString(state.ui); }
   var NEWS_EDITION = { he: 'hl=he&gl=IL&ceid=IL:he', fr: 'hl=fr&gl=FR&ceid=FR:fr', en: 'hl=en-US&gl=US&ceid=US:en' };
   function srcNews(q, lang, page) {
-    return nativeText('https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&' + NEWS_EDITION[lang]).then(function (text) {
+    return fetchText('https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&' + NEWS_EDITION[lang]).then(function (text) {
       // fewer per page than other sources: there is a feed per language and they'd fill the list
       return xmlItems(text).slice(page * 4, (page + 1) * 4).map(function (it) {
         var pub = tag(it, 'source'), title = tag(it, 'title');
@@ -1515,7 +1524,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     return either(u).then(function (d) {
       var shows = (d.results || []).filter(function (x) { return x.feedUrl; }).slice(page * 3, page * 3 + 3);
       return Promise.all(shows.map(function (show) {
-        return nativeText(show.feedUrl).then(function (text) {
+        return fetchText(show.feedUrl).then(function (text) {
           var items = xmlItems(text);
           var hits = items.filter(function (it) {
             var s = (tag(it, 'title') + ' ' + tag(it, 'description')).toLowerCase();
@@ -1536,7 +1545,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   // YouTube's own results page carries its results as JSON (ytInitialData)
   function ytText(x) { return x ? (x.simpleText || (x.runs || []).map(function (r) { return r.text; }).join('')) : ''; }
   function srcYouTube(q, page) {
-    return nativeText('https://www.youtube.com/results?sp=EgIQAQ%3D%3D&hl=' + state.ui + '&search_query=' + encodeURIComponent(q)).then(function (text) {
+    return fetchText('https://www.youtube.com/results?sp=EgIQAQ%3D%3D&hl=' + state.ui + '&search_query=' + encodeURIComponent(q)).then(function (text) {
       var m = text.match(/ytInitialData\s*=\s*(\{[\s\S]*?\});\s*<\/script>/);
       if (!m) throw new Error('youtube');
       var found = [];
@@ -1552,10 +1561,24 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       });
     });
   }
-  // web pages from DuckDuckGo's plain page (Google's needs a full browser)
+  // web pages from DuckDuckGo's plain page (Google's needs a full browser), else from Bing's RSS
   function srcWeb(q, page) {
+    return srcDdg(q, page).catch(function () { return srcBing(q, page); });
+  }
+  function srcBing(q, page) {
+    var lang = /[\u0590-\u05FF]/.test(q) ? 'he' : (state.ui || 'en');
+    return fetchText('https://www.bing.com/search?format=rss&count=30&setlang=' + lang + '&q=' + encodeURIComponent(q)).then(function (text) {
+      var items = xmlItems(text);
+      if (!items.length) throw new Error('bing');
+      return items.slice(page * PAGE, (page + 1) * PAGE).map(function (it) {
+        var url = tag(it, 'link');
+        return { source: 'Web', kind: 'article', title: tag(it, 'title'), creator: hostOf(url), why: strip(tag(it, 'description')).slice(0, 160), url: url };
+      }).filter(function (x) { return /^https?:/.test(x.url); });
+    });
+  }
+  function srcDdg(q, page) {
     var kl = /[֐-׿]/.test(q) ? 'il-he' : ({ fr: 'fr-fr', en: 'us-en' }[state.ui] || 'wt-wt');
-    return nativeText('https://html.duckduckgo.com/html/?kl=' + kl + '&q=' + encodeURIComponent(q)).then(function (text) {
+    return fetchText('https://html.duckduckgo.com/html/?kl=' + kl + '&q=' + encodeURIComponent(q)).then(function (text) {
       var doc = new DOMParser().parseFromString(text, 'text/html'), out = [];
       Array.prototype.forEach.call(doc.querySelectorAll('.result'), function (el) {
         var a = el.querySelector('a.result__a');
@@ -1603,17 +1626,17 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var wantsVideo = kinds.indexOf('video') !== -1 || kinds.indexOf('show') !== -1;
     if (kinds.indexOf('podcast') !== -1) {
       jobs.push(srcApple(q, page));
-      if (nativeWait) jobs.push(srcEpisodes(q, page));
+      if (canFetch) jobs.push(srcEpisodes(q, page));
     }
     if (kinds.indexOf('article') !== -1) {
       state.langs.forEach(function (l) { jobs.push(srcWiki(q, l, page)); });
-      if (nativeWait) state.langs.forEach(function (l) { if (NEWS_EDITION[l]) jobs.push(srcNews(q, l, page)); });
-      if (nativeWait) jobs.push(srcWeb(q, page));
+      if (canFetch) state.langs.forEach(function (l) { if (NEWS_EDITION[l]) jobs.push(srcNews(q, l, page)); });
+      if (canFetch) jobs.push(srcWeb(q, page));
       jobs.push(srcBooks(q, page));
       jobs.push(srcGBooks(q, page));
     }
     if (wantsVideo) {
-      if (nativeWait) jobs.push(srcYouTube(q, page));
+      if (canFetch) jobs.push(srcYouTube(q, page));
       jobs.push(srcDaily(q, page)); jobs.push(srcMovies(q, page));
     }
     jobs.push(srcArchive(q, page));
@@ -1895,15 +1918,18 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.appendChild(h('div', { id: 'sr-anchor' }));
     if (sr.status !== 'idle') {
       if (sr.items.length || sr.status === 'loading') app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: t('sResultsFor', sr.q) }));
-      if (sr.q && nativeWait) {
-        // in the app every source's results are already here: these only narrow the list
+      var live = sr.items.some(function (r) { return r.source === 'YouTube' || r.source === 'Web' || r.source === 'Google News'; });
+      if (sr.q && canFetch) {
+        // every source's results are already here: these only narrow the list
         var art = sug.kinds.indexOf('article') !== -1, vid = sug.kinds.indexOf('video') !== -1 || sug.kinds.indexOf('show') !== -1;
         var oc = h('div', { class: 'chips', style: 'margin:6px 0 10px' }, h('span', { class: 'meta', text: t('sShow') }));
         [['', t('sAll'), true], ['web', t('sWeb'), art], ['youtube', 'YouTube', vid], ['video', t('sVideos'), vid], ['news', t('sGoogleNews'), art]].forEach(function (f) {
           if (f[2]) oc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': (sr.only || '') === f[0] ? 'true' : 'false', onclick: function () { sr.only = f[0]; render(); } }, f[1]));
         });
         app.appendChild(oc);
-      } else if (sr.q) {
+      }
+      // on the website without live results, the sites can still be opened directly
+      if (sr.q && !nativeWait && (!RELAY || (sr.status === 'done' && !live))) {
         var eq = encodeURIComponent(sr.q);
         app.appendChild(h('div', { class: 'acts', style: 'margin:6px 0 10px' },
           h('span', { class: 'meta', text: t('sAlso') }),
