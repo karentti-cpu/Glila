@@ -1,0 +1,17 @@
+{
+  "name": "גלילה חכמה",
+  "short_name": "גלילה חכמה",
+  "description": "במקום לגלול, בוחרים מה לראות",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EEF2F1",
+  "theme_color": "#1F6F6A",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
