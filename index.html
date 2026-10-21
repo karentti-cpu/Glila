@@ -1476,7 +1476,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
   // ---- sources a web page can't read by itself: in the Android app the app fetches them;
   // on the website, Glila's own relay does (relay/worker.js, on Cloudflare). Empty = no relay yet.
-  var RELAY = '';
+  var RELAY = 'https://glila.karentti.workers.dev/';
   var nativeWait = (window.GlilaAndroid && window.GlilaAndroid.fetchText) ? {} : null, nativeId = 0, feedCache = {};
   if (nativeWait) window.__glilaFetched = function (id, ok, text) {
     var w = nativeWait[id]; if (!w) return;
