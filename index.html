@@ -168,6 +168,12 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .filterbar .fb-sum { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
 .filterbar .fb-go { font-weight: 700; color: var(--accent); flex: none; }
 .filterbar .fb-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 14px; }
+.install { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); display: flex; flex-direction: column; gap: 8px; }
+.install .in-top { display: flex; align-items: center; gap: 10px; }
+.install .in-title { flex: 1; font-weight: 700; }
+.install p { margin: 0; font-size: 15px; }
+.install .btn { background: var(--accent-ink); color: var(--accent); border-color: var(--accent-ink); align-self: flex-start; text-decoration: none; }
+.install .in-x { background: transparent; border: 0; color: inherit; font-size: 22px; line-height: 1; min-width: 40px; min-height: 40px; }
 .langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
@@ -249,6 +255,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       wWiki: 'סקירה כללית, טובה כדי להתחיל להכיר את הנושא.', wBook: 'ספר, למי שרוצה להעמיק.', wNews: 'למי שרוצה להתעדכן במה שקורה עכשיו.',
       wMovie: 'סרט או סדרה באורך מלא.', wWeb: 'דף מהאתר {0}.', wForYou: 'דומה לדברים שסימנת שאהבת.',
       abNone: 'אין תיאור. אפשר לפתוח ולראות.', abSrc: 'מקור: {0}.',
+      inTitle: 'להתקין את גלילה חכמה כאפליקציה', inBtn: 'התקנה', inChrome: 'פתיחה ב־Chrome', inClose: 'סגירה',
+      inChromeTxt: 'כדי להתקין, פותחים את הדף ב־Chrome ושם לוחצים "התקנה".',
+      inMenu: 'בתפריט ⋮ של הדפדפן בוחרים "התקנת אפליקציה" או "הוספה למסך הבית".',
+      inIos: 'לוחצים על כפתור השיתוף ⬆︎ ובוחרים "הוספה למסך הבית". אם האפשרות לא מופיעה, פותחים קודם את הדף ב־Safari.',
       a1: 'מה הכי מתאים להתחלה?', a2: 'מה הכי קצר?', a3: 'השוואה קצרה בין כולן',
       errNoAccess: 'ההצעות לא אושרו או לא זמינות בחשבון הזה.', errRate: 'הגעת למגבלת השימוש. אפשר לנסות שוב מאוחר יותר.', errGeneric: 'משהו השתבש בדרך. אפשר לנסות שוב.',
       tTitle: 'נושאים', tSub: 'מה מעניין אותך. את הפריטים משייכים לנושאים בלשונית התכנון.', tNewPh: 'שם נושא חדש', tAdd: 'הוספה',
@@ -323,6 +333,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       wWiki: 'Une vue d’ensemble, bien pour découvrir le sujet.', wBook: 'Un livre, pour approfondir.', wNews: 'Pour suivre l’actualité.',
       wMovie: 'Un film ou une série complète.', wWeb: 'Une page du site {0}.', wForYou: 'Proche de ce que vous avez aimé.',
       abNone: 'Pas de description. Ouvrez pour voir.', abSrc: 'Source : {0}.',
+      inTitle: 'Installer Glila comme application', inBtn: 'Installer', inChrome: 'Ouvrir dans Chrome', inClose: 'Fermer',
+      inChromeTxt: 'Pour l’installer, ouvrez la page dans Chrome puis appuyez sur « Installer ».',
+      inMenu: 'Dans le menu ⋮ du navigateur, choisissez « Installer l’application » ou « Ajouter à l’écran d’accueil ».',
+      inIos: 'Appuyez sur le bouton Partager ⬆︎ puis « Sur l’écran d’accueil ». Si l’option n’apparaît pas, ouvrez d’abord la page dans Safari.',
       a1: 'Que choisir pour commencer ?', a2: 'Quel est le plus court ?', a3: 'Une courte comparaison',
       errNoAccess: 'Les idées n’ont pas été autorisées ou ne sont pas disponibles avec ce compte.', errRate: 'Limite d’utilisation atteinte. Réessayez plus tard.', errGeneric: 'Un problème est survenu. Vous pouvez réessayer.',
       tTitle: 'Sujets', tSub: 'Ce qui vous intéresse. Vous associez les éléments aux sujets dans l’onglet Plan.', tNewPh: 'Nouveau sujet', tAdd: 'Ajouter',
@@ -397,6 +411,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       wWiki: 'An overview, good for getting to know the topic.', wBook: 'A book, for going deeper.', wNews: 'For keeping up with what’s happening now.',
       wMovie: 'A full-length film or series.', wWeb: 'A page from {0}.', wForYou: 'Similar to things you liked.',
       abNone: 'No description. Open it to see.', abSrc: 'Source: {0}.',
+      inTitle: 'Install Glila as an app', inBtn: 'Install', inChrome: 'Open in Chrome', inClose: 'Close',
+      inChromeTxt: 'To install it, open the page in Chrome and tap “Install”.',
+      inMenu: 'In the browser’s ⋮ menu, choose “Install app” or “Add to Home screen”.',
+      inIos: 'Tap the Share button ⬆︎ and choose “Add to Home Screen”. If it isn’t there, open the page in Safari first.',
       a1: 'What fits best to start with?', a2: 'Which is the shortest?', a3: 'A short comparison of all',
       errNoAccess: 'Ideas weren’t allowed or aren’t available for this account.', errRate: 'Usage limit reached. Try again later.', errGeneric: 'Something went wrong. You can try again.',
       tTitle: 'Topics', tSub: 'What interests you. You link items to topics in the Plan tab.', tNewPh: 'New topic', tAdd: 'Add',
@@ -2151,11 +2169,52 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     return bar;
   }
 
+  // ---- installing the website as an app: shown on the website only, until installed or closed
+  var installEvt = null, installHidden = false;
+  try { installHidden = localStorage.getItem('glila-install-hidden') === '1'; } catch (e) {}
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); installEvt = e; render(); });
+  window.addEventListener('appinstalled', function () { installEvt = null; hideInstall(); });
+  function hideInstall() {
+    installHidden = true;
+    try { localStorage.setItem('glila-install-hidden', '1'); } catch (e) {}
+    render();
+  }
+  function installBar() {
+    var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+    if (nativeWait || standalone || installHidden || window.location.protocol !== 'https:') return null;
+    var ua = navigator.userAgent;
+    var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1), android = /Android/.test(ua);
+    // WhatsApp, Facebook, Instagram and the like open links in their own browser, which can't install
+    var inApp = /WhatsApp|FBAN|FBAV|Instagram|Line\//.test(ua) || (android && /; wv\)/.test(ua));
+    var body;
+    if (installEvt) {
+      body = h('button', { type: 'button', class: 'btn', onclick: function () {
+        var ev = installEvt;
+        installEvt = null;
+        ev.prompt();
+        ev.userChoice.then(function (c) { if (c && c.outcome === 'accepted') hideInstall(); else render(); }, function () { render(); });
+      } }, t('inBtn'));
+    } else if (android && inApp) {
+      var here = window.location.host + window.location.pathname;
+      body = [h('p', { text: t('inChromeTxt') }),
+        h('a', { class: 'btn', href: 'intent://' + here + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent('https://' + here) + ';end' }, t('inChrome'))];
+    } else if (ios) body = h('p', { text: t('inIos') });
+    else if (android) body = h('p', { text: t('inMenu') });
+    else return null;
+    return h('div', { class: 'install', role: 'region', 'aria-label': t('inTitle') },
+      h('div', { class: 'in-top' },
+        h('span', { class: 'in-title', text: '\uD83D\uDCF2 ' + t('inTitle') }),
+        h('button', { type: 'button', class: 'in-x', 'aria-label': t('inClose'), onclick: hideInstall }, '\u00D7')),
+      body);
+  }
+
   function render() {
     if (view === 'plan') { view = 'ideas'; planJump = true; }
     var app = document.getElementById('app');
     var y = window.scrollY;
     app.textContent = '';
+    var ib = installBar();
+    if (ib) app.appendChild(ib);
     document.querySelector('nav.tabs').style.display = view === 'welcome' ? 'none' : '';
     if (view !== 'welcome') app.appendChild(langBar());
     if (view === 'welcome') viewWelcome(app);

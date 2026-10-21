@@ -1,0 +1,36 @@
+name: Website
+
+# Publishes the app as a website at https://karentti-cpu.github.io/Glila/
+# (GitHub Pages serves the gh-pages branch).
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - manifest.webmanifest
+      - sw.js
+      - icon-*.png
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy the site to gh-pages
+        run: |
+          mkdir -p site
+          cp index.html manifest.webmanifest sw.js icon-192.png icon-512.png site/
+          touch site/.nojekyll
+          cd site
+          git init -q -b gh-pages
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -q -m "Publish ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
