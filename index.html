@@ -179,6 +179,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .searchbox input { min-height: 52px; font-size: 17px; border-color: var(--accent); background: var(--surface); }
 .searchbox .btn { min-height: 52px; padding: 10px 20px; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
 .searchbox .btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.tp-head { margin-top: 18px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; min-height: 48px; font-weight: 700; font-size: 17px; color: inherit; text-align: start; }
+.tp-head .fb-go { color: var(--accent); }
 .langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
@@ -526,7 +528,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmHave: '⏱ יש לי:', tmMin: '{0} דק׳', tmHour: 'שעה', tmFits: 'מתאים ל־{0}', tmUnknown: 'האורך לא ידוע',
     tmNone: 'אין בתוכנית משהו שמתאים ל־{0} דקות. אפשר לחפש תוכן קצר ב"תכנון והצעות".', tmLen: '⏱ {0}',
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
-    shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.'
+    shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
+    tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא'
   });
   Object.assign(STR.fr, {
     rmTitle: 'Rappel quotidien', rmOn: 'Activé', rmOff: 'Désactivé', rmTime: 'À quelle heure',
@@ -539,7 +542,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmHave: '⏱ J’ai :', tmMin: '{0} min', tmHour: '1 h', tmFits: 'Pour {0}', tmUnknown: 'Durée inconnue',
     tmNone: 'Rien de prévu ne tient en {0} minutes. Cherchez un contenu court dans « Plan et idées ».', tmLen: '⏱ {0}',
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
-    shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.'
+    shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
+    tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet'
   });
   Object.assign(STR.en, {
     rmTitle: 'Daily reminder', rmOn: 'On', rmOff: 'Off', rmTime: 'At what time',
@@ -552,7 +556,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmHave: '⏱ I have:', tmMin: '{0} min', tmHour: '1 hour', tmFits: 'Fits {0}', tmUnknown: 'Length unknown',
     tmNone: 'Nothing planned fits in {0} minutes. Look for something short in “Plan & ideas”.', tmLen: '⏱ {0}',
     fMins: 'How long does it take? (optional)',
-    shGot: 'Got what you shared. Pick a day and save.'
+    shGot: 'Got what you shared. Pick a day and save.',
+    tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic'
   });
 
   var state = load();
@@ -568,7 +573,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   var sug = { cats: [], topics: [], all: false, kinds: ['video', 'podcast', 'show', 'article'], free: '' };
 
   function load() {
-    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' } };
+    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null };
     try {
       var raw = localStorage.getItem(KEY);
       if (!raw) return def;
@@ -582,7 +587,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         showWelcome: p.showWelcome !== false,
         library: Array.isArray(p.library) ? p.library : [],
         platforms: (Array.isArray(p.platforms) && p.platforms.length) ? p.platforms : ['youtube', 'apple'],
-        reminder: (p.reminder && /^\d\d:\d\d$/.test(p.reminder.time)) ? { on: !!p.reminder.on, time: p.reminder.time } : { on: false, time: '20:00' }
+        reminder: (p.reminder && /^\d\d:\d\d$/.test(p.reminder.time)) ? { on: !!p.reminder.on, time: p.reminder.time } : { on: false, time: '20:00' },
+        topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null
       };
     } catch (e) { return def; }
   }
@@ -1910,10 +1916,23 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     }
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('ideasTitle') }), h('p', { text: t('ideasSub') })));
 
-    // ---- 1. topics: add / rename (with spelling help)
+    // ---- search: one field for anything; a search can then be saved as a topic
+    var free = h('form', { class: 'searchbox', role: 'search', novalidate: true, onsubmit: function (e) {
+      e.preventDefault();
+      sug.topics = [];
+      runSearch(sug.free, '');
+    } });
+    var freeIn = h('input', { id: 'free-q', type: 'search', enterkeyhint: 'search', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
+    freeIn.addEventListener('input', function (e) { sug.free = e.target.value; });
+    free.appendChild(h('label', { for: 'free-q', text: t('sFree') }));
+    free.appendChild(freeIn);
+    free.appendChild(h('button', { type: 'submit', class: 'btn solid' }, icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'), t('sGoSearch')));
+    app.appendChild(free);
+
+    // ---- renaming a topic (with spelling help); new topics come from a search or the quick ideas
     var editTp = state.topics.filter(function (x) { return x.id === topicEditId; })[0];
     var tInput = h('input', { type: 'text', dir: 'auto', spellcheck: 'true', value: editTp ? editTp.name : '', placeholder: t('tNewPh'), 'aria-label': t('tNewPh') });
-    app.appendChild(h('form', { class: 'topic-add', style: 'margin-top:18px', onsubmit: function (e) { e.preventDefault(); addTopic(tInput.value); } },
+    if (editTp) app.appendChild(h('form', { class: 'topic-add', style: 'margin-top:18px', onsubmit: function (e) { e.preventDefault(); addTopic(tInput.value); } },
       tInput, h('button', { type: 'submit', class: 'btn solid', disabled: topicChecking }, topicChecking ? t('thinking') : (topicEditId ? t('saveChanges') : t('tAdd')))));
     if (topicEditId) {
       app.appendChild(h('div', { class: 'acts', style: 'margin-top:8px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { topicEditId = null; render(); } }, t('cancel'))));
@@ -1936,8 +1955,13 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var eff = effective();
     var cur = curTopic();
     if (state.topics.length) {
-      var tcs = h('div', { class: 'chips', style: 'margin-top:16px' });
-      state.topics.forEach(function (tp) {
+      var tOpen = state.topicsOpen === null ? state.topics.length <= 6 : state.topicsOpen;
+      app.appendChild(h('button', { type: 'button', class: 'tp-head', 'aria-expanded': tOpen ? 'true' : 'false', onclick: function () {
+        state.topicsOpen = !tOpen; save(); render();
+      } }, h('span', { text: t('tMine', state.topics.length) }), h('span', { class: 'fb-go', text: tOpen ? '\u25B4' : '\u25BE' })));
+      var tcs = h('div', { class: 'chips', style: 'margin-top:10px' });
+      // closed: only the chosen topic stays in sight
+      (tOpen ? state.topics : state.topics.filter(function (tp) { return cur && cur.id === tp.id; })).forEach(function (tp) {
         tcs.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': (cur && cur.id === tp.id) ? 'true' : 'false', onclick: function () { selectTopic(tp); } }, tp.name));
       });
       app.appendChild(tcs);
@@ -1952,19 +1976,6 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
           } }, armedCur ? (curCount ? t('delWith', curCount) : t('sure')) : t('tDelCur'))));
       }
     }
-
-    // ---- free search (for anything that is not one of my topics)
-    var free = h('form', { class: 'searchbox', role: 'search', novalidate: true, onsubmit: function (e) {
-      e.preventDefault();
-      sug.topics = [];
-      runSearch(sug.free, '');
-    } });
-    var freeIn = h('input', { id: 'free-q', type: 'search', enterkeyhint: 'search', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
-    freeIn.addEventListener('input', function (e) { sug.free = e.target.value; });
-    free.appendChild(h('label', { for: 'free-q', text: t('sFree') }));
-    free.appendChild(freeIn);
-    free.appendChild(h('button', { type: 'submit', class: 'btn solid' }, icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'), t('sGoSearch')));
-    app.appendChild(free);
 
     // languages and content types: always in sight with what is chosen now; the choices open below it
     var fb = h('div', { class: 'filterbar' });
@@ -2020,6 +2031,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.appendChild(h('div', { id: 'sr-anchor' }));
     if (sr.status !== 'idle') {
       if (sr.items.length || sr.status === 'loading') app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: t('sResultsFor', sr.q) }));
+      if (sr.q && !state.topics.some(function (x) { return x.name.toLowerCase() === sr.q.toLowerCase(); })) {
+        app.appendChild(h('div', { class: 'acts', style: 'margin:0 0 8px' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { addTopic(sr.q, true); } }, t('tSaveTopic'))));
+      }
       var live = sr.items.some(function (r) { return r.source === 'YouTube' || r.source === 'Web' || r.source === 'Google News'; });
       if (sr.q && canFetch) {
         // every source's results are already here: these only narrow the list
@@ -2199,7 +2213,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         var hist = (Array.isArray(p.history) ? p.history : []).filter(function (x) { return x && typeof x === 'object' && typeof x.ts === 'number'; }).slice(0, 1000).map(function (x) {
           return { id: String(x.id || uid()), title: String(x.title || '').slice(0, 300), url: x.url ? safeUrl(String(x.url)) : '', kind: KIND_OK[x.kind] ? x.kind : 'other', lang: LANGS[x.lang] ? x.lang : '', topic: String(x.topic || '').slice(0, 100), action: (x.action === 'done' || x.action === 'planned' || x.action === 'search') ? x.action : 'open', ts: x.ts };
         });
-        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms, reminder: state.reminder };
+        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms, reminder: state.reminder, topicsOpen: state.topicsOpen };
         draft = newDraft(); armed = null; pick = { id: null, msg: '' }; save();
         backupMsg = t('rsDone');
       } catch (e) {
