@@ -112,7 +112,7 @@ h2.sec { font-family: var(--serif); font-size: 26px; margin: 28px 0 10px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
 .card h2 { font-family: var(--serif); font-size: 22px; margin: 0; }
 label.f { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 15px; }
-input[type=text], input[type=url], select {
+input[type=text], input[type=search], input[type=url], select {
   width: 100%; border: 1.5px solid var(--line); background: var(--bg); border-radius: 10px;
   padding: 10px 12px; min-height: 44px; font-weight: 400;
 }
@@ -174,6 +174,11 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .install p { margin: 0; font-size: 15px; }
 .install .btn { background: var(--accent-ink); color: var(--accent); border-color: var(--accent-ink); align-self: flex-start; text-decoration: none; }
 .install .in-x { background: transparent; border: 0; color: inherit; font-size: 22px; line-height: 1; min-width: 40px; min-height: 40px; }
+.searchbox { margin-top: 18px; padding: 14px; border-radius: 16px; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1.5px solid var(--accent); display: flex; flex-direction: column; gap: 10px; }
+.searchbox label { font-weight: 700; font-size: 17px; }
+.searchbox input { min-height: 52px; font-size: 17px; border-color: var(--accent); background: var(--surface); }
+.searchbox .btn { min-height: 52px; padding: 10px 20px; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.searchbox .btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
 .langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
@@ -284,7 +289,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     },
     fr: {
       histAll: 'Tout', histPlanned: 'Prévu', histSearch: 'Recherche', w_always: 'Afficher la page d’accueil à chaque ouverture',
-      appName: 'Scroll intelligent', navAria: 'Navigation principale',
+      appName: 'Glila', navAria: 'Navigation principale',
       tab_today: 'Aujourd’hui', tab_plan: 'Plan', tab_suggest: 'Idées', tab_topics: 'Sujets',
       dayHeader: '{0}', today: 'Aujourd’hui',
       k_article: 'Article', k_video: 'Vidéo', k_podcast: 'Podcast', k_show: 'Émission', k_idea: 'Idée d’écriture', k_other: 'Autre',
@@ -293,11 +298,11 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       emptyAllTitle: 'Rien de prévu pour l’instant',
       emptyAllText: 'Ajoutez des sujets, puis des éléments pour chaque jour : article, vidéo, podcast ou idée d’écriture. Cet écran n’affiche que ce que vous avez prévu pour aujourd’hui.',
       firstTopicBtn: 'Ajouter le premier sujet', firstItemBtn: 'Ajouter le premier élément',
-      emptyDayTitle: 'Rien de prévu aujourd’hui', emptyDayText: 'Dans l’onglet « Plan et idées », associez des éléments à ce jour : {0}.', planBtn: 'Aller au plan',
+      emptyDayTitle: 'Rien de prévu aujourd’hui', emptyDayText: 'Dans l’onglet « Plan et idées », ajoutez des éléments pour ce jour : {0}.', planBtn: 'Aller au plan',
       progress: '{0} sur {1} terminés', allDone: 'Vous avez terminé le contenu du jour.',
-      bored: 'Scroll du jour', boredIntro: 'Une seule chose maintenant', boredNone: 'Tout ce que vous aviez prévu est fait. Ajoutez des éléments dans l’onglet « Idées ».',
-      another: 'Un autre', close: 'Fermer',
-      planTitle: 'Plan de la semaine', planSub: 'Ce que vous verrez chaque jour, au lieu de scroller sur Facebook.',
+      bored: 'Le choix du jour', boredIntro: 'Une seule chose maintenant', boredNone: 'Vous avez fait tout ce qui était prévu. Ajoutez-en d’autres dans l’onglet « Plan et idées ».',
+      another: 'Autre chose', close: 'Fermer',
+      planTitle: 'Plan de la semaine', planSub: 'Ce que vous verrez chaque jour, au lieu de faire défiler Facebook.',
       wkOpen: 'Plan automatique de la semaine', wkIntro: 'Je propose du contenu selon vos sujets et vos langues ; vous validez ou remplacez.',
       wkPerDay: 'Éléments par jour', wkDays: 'Quels jours', wkBuild: 'Préparer ma semaine',
       wkBusy: 'Je prépare la semaine… cela peut prendre jusqu’à une minute.',
@@ -311,7 +316,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       everyDay: 'Chaque jour', noDay: 'Sans jour (plus tard)', addToPlan: 'Ajouter au plan', saveChanges: 'Enregistrer', cancel: 'Annuler',
       errName: 'Saisissez un titre.', errDays: 'Choisissez au moins un jour, ou « Sans jour ».', errLink: 'Le lien n’est pas valide.',
       emptyLine: 'Rien pour l’instant.', laterTitle: 'Peut-être plus tard', laterEmpty: 'Gardez ici les idées qui vous plaisent, sans choisir de jour.',
-      delNote: 'Supprimer un élément le retire de tous ses jours.', edit: 'Modifier', del: 'Supprimer', sure: 'Sûr ?',
+      delNote: 'Supprimer un élément le retire de tous ses jours.', edit: 'Modifier', del: 'Supprimer', sure: 'Confirmer ?',
       sTitle: 'Idées', sSub: 'Des idées de vidéos, de podcasts et d’émissions selon votre sujet.', loading: 'Chargement…',
       unavailTitle: 'Les idées ne sont pas disponibles ici', unavailText: 'Les idées ne fonctionnent que lorsque la page est ouverte dans Claude, avec un compte qui l’autorise.',
       sTopic: 'Sujet', sTopicPh: 'Par exemple : parentalité, écriture, conception de jeux', sLangs: 'Langues', sKinds: 'Type de contenu',
@@ -322,25 +327,25 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       saveLater: 'Garder pour plus tard', added: 'Ajouté au plan', savedLater: 'Gardé pour plus tard', add: 'Ajouter',
       site: 'Site', searchBtn: 'Rechercher', ask: 'Question',
       sNote: 'Les idées reposent sur les connaissances de Claude, pas sur une recherche en direct. Les boutons ouvrent donc le site (quand l’adresse est connue) ou une recherche dans YouTube ou Apple Podcasts, pas un lien vers un épisode précis.',
-      gAsk: 'Pas sûr de votre choix ? Posez une question sur toutes les idées', qOwn: 'Ou écrivez votre question', qAria: 'Question', qSend: 'Demander', thinking: 'Je réfléchis…',
-      c1: 'À qui cela convient-il ?', c2: 'Combien de temps cela prend-il ?', c3: 'En quoi est-ce différent des autres ?', c4: 'De quoi ça parle ?',
+      gAsk: 'Vous hésitez ? Posez une question sur l’ensemble des idées', qOwn: 'Ou écrivez votre question', qAria: 'Question', qSend: 'Demander', thinking: 'Je réfléchis…',
+      c1: 'À qui cela s’adresse-t-il ?', c2: 'Combien de temps cela dure-t-il ?', c3: 'En quoi est-ce différent des autres ?', c4: 'De quoi s’agit-il ?',
       dMin: 'environ {0} minutes', dHour: '{0} h {1} min', dHour1: '1 h {0} min', dHours: '{0} h', dHours1: '1 h', dShort: 'moins d’une minute', dLen: 'Durée : {0}.',
       dWords: 'Environ {0} minutes de lecture ({1} mots).', dPages: '{0} pages, environ {1} heures de lecture.',
       dNews: 'Article d’actualité, qui se lit en général en quelques minutes.', dShow: 'C’est une émission entière avec de nombreux épisodes. Leur durée varie ; on peut commencer par un seul.',
-      dUnknown: 'La durée n’est pas connue d’avance. Ouvrez pour voir.',
-      wvideo: 'À regarder.', wpodcast: 'À écouter, aussi en route ou en marchant.', wshow: 'À suivre sur la durée.', warticle: 'À lire.',
-      wShort: 'Court, même pour une petite pause.', wLong: 'Long, plutôt pour un moment libre.', wLang: 'En : {0}.',
-      wWiki: 'Une vue d’ensemble, bien pour découvrir le sujet.', wBook: 'Un livre, pour approfondir.', wNews: 'Pour suivre l’actualité.',
+      dUnknown: 'La durée n’est pas indiquée. Ouvrez pour la découvrir.',
+      wvideo: 'À regarder.', wpodcast: 'À écouter, y compris en voiture ou en marchant.', wshow: 'À suivre au fil des épisodes.', warticle: 'À lire.',
+      wShort: 'Court : idéal pour une petite pause.', wLong: 'Long : à garder pour un moment tranquille.', wLang: 'Langue : {0}.',
+      wWiki: 'Une vue d’ensemble, idéale pour découvrir le sujet.', wBook: 'Un livre, pour approfondir.', wNews: 'Pour suivre l’actualité.',
       wMovie: 'Un film ou une série complète.', wWeb: 'Une page du site {0}.', wForYou: 'Proche de ce que vous avez aimé.',
-      abNone: 'Pas de description. Ouvrez pour voir.', abSrc: 'Source : {0}.',
+      abNone: 'Pas de description. Ouvrez pour en savoir plus.', abSrc: 'Source : {0}.',
       inTitle: 'Installer Glila comme application', inBtn: 'Installer', inChrome: 'Ouvrir dans Chrome', inClose: 'Fermer',
       inChromeTxt: 'Pour l’installer, ouvrez la page dans Chrome puis appuyez sur « Installer ».',
       inMenu: 'Dans le menu ⋮ du navigateur, choisissez « Installer l’application » ou « Ajouter à l’écran d’accueil ».',
       inIos: 'Appuyez sur le bouton Partager ⬆︎ puis « Sur l’écran d’accueil ». Si l’option n’apparaît pas, ouvrez d’abord la page dans Safari.',
       a1: 'Que choisir pour commencer ?', a2: 'Quel est le plus court ?', a3: 'Une courte comparaison',
       errNoAccess: 'Les idées n’ont pas été autorisées ou ne sont pas disponibles avec ce compte.', errRate: 'Limite d’utilisation atteinte. Réessayez plus tard.', errGeneric: 'Un problème est survenu. Vous pouvez réessayer.',
-      tTitle: 'Sujets', tSub: 'Ce qui vous intéresse. Vous associez les éléments aux sujets dans l’onglet Plan.', tNewPh: 'Nouveau sujet', tAdd: 'Ajouter',
-      tSugg: 'Pour démarrer vite :', count: '{0} éléments', noItems: 'Aucun élément', delWith: 'Supprimer avec {0} éléments ?',
+      tTitle: 'Sujets', tSub: 'Ce qui vous intéresse. Vous rattachez les éléments à vos sujets dans l’onglet « Plan et idées ».', tNewPh: 'Nouveau sujet', tAdd: 'Ajouter',
+      tSugg: 'Pour démarrer vite :', count: '{0} éléments', noItems: 'Aucun élément', delWith: 'Supprimer avec ses {0} éléments ?',
       bkTitle: 'Sauvegarde et restauration',
       bkText: 'Les données sont enregistrées uniquement dans le navigateur de cet appareil. La sauvegarde crée un fichier qui permet de restaurer aussi sur un autre appareil. La restauration remplace le plan actuel.',
       bkSave: 'Enregistrer une sauvegarde', bkRestore: 'Restaurer depuis un fichier', bkNoDl: 'La sauvegarde n’est disponible que lorsque la page est ouverte dans Claude.',
@@ -349,15 +354,15 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       back: 'Retour', yesterday: 'Hier', hist: 'Historique', histTitle: 'Ce que vous avez vu', histSub: 'Ce que vous avez ouvert, terminé, prévu et recherché.',
       histEmpty: 'Pas encore d’historique. Un élément ouvert ou terminé apparaîtra ici.', histOpened: 'Ouvert', histDone: 'Terminé',
       histClear: 'Effacer l’historique', histClearSure: 'Tout effacer ?',
-      w_tag: 'Au lieu de scroller, vous choisissez ce que vous voyez.',
-      w_purpose: 'L’application remplace le scroll sans fin par du contenu choisi à l’avance, selon vos sujets, pour que votre temps sur le téléphone vous fasse avancer.',
+      w_tag: 'Au lieu de faire défiler sans fin, choisissez ce que vous regardez.',
+      w_purpose: 'L’application remplace le défilement sans fin par des contenus choisis à l’avance selon vos sujets, pour que le temps passé sur votre téléphone vous apporte vraiment quelque chose.',
       w_p1: 'Planifiez à l’avance : vos sujets et ce qui apparaît chaque jour.',
       w_p2: 'Recevez des idées de vidéos, de podcasts et d’émissions en hébreu, en français et en anglais.',
-      w_p3: 'Un seul appui sur « Scroll du jour » vous propose une seule chose à voir.',
+      w_p3: 'Un appui sur « Le choix du jour » vous propose une seule chose à voir.',
       w_start: 'Commencer', w_about: 'À propos',
       w_browser: 'Ouvrir dans le navigateur', w_share: 'Partager', w_copied: 'Lien copié.', w_copyManual: 'Copiez le lien :',
       w_shareNote: 'Le lien est privé. Pour que d’autres personnes puissent l’ouvrir, partagez-le avec l’icône de partage de Claude.',
-      w_shareText: 'Scroll intelligent : au lieu de scroller, vous choisissez ce que vous voyez.',
+      w_shareText: 'Glila : au lieu de faire défiler sans fin, choisissez ce que vous regardez.',
       uiTitle: 'שפת הממשק · Langue · Language'
     },
     en: {
@@ -466,21 +471,21 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   Object.assign(STR.fr, {
     sSub: 'Des idées issues d’une liste prête à l’emploi, et une recherche libre sur n’importe quel sujet.',
     sCats: 'Catégorie', catAll: 'Tout',
-    sMyTopics: 'Recherche selon vos sujets', sMyTopicsNote: 'La recherche utilise le nom du sujet tel que vous l’avez écrit : vous pouvez aussi écrire vos sujets en français ou en anglais.',
-    sMoreLangs: 'Vous n’avez choisi qu’une partie des langues : il y a d’autres idées dans les autres langues.',
+    sMyTopics: 'Recherche selon vos sujets', sMyTopicsNote: 'La recherche utilise le nom du sujet tel que vous l’avez écrit : vous pouvez donc aussi l’écrire en français ou en anglais.',
+    sMoreLangs: 'Vous n’avez choisi que certaines langues : d’autres idées existent dans les autres.',
     sYourTopics: 'Vos sujets', sTopicsBased: 'Idées adaptées à vos sujets : {0}.',
-    sAllTopics: 'Tous les sujets', sFullList: 'Toute la liste prête',
-    lTitle: 'Ma bibliothèque', lSub: 'Gardez ici les contenus que vous avez trouvés. Ils apparaîtront dans les idées selon le sujet choisi.', lAdd: 'Ajouter à la bibliothèque', lMine: 'Perso', lAdded: 'Ajouté à ma bibliothèque.',
+    sAllTopics: 'Tous les sujets', sFullList: 'Toute la liste',
+    lTitle: 'Ma bibliothèque', lSub: 'Gardez ici les contenus que vous avez trouvés. Ils apparaîtront dans les idées selon le sujet choisi.', lAdd: 'Ajouter à la bibliothèque', lMine: 'Ajouté par moi', lAdded: 'Ajouté à ma bibliothèque.',
     like: 'J’aime', liked: 'Dans la bibliothèque',
     tab_ideas: 'Plan et idées', tab_history: 'Historique',
     ideasTitle: 'Plan et idées', ideasSub: 'Écrivez un sujet, choisissez parmi les idées et planifiez par jour – tout au même endroit.', mgTopics: 'Gérer les sujets',
-    sGoSearch: 'Rechercher', sGoogle: 'Chercher sur Google', sToday: 'Pour aujourd’hui', sDays: 'Autres jours', sSeePlan: 'Voir le plan', tToPlan: 'Planning ({0})', sForYou: 'D’après vos goûts', sAlso: 'Chercher aussi sur :', sGoogleVideos: 'Vidéos Google', sGoogleNews: 'Actualités', sAll: 'Tout', sWeb: 'Sites web', sVideos: 'Vidéos', sShow: 'Afficher :', sResultsFor: 'Résultats pour « {0} »', sSearching: 'Recherche…',
+    sGoSearch: 'Rechercher', sGoogle: 'Chercher sur Google', sToday: 'Pour aujourd’hui', sDays: 'Autres jours', sSeePlan: 'Voir le plan', tToPlan: 'Voir le plan ({0})', sForYou: 'D’après vos goûts', sAlso: 'Chercher aussi sur :', sGoogleVideos: 'Vidéos Google', sGoogleNews: 'Actualités', sAll: 'Tout', sWeb: 'Sites web', sVideos: 'Vidéos', sShow: 'Afficher :', sResultsFor: 'Résultats pour « {0} »', sSearching: 'Recherche…',
     sNoResults: 'Aucun résultat. Essayez une autre formulation ou un autre type de contenu.',
     sSugFor: 'Idées pour « {0} »', sSugAll: 'Idées de la liste', sPickTopic: 'Choisissez un sujet pour voir aussi des résultats de recherche.',
     sOffline: 'Impossible d’obtenir des résultats en direct. La page est probablement ouverte dans un aperçu (par exemple dans Claude) qui bloque Internet. Ouvrez-la dans Chrome.',
-    mgFilters: 'Langues et types', mgChange: 'Modifier', mgClose: 'Fermer', mgNone: 'Aucun', sMore: 'Plus d’idées', sNoMore: 'Plus de résultats pour cette recherche.', tEditCur: 'Modifier le sujet', tDelCur: 'Supprimer le sujet', lItems: 'Ma bibliothèque ({0})', lEmpty: 'Encore vide. Touchez ♡ sur une idée, ou ajoutez un élément ci-dessous.', sRecommended: 'Recommandé',
-    tHint: 'Vous vouliez écrire « {0} » ?', tHintYes: 'Oui, « {0} »', tHintNo: 'Garder « {0} »',
-    sFree: 'Recherche libre', sFreePh: 'Saisissez ce que vous cherchez', sFreeYT: 'Chercher sur YouTube', sFreeAP: 'Chercher sur Apple Podcasts',
+    mgFilters: 'Langues et types de contenu', mgChange: 'Choisir', mgClose: 'Fermer', mgNone: 'Aucun', sMore: 'D’autres idées', sNoMore: 'Il n’y a pas d’autres résultats pour cette recherche.', tEditCur: 'Modifier le sujet', tDelCur: 'Supprimer le sujet', lItems: 'Ma bibliothèque ({0})', lEmpty: 'Encore vide. Appuyez sur ♡ sous une idée, ou ajoutez un élément ci-dessous.', sRecommended: 'Recommandé',
+    tHint: 'Vouliez-vous dire « {0} » ?', tHintYes: 'Oui, « {0} »', tHintNo: 'Garder « {0} »',
+    sFree: 'Recherche libre', sFreePh: 'Que cherchez-vous ?', sFreeYT: 'Chercher sur YouTube', sFreeAP: 'Chercher sur Apple Podcasts',
     sLibNone: 'Aucun contenu de la liste ne correspond à ce choix. Ajoutez des langues ou des types, ou utilisez la recherche libre.',
     sLibNote: 'La liste prête à l’emploi est courte et choisie à la main. Les résultats viennent de sources ouvertes (Apple Podcasts, Wikipédia, Open Library, Dailymotion) et peuvent varier.',
     wkIntro: 'Je prépare une semaine à partir de la liste, selon vos langues ; vous validez ou remplacez.',
@@ -918,13 +923,13 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   };
   var LIB = [
     { cat: 'psych', title: 'Good Inside with Dr. Becky', creator: 'Dr. Becky Kennedy', kind: 'podcast', lang: 'en',
-      why: { he: 'הורות ושיח רגשי עם ילדים, בגישה מעשית.', fr: 'Parentalité et dialogue émotionnel avec les enfants, de façon pratique.', en: 'Practical parenting and emotional dialogue with kids.' } },
+      why: { he: 'הורות ושיח רגשי עם ילדים, בגישה מעשית.', fr: 'Une parentalité concrète, à l’écoute des émotions des enfants.', en: 'Practical parenting and emotional dialogue with kids.' } },
     { cat: 'psych', title: 'Unlocking Us', creator: 'Brené Brown', kind: 'podcast', lang: 'en',
       why: { he: 'שיחות על קשר, פגיעות ואומץ.', fr: 'Conversations sur le lien, la vulnérabilité et le courage.', en: 'Conversations about connection, vulnerability and courage.' } },
     { cat: 'psych', title: 'Hidden Brain', creator: 'Shankar Vedantam', kind: 'podcast', lang: 'en',
       why: { he: 'התנהגות אנושית דרך מחקר וסיפורים.', fr: 'Le comportement humain à travers la recherche et les histoires.', en: 'Human behavior through research and stories.' } },
     { cat: 'psych', title: 'Change ma vie', creator: 'Clotilde Dusoulier', kind: 'podcast', lang: 'fr',
-      why: { he: 'פודקאסט צרפתי על שינויים קטנים והתפתחות אישית.', fr: 'Petits changements et développement personnel.', en: 'Small changes and personal growth, in French.' } },
+      why: { he: 'פודקאסט צרפתי על שינויים קטנים והתפתחות אישית.', fr: 'De petits changements pour avancer dans sa vie.', en: 'Small changes and personal growth, in French.' } },
     { cat: 'psych', title: 'Psychologies', creator: 'Psychologies magazine', kind: 'article', lang: 'fr', site: 'https://www.psychologies.com',
       why: { he: 'מאמרים בצרפתית על פסיכולוגיה ויחסים.', fr: 'Articles sur la psychologie et les relations.', en: 'French-language articles on psychology and relationships.' } },
     { cat: 'writing', title: 'Writing Excuses', creator: 'Writing Excuses team', kind: 'podcast', lang: 'en',
@@ -1854,14 +1859,16 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     }
 
     // ---- free search (for anything that is not one of my topics)
-    var free = h('form', { class: 'topic-add', style: 'margin-top:18px', novalidate: true, onsubmit: function (e) {
+    var free = h('form', { class: 'searchbox', role: 'search', novalidate: true, onsubmit: function (e) {
       e.preventDefault();
       sug.topics = [];
       runSearch(sug.free, '');
     } });
-    free.appendChild(h('input', { type: 'text', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') }));
-    free.children[0].addEventListener('input', function (e) { sug.free = e.target.value; });
-    free.appendChild(h('button', { type: 'submit', class: 'btn' }, t('sGoSearch')));
+    var freeIn = h('input', { id: 'free-q', type: 'search', enterkeyhint: 'search', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
+    freeIn.addEventListener('input', function (e) { sug.free = e.target.value; });
+    free.appendChild(h('label', { for: 'free-q', text: t('sFree') }));
+    free.appendChild(freeIn);
+    free.appendChild(h('button', { type: 'submit', class: 'btn solid' }, icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'), t('sGoSearch')));
     app.appendChild(free);
 
     // languages and content types: always in sight with what is chosen now; the choices open below it
