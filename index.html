@@ -514,12 +514,52 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     wkIntro: 'I’ll build a week from the list, based on your languages; you approve or replace.',
     w_shareNote: 'You can send the link to anyone. Everyone gets their own plan and can’t see your topics.'
   });
+  // daily reminder, "I have X minutes", durations, things shared from other apps
+  Object.assign(STR.he, {
+    rmTitle: 'תזכורת יומית', rmOn: 'פעילה', rmOff: 'כבויה', rmTime: 'באיזו שעה',
+    rmStatus: '🔔 תזכורת כל יום ב־{0}', rmSet: '🔔 תזכורת יומית',
+    rmNote: 'התראה בטלפון כל יום בשעה שבחרת, עם מה שמתוכנן להיום.',
+    rmWebNote: 'האתר לא יכול לשלוח התראות בעצמו, אז התזכורת נכנסת ליומן שלך וחוזרת כל יום.',
+    rmGoogle: 'הוספה ל־Google Calendar', rmIcs: 'קובץ ליומן (אייפון ואחרים)',
+    rmNotifTitle: 'גלילה חכמה', rmChannel: 'תזכורת יומית', rmLine: 'יש לך {0} דברים בתוכנית להיום', rmLine1: 'יש לך דבר אחד בתוכנית להיום',
+    rmLineNone: 'אין תוכנית להיום. מה בא לך לראות?', rmCalText: 'מה בתוכנית היום?',
+    tmHave: '⏱ יש לי:', tmMin: '{0} דק׳', tmHour: 'שעה', tmFits: 'מתאים ל־{0}', tmUnknown: 'האורך לא ידוע',
+    tmNone: 'אין בתוכנית משהו שמתאים ל־{0} דקות. אפשר לחפש תוכן קצר ב"תכנון והצעות".', tmLen: '⏱ {0}',
+    fMins: 'כמה זמן זה לוקח? (לא חובה)',
+    shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.'
+  });
+  Object.assign(STR.fr, {
+    rmTitle: 'Rappel quotidien', rmOn: 'Activé', rmOff: 'Désactivé', rmTime: 'À quelle heure',
+    rmStatus: '🔔 Rappel chaque jour à {0}', rmSet: '🔔 Rappel quotidien',
+    rmNote: 'Une notification chaque jour à l’heure choisie, avec ce qui est prévu pour la journée.',
+    rmWebNote: 'Le site ne peut pas envoyer de notifications lui-même : le rappel est donc ajouté à votre agenda et revient chaque jour.',
+    rmGoogle: 'Ajouter à Google Agenda', rmIcs: 'Fichier agenda (iPhone et autres)',
+    rmNotifTitle: 'Glila', rmChannel: 'Rappel quotidien', rmLine: '{0} choses prévues aujourd’hui', rmLine1: 'Une chose prévue aujourd’hui',
+    rmLineNone: 'Rien de prévu aujourd’hui. Qu’avez-vous envie de voir ?', rmCalText: 'Qu’y a-t-il au programme aujourd’hui ?',
+    tmHave: '⏱ J’ai :', tmMin: '{0} min', tmHour: '1 h', tmFits: 'Pour {0}', tmUnknown: 'Durée inconnue',
+    tmNone: 'Rien de prévu ne tient en {0} minutes. Cherchez un contenu court dans « Plan et idées ».', tmLen: '⏱ {0}',
+    fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
+    shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.'
+  });
+  Object.assign(STR.en, {
+    rmTitle: 'Daily reminder', rmOn: 'On', rmOff: 'Off', rmTime: 'At what time',
+    rmStatus: '🔔 Reminder every day at {0}', rmSet: '🔔 Daily reminder',
+    rmNote: 'A notification every day at the time you choose, with what’s planned for that day.',
+    rmWebNote: 'The website can’t send notifications by itself, so the reminder goes into your calendar and repeats every day.',
+    rmGoogle: 'Add to Google Calendar', rmIcs: 'Calendar file (iPhone and others)',
+    rmNotifTitle: 'Glila', rmChannel: 'Daily reminder', rmLine: '{0} things planned for today', rmLine1: 'One thing planned for today',
+    rmLineNone: 'Nothing planned today. What would you like to see?', rmCalText: 'What’s on the plan today?',
+    tmHave: '⏱ I have:', tmMin: '{0} min', tmHour: '1 hour', tmFits: 'Fits {0}', tmUnknown: 'Length unknown',
+    tmNone: 'Nothing planned fits in {0} minutes. Look for something short in “Plan & ideas”.', tmLen: '⏱ {0}',
+    fMins: 'How long does it take? (optional)',
+    shGot: 'Got what you shared. Pick a day and save.'
+  });
 
   var state = load();
   var view = (state.showWelcome || !state.welcomed) ? 'welcome' : 'today';
   var armed = null;
   var planMsg = '';
-  var pick = { id: null, msg: '' };
+  var pick = { id: null, msg: '', mins: 0 };
   var draft = newDraft();
   var wk = { open: false, perDay: 1, days: [0, 1, 2, 3, 4, 5, 6], status: 'idle', entries: [], error: '', busyIdx: -1, ctl: null };
   var backupMsg = '';
@@ -528,7 +568,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   var sug = { cats: [], topics: [], all: false, kinds: ['video', 'podcast', 'show', 'article'], free: '' };
 
   function load() {
-    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'] };
+    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' } };
     try {
       var raw = localStorage.getItem(KEY);
       if (!raw) return def;
@@ -541,11 +581,12 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         welcomed: !!p.welcomed,
         showWelcome: p.showWelcome !== false,
         library: Array.isArray(p.library) ? p.library : [],
-        platforms: (Array.isArray(p.platforms) && p.platforms.length) ? p.platforms : ['youtube', 'apple']
+        platforms: (Array.isArray(p.platforms) && p.platforms.length) ? p.platforms : ['youtube', 'apple'],
+        reminder: (p.reminder && /^\d\d:\d\d$/.test(p.reminder.time)) ? { on: !!p.reminder.on, time: p.reminder.time } : { on: false, time: '20:00' }
       };
     } catch (e) { return def; }
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} syncReminder(); }
   function uid() { return Math.random().toString(36).slice(2, 10); }
   function t(k) {
     var s = (STR[state.ui] || STR.he)[k];
@@ -561,7 +602,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
   function newDraft(keep) {
     keep = keep || {};
-    return { title: '', url: '', kind: keep.kind || 'article', lang: keep.lang || '', topic: keep.topic || '', days: [new Date().getDay()], later: false, error: '', editing: null };
+    return { title: '', url: '', kind: keep.kind || 'article', lang: keep.lang || '', topic: keep.topic || '', days: [new Date().getDay()], later: false, mins: 0, error: '', editing: null };
   }
   function dateKey(d) {
     var m = String(d.getMonth() + 1).padStart(2, '0'), day = String(d.getDate()).padStart(2, '0');
@@ -645,7 +686,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       tp ? h('span', { class: 'dot', style: 'background:' + tp.color }) : null,
       tp ? h('span', { text: tp.name }) : null,
       h('span', { text: t('k_' + (KIND_OK[it.kind] ? it.kind : 'other')) }),
-      (it.lang && LANGS[it.lang]) ? h('span', { class: 'tag', text: LANGS[it.lang] }) : null
+      (it.lang && LANGS[it.lang]) ? h('span', { class: 'tag', text: LANGS[it.lang] }) : null,
+      it.mins ? h('span', { class: 'tag', text: t('tmLen', fmtDur(it.mins * 60)) }) : null
     );
   }
 
@@ -724,7 +766,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function startEdit(it) {
     draft = {
       title: it.title, url: it.url || '', kind: KIND_OK[it.kind] ? it.kind : 'other', lang: it.lang || '', topic: it.topic || '',
-      days: (it.days || []).slice(), later: !!it.later, error: '', editing: it.id
+      days: (it.days || []).slice(), later: !!it.later, mins: it.mins || 0, error: '', editing: it.id
     };
     view = 'plan'; armed = null; render();
   }
@@ -789,7 +831,35 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (b.length) return b;
     return state.items.filter(undone);
   }
+  var MINUTES = [5, 10, 20, 30, 60];
+  function minLabel(n) { return n === 60 ? t('tmHour') : t('tmMin', n); }
+  // one planned thing that fits the time there is: the longest that fits, today's first
+  function pickFor(n) {
+    var idx = new Date().getDay();
+    var doneList = state.done[dateKey(new Date())] || [];
+    var open = state.items.filter(function (i) { return doneList.indexOf(i.id) === -1; });
+    function rank(i) { return i.days.indexOf(idx) !== -1 ? 0 : (i.later ? 1 : 2); }
+    var fits = open.filter(function (i) { return i.mins && i.mins <= n; });
+    var cand;
+    if (fits.length) {
+      fits.sort(function (a, b) { return (rank(a) - rank(b)) || (b.mins - a.mins); });
+      cand = fits.filter(function (i) { return rank(i) === rank(fits[0]) && i.mins >= fits[0].mins * 0.6; });
+    } else {
+      // nothing with a known length fits: something without one, an article first when time is short
+      var unknown = open.filter(function (i) { return !i.mins; });
+      if (n <= 10) unknown = unknown.filter(function (i) { return i.kind === 'article' || i.kind === 'idea'; });
+      unknown.sort(function (a, b) { return rank(a) - rank(b); });
+      cand = unknown.filter(function (i) { return unknown.length && rank(i) === rank(unknown[0]); });
+    }
+    pick.mins = n;
+    if (!cand.length) { pick.id = null; pick.msg = t('tmNone', n); render(); return; }
+    var other = cand.filter(function (i) { return i.id !== pick.id; });
+    if (other.length) cand = other;
+    pick.id = cand[Math.floor(Math.random() * cand.length)].id; pick.msg = '';
+    render();
+  }
   function pickBored() {
+    pick.mins = 0;
     var pool = boredPool();
     if (!pool.length) { pick.id = null; pick.msg = t('boredNone'); render(); return; }
     var cand = pool.filter(function (i) { return i.id !== pick.id; });
@@ -800,21 +870,22 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function pickCard() {
     var it = state.items.filter(function (x) { return x.id === pick.id; })[0];
     var box = h('div', { class: 'pick' });
-    box.appendChild(h('div', { class: 'meta', text: t('boredIntro') }));
+    box.appendChild(h('div', { class: 'meta', text: pick.mins ? t('tmFits', minLabel(pick.mins)) : t('boredIntro') }));
     if (!it) {
       box.appendChild(h('p', { style: 'margin:4px 0 0', text: pick.msg }));
     } else {
       box.appendChild(h('div', { class: 'title', style: 'font-size:20px', text: it.title }));
       box.appendChild(metaEl(it));
+      if (pick.mins && !it.mins) box.appendChild(h('div', { class: 'meta', text: t('tmUnknown') }));
       var url = safeUrl(it.url);
       var acts = h('div', { class: 'acts', style: 'margin-top:4px' });
       acts.appendChild(h('a', { class: 'btn small solid', href: url || webSearchUrl(it), target: '_blank', rel: 'noopener noreferrer', onclick: function () { logHistory(it, 'open'); } }, url ? t('open') : t('sGoogle')));
       acts.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { markDone(it.id); logHistory(it, 'done'); pick.id = null; render(); } }, t('markDone')));
-      acts.appendChild(h('button', { type: 'button', class: 'btn small', onclick: pickBored }, t('another')));
+      acts.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { if (pick.mins) pickFor(pick.mins); else pickBored(); } }, t('another')));
       acts.appendChild(likeBtn(itemLike(it)));
       box.appendChild(acts);
     }
-    box.appendChild(h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small', onclick: function () { pick.id = null; pick.msg = ''; render(); } }, t('close'))));
+    box.appendChild(h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small', onclick: function () { pick.id = null; pick.msg = ''; pick.mins = 0; render(); } }, t('close'))));
     return box;
   }
 
@@ -870,6 +941,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
 
   function viewToday(app) {
+    viewTodayBody(app);
+    app.appendChild(reminderCard());
+  }
+  function viewTodayBody(app) {
     var now = new Date();
     var idx = now.getDay();
     app.appendChild(h('header', { class: 'head' },
@@ -880,6 +955,13 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (state.items.length) topBar.appendChild(h('button', { class: 'btn solid', type: 'button', onclick: pickBored }, t('bored')));
     topBar.appendChild(h('button', { class: 'btn', type: 'button', onclick: function () { view = 'ideas'; armed = null; render(); window.scrollTo(0, 0); } }, t('tab_ideas')));
     if (topBar.childNodes.length) app.appendChild(topBar);
+    if (state.items.length) {
+      var tc = h('div', { class: 'chips', style: 'margin-top:12px;align-items:center' }, h('span', { class: 'meta', style: 'font-weight:700', text: t('tmHave') }));
+      MINUTES.forEach(function (n) {
+        tc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': pick.mins === n && (pick.id || pick.msg) ? 'true' : 'false', onclick: function () { pickFor(n); } }, minLabel(n)));
+      });
+      app.appendChild(tc);
+    }
     if (pick.id || pick.msg) app.appendChild(pickCard());
     if (!state.items.length) {
       app.appendChild(h('div', { class: 'empty', style: 'margin-top:20px' },
@@ -998,7 +1080,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
   function openUrl(u) { try { window.open(u, '_blank', 'noopener'); } catch (e) {} }
   function itemFromSuggestion(r, topicId, dayList, later) {
-    return { id: uid(), title: r.creator ? r.title + ' - ' + r.creator : r.title, url: searchUrl(r), kind: r.kind, lang: r.lang, topic: topicId || '', days: dayList, later: !!later };
+    var it = { id: uid(), title: r.creator ? r.title + ' - ' + r.creator : r.title, url: searchUrl(r), kind: r.kind, lang: r.lang, topic: topicId || '', days: dayList, later: !!later };
+    var m = Math.round(minutesOf(r));
+    if (m > 0) it.mins = m;
+    return it;
   }
   function topicByName(name, create) {
     name = (name || '').trim();
@@ -1115,7 +1200,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       if (!draft.days.length && !draft.later) { draft.error = t('errDays'); render(); return; }
       var url = draft.url.trim() ? safeUrl(draft.url) : '';
       if (draft.url.trim() && !url) { draft.error = t('errLink'); render(); return; }
-      var fields = { title: title, url: url, kind: draft.kind, lang: draft.lang, topic: draft.topic, days: draft.later ? [] : draft.days.slice().sort(), later: !!draft.later };
+      var fields = { title: title, url: url, kind: draft.kind, lang: draft.lang, topic: draft.topic, days: draft.later ? [] : draft.days.slice().sort(), later: !!draft.later, mins: draft.mins || 0 };
       if (draft.editing) {
         var it = state.items.filter(function (x) { return x.id === draft.editing; })[0];
         if (it) Object.keys(fields).forEach(function (k) { it[k] = fields[k]; });
@@ -1151,6 +1236,16 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       var o = h('option', { value: tp.id, text: tp.name }); if (tp.id === draft.topic) o.selected = true; topicSel.appendChild(o);
     });
     form.appendChild(h('label', { class: 'f' }, t('fTopic'), topicSel));
+
+    var mf = h('fieldset', null, h('legend', { text: t('fMins') }));
+    var mc = h('div', { class: 'chips' });
+    MINUTES.forEach(function (n) {
+      mc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': draft.mins === n ? 'true' : 'false', onclick: function () {
+        draft.mins = draft.mins === n ? 0 : n; render();
+      } }, minLabel(n)));
+    });
+    mf.appendChild(mc);
+    form.appendChild(mf);
 
     var fs = h('fieldset', null, h('legend', { text: t('fDays') }));
     var chips = h('div', { class: 'chips' });
@@ -2104,7 +2199,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         var hist = (Array.isArray(p.history) ? p.history : []).filter(function (x) { return x && typeof x === 'object' && typeof x.ts === 'number'; }).slice(0, 1000).map(function (x) {
           return { id: String(x.id || uid()), title: String(x.title || '').slice(0, 300), url: x.url ? safeUrl(String(x.url)) : '', kind: KIND_OK[x.kind] ? x.kind : 'other', lang: LANGS[x.lang] ? x.lang : '', topic: String(x.topic || '').slice(0, 100), action: (x.action === 'done' || x.action === 'planned' || x.action === 'search') ? x.action : 'open', ts: x.ts };
         });
-        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms };
+        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms, reminder: state.reminder };
         draft = newDraft(); armed = null; pick = { id: null, msg: '' }; save();
         backupMsg = t('rsDone');
       } catch (e) {
@@ -2202,6 +2297,102 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     return bar;
   }
 
+  // ---- daily reminder: a notification in the Android app, a repeating calendar event on the website
+  var rmOpen = false;
+  function nativeReminder() { return !!(window.GlilaAndroid && window.GlilaAndroid.setReminder); }
+  // ask: also ask for permission to notify (only right when the reminder is turned on)
+  function syncReminder(ask) {
+    if (!nativeReminder()) return;
+    var parts = state.reminder.time.split(':'), lines = [];
+    for (var d = 0; d < 7; d++) {
+      var n = state.items.filter(function (i) { return i.days.indexOf(d) !== -1; }).length;
+      lines.push(n > 1 ? t('rmLine', n) : (n === 1 ? t('rmLine1') : t('rmLineNone')));
+    }
+    try {
+      window.GlilaAndroid.setReminder(JSON.stringify({ on: state.reminder.on, hour: +parts[0], minute: +parts[1],
+        title: t('rmNotifTitle'), channel: t('rmChannel'), lines: lines, ask: !!ask }));
+    } catch (e) {}
+  }
+  // the next time the reminder's hour comes, as calendar text: YYYYMMDDTHHMMSS
+  function nextAt(time, plusMin) {
+    var p = time.split(':'), d = new Date();
+    d.setHours(+p[0], +p[1] + (plusMin || 0), 0, 0);
+    if (!plusMin && d < new Date()) d.setDate(d.getDate() + 1);
+    function z(n) { return String(n).padStart(2, '0'); }
+    return { d: d, s: d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + 'T' + z(d.getHours()) + z(d.getMinutes()) + '00' };
+  }
+  function calStart() { return nextAt(state.reminder.time); }
+  function googleCalUrl() {
+    var st = calStart(), en = new Date(st.d.getTime() + 15 * 60000);
+    function z(n) { return String(n).padStart(2, '0'); }
+    var ens = en.getFullYear() + z(en.getMonth() + 1) + z(en.getDate()) + 'T' + z(en.getHours()) + z(en.getMinutes()) + '00';
+    var tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(t('appName') + ' – ' + t('rmCalText')) +
+      '&details=' + encodeURIComponent(APP_URL) + '&dates=' + st.s + '/' + ens + (tz ? '&ctz=' + encodeURIComponent(tz) : '') +
+      '&recur=' + encodeURIComponent('RRULE:FREQ=DAILY');
+  }
+  function downloadIcs() {
+    function esc(x) { return String(x).replace(/\\/g, '\\\\').replace(/([,;])/g, '\\$1'); }
+    var now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+    var title = esc(t('appName') + ' – ' + t('rmCalText'));
+    var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Glila//Reminder//EN', 'BEGIN:VEVENT',
+      'UID:glila-daily-reminder@karentti-cpu.github.io', 'DTSTAMP:' + now, 'DTSTART:' + calStart().s, 'DURATION:PT15M',
+      'RRULE:FREQ=DAILY', 'SUMMARY:' + title, 'DESCRIPTION:' + esc(APP_URL), 'URL:' + APP_URL,
+      'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + title, 'TRIGGER:PT0M', 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+    a.download = 'glila-reminder.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  function reminderCard() {
+    var native = nativeReminder();
+    var wrap = h('div', { style: 'margin-top:26px' });
+    var label = native && state.reminder.on ? t('rmStatus', state.reminder.time) : t('rmSet');
+    wrap.appendChild(h('button', { type: 'button', class: 'btn', 'aria-expanded': rmOpen ? 'true' : 'false', onclick: function () { rmOpen = !rmOpen; render(); } }, label));
+    if (!rmOpen) return wrap;
+    var card = h('div', { class: 'card', style: 'margin-top:12px' });
+    card.appendChild(h('h2', { text: t('rmTitle') }));
+    card.appendChild(h('p', { class: 'none-line', text: native ? t('rmNote') : t('rmWebNote') }));
+    card.appendChild(h('label', { class: 'f' }, t('rmTime'),
+      h('input', { type: 'time', value: state.reminder.time, style: 'max-width:160px', onchange: function (e) {
+        if (/^\d\d:\d\d$/.test(e.target.value)) { state.reminder.time = e.target.value; save(); render(); }
+      } })));
+    if (native) {
+      card.appendChild(h('div', { class: 'chips' },
+        h('button', { type: 'button', class: 'chip', 'aria-pressed': state.reminder.on ? 'true' : 'false', onclick: function () { state.reminder.on = true; save(); syncReminder(true); render(); } }, t('rmOn')),
+        h('button', { type: 'button', class: 'chip', 'aria-pressed': state.reminder.on ? 'false' : 'true', onclick: function () { state.reminder.on = false; save(); render(); } }, t('rmOff'))));
+    } else {
+      card.appendChild(h('div', { class: 'acts' },
+        h('a', { class: 'btn solid', href: googleCalUrl(), target: '_blank', rel: 'noopener noreferrer' }, t('rmGoogle')),
+        h('button', { type: 'button', class: 'btn', onclick: downloadIcs }, t('rmIcs'))));
+    }
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  // ---- something shared from another app (Android's "Share", or the installed website's share target)
+  function guessKind(u) {
+    var host = hostOf(u);
+    if (/(^|\.)(youtube\.com|youtu\.be|dailymotion\.com|vimeo\.com|tiktok\.com)$/.test(host)) return 'video';
+    if (/podcast|spotify\.com|anchor\.fm|castbox|pocketcasts|deezer\.com/.test(host)) return 'podcast';
+    return 'article';
+  }
+  function takeShared(title, text, url) {
+    text = String(text || '').trim(); title = String(title || '').trim(); url = String(url || '').trim();
+    if (!url) { var m = text.match(/https?:\/\/\S+/); if (m) url = m[0]; }
+    var rest = norm(text.replace(url, ''));
+    title = title || rest || hostOf(url) || url;
+    if (!title && !url) return;
+    draft = newDraft();
+    draft.title = title.slice(0, 200); draft.url = safeUrl(url) || ''; draft.kind = guessKind(url);
+    draft.later = true; draft.days = [];
+    planFormOpen = true; planMsg = t('shGot'); view = 'plan'; armed = null;
+    render();
+  }
+  window.__glilaShared = function (d) { if (d) takeShared(d.title, d.text, d.url); };
+
   // ---- installing the website as an app: shown on the website only, until installed or closed
   var installEvt = null, installHidden = false;
   try { installHidden = localStorage.getItem('glila-install-hidden') === '1'; } catch (e) {}
@@ -2262,6 +2453,14 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
   applyLang();
   render();
+  syncReminder();
+  (function () {
+    var q = new URLSearchParams(window.location.search);
+    if (!q.get('url') && !q.get('text') && !q.get('title')) return;
+    try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
+    if (view === 'welcome') { state.welcomed = true; save(); }
+    takeShared(q.get('title'), q.get('text'), q.get('url'));
+  })();
   if ('serviceWorker' in navigator && window.location.protocol.indexOf('http') === 0) {
     navigator.serviceWorker.register('sw.js').catch(function () {});
   }
