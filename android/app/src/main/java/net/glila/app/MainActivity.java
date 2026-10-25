@@ -1,9 +1,13 @@
 package net.glila.app;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
 import android.webkit.ServiceWorkerClient;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.webkit.WebViewAssetLoader;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -40,6 +45,7 @@ public class MainActivity extends Activity {
     private static final String START_URL = "https://" + HOST + "/index.html";
     private static final int REQ_PICK_FILE = 1;
     private static final int REQ_SAVE_FILE = 2;
+    private static final int REQ_NOTIFY = 3;
 
     // The page saves its backup by clicking a link to a blob: URL, which WebView cannot download.
     // This hands the file's text to the app, which asks where to save it.
@@ -62,6 +68,9 @@ public class MainActivity extends Activity {
     private WebViewAssetLoader assets;
     private ValueCallback<Uri[]> pickCallback;
     private String pendingSave;
+    // a link or text shared from another app, handed to the page once it has loaded
+    private String pendingShare;
+    private boolean pageReady;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +114,8 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 view.evaluateJavascript(SAVE_SHIM, null);
+                pageReady = true;
+                deliverShare();
             }
         });
         web.setWebChromeClient(new WebChromeClient() {
@@ -127,6 +138,36 @@ public class MainActivity extends Activity {
 
         if (savedInstanceState != null) web.restoreState(savedInstanceState);
         else web.loadUrl(START_URL);
+        takeShare(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        takeShare(intent);
+        deliverShare();
+    }
+
+    private void takeShare(Intent intent) {
+        if (intent == null || !Intent.ACTION_SEND.equals(intent.getAction())) return;
+        String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (text == null || text.trim().isEmpty()) return;
+        try {
+            JSONObject shared = new JSONObject();
+            shared.put("text", text);
+            shared.put("title", intent.getStringExtra(Intent.EXTRA_SUBJECT));
+            pendingShare = shared.toString();
+        } catch (Exception e) {
+            pendingShare = null;
+        }
+        intent.setAction(Intent.ACTION_MAIN);
+    }
+
+    private void deliverShare() {
+        if (!pageReady || pendingShare == null) return;
+        web.evaluateJavascript("window.__glilaShared&&window.__glilaShared(" + pendingShare + ")", null);
+        pendingShare = null;
     }
 
     private void openExternal(Uri uri) {
@@ -138,6 +179,30 @@ public class MainActivity extends Activity {
     }
 
     private class Bridge {
+        // {on, hour, minute, title, channel, lines: [text for Sunday .. Saturday], ask: ask for permission to notify}
+        @JavascriptInterface
+        public void setReminder(String json) {
+            try {
+                JSONObject r = new JSONObject(json);
+                JSONArray lines = r.optJSONArray("lines");
+                SharedPreferences.Editor p = getSharedPreferences(ReminderReceiver.PREFS, MODE_PRIVATE).edit();
+                p.putBoolean("on", r.optBoolean("on"));
+                p.putInt("hour", r.optInt("hour", 20));
+                p.putInt("minute", r.optInt("minute", 0));
+                p.putString("title", r.optString("title", "Glila"));
+                p.putString("channel", r.optString("channel", "Daily reminder"));
+                p.putString("lines", lines != null ? lines.toString() : "[]");
+                p.apply();
+                ReminderReceiver.schedule(MainActivity.this);
+                if (r.optBoolean("ask") && r.optBoolean("on") && Build.VERSION.SDK_INT >= 33
+                        && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    runOnUiThread(() -> requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, REQ_NOTIFY));
+                }
+            } catch (Exception e) {
+                // a bad message from the page changes nothing
+            }
+        }
+
         @JavascriptInterface
         public void fetchText(String id, String address) {
             net.execute(() -> {
