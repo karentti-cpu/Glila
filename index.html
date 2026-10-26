@@ -181,6 +181,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .searchbox .btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
 .tp-head { margin-top: 18px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; min-height: 48px; font-weight: 700; font-size: 17px; color: inherit; text-align: start; }
 .tp-head .fb-go { color: var(--accent); }
+.free-match:empty { display: none; }
+.free-match .meta, .free-linked .meta { font-size: 14px; }
+.free-linked { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.free-linked .unlink { border: 0; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; min-width: 36px; min-height: 36px; border-radius: 50%; }
 .langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
@@ -529,7 +533,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmNone: 'אין בתוכנית משהו שמתאים ל־{0} דקות. אפשר לחפש תוכן קצר ב"תכנון והצעות".', tmLen: '⏱ {0}',
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
-    tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא'
+    tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא', tLinked: 'החיפוש קשור לנושא:', tUnlink: 'ניתוק החיפוש מהנושא', tMatch: 'מתאים לנושאים שלך:', tAttach: '+ שיוך לנושא "{0}"', sResultsIn: 'תוצאות עבור "{0}" · בנושא {1}'
   });
   Object.assign(STR.fr, {
     rmTitle: 'Rappel quotidien', rmOn: 'Activé', rmOff: 'Désactivé', rmTime: 'À quelle heure',
@@ -543,7 +547,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmNone: 'Rien de prévu ne tient en {0} minutes. Cherchez un contenu court dans « Plan et idées ».', tmLen: '⏱ {0}',
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
-    tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet'
+    tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet', tLinked: 'Recherche liée au sujet :', tUnlink: 'Délier la recherche du sujet', tMatch: 'Correspond à vos sujets :', tAttach: '+ Rattacher à « {0} »', sResultsIn: 'Résultats pour « {0} » · sujet {1}'
   });
   Object.assign(STR.en, {
     rmTitle: 'Daily reminder', rmOn: 'On', rmOff: 'Off', rmTime: 'At what time',
@@ -557,7 +561,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmNone: 'Nothing planned fits in {0} minutes. Look for something short in “Plan & ideas”.', tmLen: '⏱ {0}',
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
-    tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic'
+    tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic', tLinked: 'Search linked to topic:', tUnlink: 'Unlink the search from the topic', tMatch: 'Matches your topics:', tAttach: '+ Link to “{0}”', sResultsIn: 'Results for “{0}” · topic {1}'
   });
 
   var state = load();
@@ -1897,6 +1901,34 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     news: function (r) { return r.source === 'Google News'; }
   };
 
+  // ---- linking free search and saved topics: which topics share words with what was typed
+  var STOP = ['של', 'את', 'על', 'עם', 'או', 'גם', 'and', 'the', 'for', 'les', 'des', 'et', 'la', 'le', 'de', 'du', 'of', 'in', 'to', 'en'];
+  function mwords(x) {
+    return String(x || '').toLowerCase().split(/[^a-z0-9\u00e0-\u00ff\u05d0-\u05ea]+/).filter(function (w) { return w.length >= 2 && STOP.indexOf(w) === -1; })
+      .map(function (w) { return (w.length > 3 && /^[\u05d4\u05d5\u05d1\u05dc\u05de\u05e9\u05db]/.test(w)) ? [w, w.slice(1)] : [w]; });
+  }
+  function wordHit(a, b) {
+    return a.some(function (x) { return b.some(function (y) { return x === y || (x.length >= 4 && y.length >= 4 && (x.indexOf(y) === 0 || y.indexOf(x) === 0)); }); });
+  }
+  function topicsMatching(q) {
+    var qw = mwords(q);
+    if (!qw.length) return [];
+    return state.topics.map(function (tp) {
+      var tw = mwords(tp.name), hits = 0;
+      qw.forEach(function (a) { if (tw.some(function (b) { return wordHit(a, b); })) hits++; });
+      return { tp: tp, hits: hits };
+    }).filter(function (o) { return o.hits > 0; })
+      .sort(function (a, b) { return b.hits - a.hits; }).slice(0, 4).map(function (o) { return o.tp; });
+  }
+  function exactTopic(q) { q = norm(q || '').toLowerCase(); return state.topics.filter(function (x) { return x.name.toLowerCase() === q; })[0] || null; }
+  function linkTopic(tp) { sug.topics = [tp.id]; sug.all = false; autoDone = true; }
+  function attachResults(tp) {
+    linkTopic(tp);
+    sr.topic = tp.name;
+    sr.items.forEach(function (x) { if (x.direct) x.topic = tp.name; });
+    render();
+  }
+
   function curTopic() { return sug.topics.length ? state.topics.filter(function (x) { return x.id === sug.topics[0]; })[0] : null; }
   function selectTopic(tp) {
     autoDone = true;
@@ -1919,13 +1951,36 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     // ---- search: one field for anything; a search can then be saved as a topic
     var free = h('form', { class: 'searchbox', role: 'search', novalidate: true, onsubmit: function (e) {
       e.preventDefault();
-      sug.topics = [];
-      runSearch(sug.free, '');
+      var ex = exactTopic(sug.free), ct = curTopic();
+      if (ex) { linkTopic(ex); runSearch(ex.name, ex.name); return; }
+      if (!norm(sug.free) && ct) { runSearch(ct.name, ct.name); return; }
+      runSearch(sug.free, ct ? ct.name : '');
     } });
     var freeIn = h('input', { id: 'free-q', type: 'search', enterkeyhint: 'search', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
-    freeIn.addEventListener('input', function (e) { sug.free = e.target.value; });
+    var matchBox = h('div', { class: 'free-match', 'aria-live': 'polite' });
+    function fillMatches() {
+      matchBox.innerHTML = '';
+      var ct = curTopic();
+      var list = topicsMatching(sug.free).filter(function (tp) { return !ct || tp.id !== ct.id; });
+      if (!list.length) return;
+      var mc = h('div', { class: 'chips' }, h('span', { class: 'meta', text: t('tMatch') }));
+      list.forEach(function (tp) {
+        mc.appendChild(h('button', { type: 'button', class: 'chip small', onclick: function () { linkTopic(tp); render(); var fi = document.getElementById('free-q'); if (fi) fi.focus(); } }, tp.name));
+      });
+      matchBox.appendChild(mc);
+    }
+    freeIn.addEventListener('input', function (e) { sug.free = e.target.value; fillMatches(); });
     free.appendChild(h('label', { for: 'free-q', text: t('sFree') }));
     free.appendChild(freeIn);
+    var linked = curTopic();
+    if (linked) {
+      free.appendChild(h('div', { class: 'free-linked' },
+        h('span', { class: 'meta', text: t('tLinked') }),
+        h('span', { class: 'chip small', 'aria-pressed': 'true', text: linked.name }),
+        h('button', { type: 'button', class: 'unlink', 'aria-label': t('tUnlink'), title: t('tUnlink'), onclick: function () { sug.topics = []; render(); } }, '\u00d7')));
+    }
+    fillMatches();
+    free.appendChild(matchBox);
     free.appendChild(h('button', { type: 'submit', class: 'btn solid' }, icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'), t('sGoSearch')));
     app.appendChild(free);
 
@@ -2030,9 +2085,13 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
     app.appendChild(h('div', { id: 'sr-anchor' }));
     if (sr.status !== 'idle') {
-      if (sr.items.length || sr.status === 'loading') app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: t('sResultsFor', sr.q) }));
-      if (sr.q && !state.topics.some(function (x) { return x.name.toLowerCase() === sr.q.toLowerCase(); })) {
-        app.appendChild(h('div', { class: 'acts', style: 'margin:0 0 8px' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { addTopic(sr.q, true); } }, t('tSaveTopic'))));
+      if (sr.items.length || sr.status === 'loading') app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: (sr.topic && sr.topic.toLowerCase() !== sr.q.toLowerCase()) ? t('sResultsIn', sr.q, sr.topic) : t('sResultsFor', sr.q) }));
+      if (sr.q && !sr.topic && !exactTopic(sr.q)) {
+        var sacts = h('div', { class: 'acts', style: 'margin:0 0 8px' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { addTopic(sr.q, true); } }, t('tSaveTopic')));
+        topicsMatching(sr.q).forEach(function (tp) {
+          sacts.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { attachResults(tp); } }, t('tAttach', tp.name)));
+        });
+        app.appendChild(sacts);
       }
       var live = sr.items.some(function (r) { return r.source === 'YouTube' || r.source === 'Web' || r.source === 'Google News'; });
       if (sr.q && canFetch) {
