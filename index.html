@@ -194,7 +194,12 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .stats { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--sun) 22%, var(--surface)); display: flex; flex-direction: column; gap: 4px; }
 .stats .big { font-weight: 700; }
 .stats .small { color: var(--muted); font-size: 15px; }
-.langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
+.topbar { display: flex; align-items: center; gap: 10px; margin: -6px 0 12px; }
+.brand { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; color: var(--accent); background: none; border: 0; padding: 0; text-align: start; }
+.brand img { width: 34px; height: 34px; border-radius: 9px; flex: none; }
+.brand span { font-family: var(--serif); font-weight: 700; font-size: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.langbar { display: flex; gap: 6px; flex: none; }
+.langbar .chip.small { padding: 2px 10px; min-width: 40px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
 </head>
@@ -2419,12 +2424,18 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about'))));
   }
 
+  // the app's icon and name on every screen (a tap goes to Today), with short language buttons beside them
+  var LANG_SHORT = { he: 'עב', fr: 'FR', en: 'EN' };
   function langBar() {
+    var top = h('div', { class: 'topbar' });
+    top.appendChild(h('button', { type: 'button', class: 'brand', onclick: function () { view = 'today'; armed = null; render(); window.scrollTo(0, 0); } },
+      h('img', { src: 'icon-192.png', alt: '' }), h('span', { text: t('appName') })));
     var bar = h('div', { class: 'langbar', role: 'group', 'aria-label': 'Language' });
     Object.keys(LANGS).forEach(function (k) {
-      bar.appendChild(h('button', { type: 'button', class: 'chip small', lang: k, 'aria-pressed': state.ui === k ? 'true' : 'false', onclick: function () { state.ui = k; save(); applyLang(); render(); } }, LANGS[k]));
+      bar.appendChild(h('button', { type: 'button', class: 'chip small', lang: k, title: LANGS[k], 'aria-label': LANGS[k], 'aria-pressed': state.ui === k ? 'true' : 'false', onclick: function () { state.ui = k; save(); applyLang(); render(); } }, LANG_SHORT[k]));
     });
-    return bar;
+    top.appendChild(bar);
+    return top;
   }
 
   // ---- picking interests: big tiles, then ideas right away
