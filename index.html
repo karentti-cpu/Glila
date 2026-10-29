@@ -135,6 +135,10 @@ legend { font-weight: 600; font-size: 15px; padding: 0; margin-bottom: 6px; }
 
 .sg { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 .sg .name { font-weight: 700; overflow-wrap: anywhere; }
+.sg-banner { display: block; width: calc(100% + 28px); max-width: none; margin: -14px -14px 2px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px 14px 0 0; background: var(--line); }
+.sg-head { display: flex; gap: 12px; align-items: center; }
+.sg-thumb { width: 64px; height: 64px; flex: none; border-radius: 12px; object-fit: cover; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+.pick-img { display: block; width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; background: var(--line); }
 .sg .why { margin: 0; color: var(--muted); font-size: 15px; }
 .tag { border: 1px solid var(--line); border-radius: 999px; padding: 0 10px; font-size: 13px; }
 .status { color: var(--muted); margin: 16px 0 0; }
@@ -181,6 +185,15 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .searchbox .btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
 .tp-head { margin-top: 18px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; min-height: 48px; font-weight: 700; font-size: 17px; color: inherit; text-align: start; }
 .tp-head .fb-go { color: var(--accent); }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+.tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 96px; padding: 10px 6px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--surface); color: inherit; font-weight: 600; font-size: 15px; line-height: 1.2; text-align: center; }
+.tile .emo { font-size: 34px; line-height: 1; }
+.tile[aria-pressed=true] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--surface)); box-shadow: inset 0 0 0 2px var(--accent); }
+.tile:disabled { opacity: .55; }
+.ip-go { position: sticky; bottom: 12px; margin-top: 18px; width: 100%; min-height: 54px; font-size: 18px; }
+.stats { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--sun) 22%, var(--surface)); display: flex; flex-direction: column; gap: 4px; }
+.stats .big { font-weight: 700; }
+.stats .small { color: var(--muted); font-size: 15px; }
 .langbar { display: flex; gap: 6px; justify-content: flex-end; margin: -6px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
 </style>
@@ -529,7 +542,14 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmNone: 'אין בתוכנית משהו שמתאים ל־{0} דקות. אפשר לחפש תוכן קצר ב"תכנון והצעות".', tmLen: '⏱ {0}',
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
-    tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא'
+    tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    ipTitle: 'מה מעניין אותך?', ipSub: 'בוחרים כמה תחומים, וההצעות מגיעות מיד. אפשר לשנות בכל רגע.',
+    ipGo: 'יאללה, להצעות ({0})', ipBack: 'חזרה', ipHave: 'כבר ברשימה', ipMore: '+ עוד תחומים', ipOpen: '✨ בחירת תחומים',
+    stStreak: '🔥 {0} ימים ברצף שבחרת במקום לגלול', stToday: '✨ היום בחרת במקום לגלול', stKeep: '🔥 {0} ימים ברצף. דבר אחד היום ממשיך אותו',
+    stWeek: 'השבוע: {0}', stItems: '{0} דברים', stItem1: 'דבר אחד', stTime: 'כ־{0}', stTop: 'בעיקר {0}',
+    shFriend: '📤 לחבר', shList: '📤 שליחת הרשימה לחבר',
+    shMsg: '{0}\n{1}\n\nמצאתי את זה בגלילה חכמה – במקום לגלול, בוחרים מה לראות: {2}',
+    shListMsg: 'הרשימה שלי על "{0}":\n\n{1}\n\nמגלילה חכמה – במקום לגלול, בוחרים מה לראות: {2}'
   });
   Object.assign(STR.fr, {
     rmTitle: 'Rappel quotidien', rmOn: 'Activé', rmOff: 'Désactivé', rmTime: 'À quelle heure',
@@ -543,7 +563,14 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmNone: 'Rien de prévu ne tient en {0} minutes. Cherchez un contenu court dans « Plan et idées ».', tmLen: '⏱ {0}',
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
-    tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet'
+    tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    ipTitle: 'Qu’est-ce qui vous intéresse ?', ipSub: 'Choisissez quelques thèmes et les idées arrivent tout de suite. Vous pourrez changer à tout moment.',
+    ipGo: 'C’est parti ({0})', ipBack: 'Retour', ipHave: 'Déjà dans la liste', ipMore: '+ D’autres thèmes', ipOpen: '✨ Choisir des thèmes',
+    stStreak: '🔥 {0} jours de suite à choisir au lieu de faire défiler', stToday: '✨ Aujourd’hui, vous avez choisi au lieu de faire défiler', stKeep: '🔥 {0} jours de suite. Une seule chose aujourd’hui et ça continue',
+    stWeek: 'Cette semaine : {0}', stItems: '{0} contenus', stItem1: 'un contenu', stTime: 'environ {0}', stTop: 'surtout {0}',
+    shFriend: '📤 À un ami', shList: '📤 Envoyer la liste à un ami',
+    shMsg: '{0}\n{1}\n\nTrouvé sur Glila – au lieu de faire défiler, on choisit ce qu’on regarde : {2}',
+    shListMsg: 'Ma liste sur « {0} » :\n\n{1}\n\nDepuis Glila – au lieu de faire défiler, on choisit ce qu’on regarde : {2}'
   });
   Object.assign(STR.en, {
     rmTitle: 'Daily reminder', rmOn: 'On', rmOff: 'Off', rmTime: 'At what time',
@@ -557,8 +584,30 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tmNone: 'Nothing planned fits in {0} minutes. Look for something short in “Plan & ideas”.', tmLen: '⏱ {0}',
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
-    tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic'
+    tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    ipTitle: 'What are you into?', ipSub: 'Pick a few and ideas show up right away. You can change them anytime.',
+    ipGo: 'Let’s go ({0})', ipBack: 'Back', ipHave: 'Already on your list', ipMore: '+ More interests', ipOpen: '✨ Pick interests',
+    stStreak: '🔥 {0} days in a row you chose instead of scrolling', stToday: '✨ Today you chose instead of scrolling', stKeep: '🔥 {0} days in a row. One thing today keeps it going',
+    stWeek: 'This week: {0}', stItems: '{0} things', stItem1: 'one thing', stTime: 'about {0}', stTop: 'mostly {0}',
+    shFriend: '📤 To a friend', shList: '📤 Send the list to a friend',
+    shMsg: '{0}\n{1}\n\nFound it on Glila – instead of scrolling, you choose what to watch: {2}',
+    shListMsg: 'My list on “{0}”:\n\n{1}\n\nFrom Glila – instead of scrolling, you choose what to watch: {2}'
   });
+  var INTERESTS = [
+    ['🧠', 'פסיכולוגיה', 'Psychologie', 'Psychology'], ['👨‍👩‍👧', 'הורות', 'Parentalité', 'Parenting'],
+    ['🎮', 'משחקים', 'Jeux vidéo', 'Gaming'], ['⚽', 'ספורט', 'Sport', 'Sports'],
+    ['🎵', 'מוזיקה', 'Musique', 'Music'], ['🎨', 'אמנות וציור', 'Art et dessin', 'Art and drawing'],
+    ['📚', 'ספרים וכתיבה', 'Livres et écriture', 'Books and writing'], ['🔬', 'מדע', 'Science', 'Science'],
+    ['🚀', 'חלל', 'Espace', 'Space'], ['🏛️', 'היסטוריה', 'Histoire', 'History'],
+    ['💻', 'טכנולוגיה', 'Technologie', 'Technology'], ['🤖', 'בינה מלאכותית', 'Intelligence artificielle', 'Artificial intelligence'],
+    ['🌍', 'טבע ובעלי חיים', 'Nature et animaux', 'Nature and animals'], ['🍳', 'בישול', 'Cuisine', 'Cooking'],
+    ['💪', 'כושר ובריאות', 'Forme et santé', 'Fitness and health'], ['😂', 'הומור', 'Humour', 'Comedy'],
+    ['🎬', 'קולנוע וסדרות', 'Cinéma et séries', 'Movies and TV'], ['✈️', 'טיולים', 'Voyages', 'Travel'],
+    ['💰', 'כסף ויזמות', 'Argent et entrepreneuriat', 'Money and business'], ['🧘', 'מיינדפולנס', 'Pleine conscience', 'Mindfulness'],
+    ['👗', 'אופנה', 'Mode', 'Fashion'], ['📰', 'חדשות', 'Actualité', 'News'],
+    ['🗣️', 'שפות', 'Langues', 'Languages'], ['🤔', 'פילוסופיה', 'Philosophie', 'Philosophy']
+  ];
+  var SITE_URL = 'https://karentti-cpu.github.io/Glila/';
 
   var state = load();
   var view = (state.showWelcome || !state.welcomed) ? 'welcome' : 'today';
@@ -711,7 +760,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var tp = topicName === undefined ? topicOf(it.topic) : null;
     state.history.unshift({
       id: uid(), title: it.title, url: it.url || '', kind: KIND_OK[it.kind] ? it.kind : 'other', lang: it.lang || '',
-      topic: topicName !== undefined ? (topicName || '') : (tp ? tp.name : ''), action: action, ts: now
+      topic: topicName !== undefined ? (topicName || '') : (tp ? tp.name : ''), action: action, ts: now, mins: it.mins || 0
     });
     if (state.history.length > 1000) state.history.length = 1000;
     save();
@@ -880,6 +929,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (!it) {
       box.appendChild(h('p', { style: 'margin:4px 0 0', text: pick.msg }));
     } else {
+      if (it.img) box.appendChild(h('img', { class: 'pick-img', src: it.img, alt: '', referrerpolicy: 'no-referrer', onerror: function (e) { e.target.remove(); } }));
       box.appendChild(h('div', { class: 'title', style: 'font-size:20px', text: it.title }));
       box.appendChild(metaEl(it));
       if (pick.mins && !it.mins) box.appendChild(h('div', { class: 'meta', text: t('tmUnknown') }));
@@ -932,7 +982,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     });
     wrap.appendChild(ul);
     wrap.appendChild(h('div', { class: 'acts', style: 'margin-top:8px' },
-      h('button', { type: 'button', class: 'btn solid', style: 'min-height:48px;padding:10px 28px;font-size:18px', onclick: function () { state.welcomed = true; save(); view = 'today'; render(); window.scrollTo(0, 0); } }, t('w_start'))));
+      h('button', { type: 'button', class: 'btn solid', style: 'min-height:48px;padding:10px 28px;font-size:18px', onclick: function () { state.welcomed = true; save(); view = state.topics.length ? 'today' : 'interests'; render(); window.scrollTo(0, 0); } }, t('w_start'))));
     wrap.appendChild(h('div', { class: 'chips' }, h('button', { type: 'button', class: 'chip', 'aria-pressed': state.showWelcome ? 'true' : 'false', onclick: function () { state.showWelcome = !state.showWelcome; save(); render(); } }, t('w_always'))));
     var more = h('div', { class: 'acts' });
     more.appendChild(h('button', { type: 'button', class: 'btn', onclick: doShare }, t('w_share')));
@@ -950,6 +1000,38 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     viewTodayBody(app);
     app.appendChild(reminderCard());
   }
+  // days on which something was opened or done, counted back from today (yesterday keeps it alive)
+  function streakInfo() {
+    var active = {};
+    state.history.forEach(function (e) { if (e.action === 'open' || e.action === 'done') active[dateKey(new Date(e.ts))] = 1; });
+    var d = new Date(), today = !!active[dateKey(d)], n = 0;
+    if (!today) d.setDate(d.getDate() - 1);
+    while (active[dateKey(d)]) { n++; d.setDate(d.getDate() - 1); }
+    return { n: n, today: today };
+  }
+  function weekInfo() {
+    var since = Date.now() - 7 * 86400000, seen = {}, count = 0, mins = 0, topics = {};
+    state.history.forEach(function (e) {
+      if (e.ts < since || (e.action !== 'open' && e.action !== 'done') || seen[e.title]) return;
+      seen[e.title] = 1; count++; mins += e.mins || 0;
+      if (e.topic) topics[e.topic] = (topics[e.topic] || 0) + 1;
+    });
+    var top = Object.keys(topics).sort(function (a, b) { return topics[b] - topics[a]; })[0] || '';
+    return { count: count, mins: mins, top: top };
+  }
+  function statsCard() {
+    var s = streakInfo(), w = weekInfo();
+    if (!s.n && !w.count) return null;
+    var box = h('div', { class: 'stats', role: 'status' });
+    if (s.n) box.appendChild(h('div', { class: 'big', text: !s.today ? t('stKeep', s.n) : (s.n > 1 ? t('stStreak', s.n) : t('stToday')) }));
+    if (w.count) {
+      var parts = [w.count > 1 ? t('stItems', w.count) : t('stItem1')];
+      if (w.mins >= 5) parts.push(t('stTime', fmtDur(w.mins * 60)));
+      if (w.top) parts.push(t('stTop', w.top));
+      box.appendChild(h('div', { class: 'small', text: t('stWeek', parts.join(' · ')) }));
+    }
+    return box;
+  }
   function viewTodayBody(app) {
     var now = new Date();
     var idx = now.getDay();
@@ -957,6 +1039,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       h('p', { text: now.toLocaleDateString(LOCALE[state.ui], { day: 'numeric', month: 'long' }) }),
       h('h1', { text: t('dayHeader', days()[idx]) })
     ));
+    var sc = statsCard();
+    if (sc) app.appendChild(sc);
     var topBar = h('div', { class: 'acts', style: 'margin-top:14px' });
     if (state.items.length) topBar.appendChild(h('button', { class: 'btn solid', type: 'button', onclick: pickBored }, t('bored')));
     topBar.appendChild(h('button', { class: 'btn', type: 'button', onclick: function () { view = 'ideas'; armed = null; render(); window.scrollTo(0, 0); } }, t('tab_ideas')));
@@ -973,7 +1057,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       app.appendChild(h('div', { class: 'empty', style: 'margin-top:20px' },
         h('h2', { text: t('emptyAllTitle') }),
         h('p', { text: t('emptyAllText') }),
-        h('button', { class: 'btn solid', type: 'button', onclick: function () { view = state.topics.length ? 'plan' : 'ideas'; render(); } },
+        h('button', { class: 'btn solid', type: 'button', onclick: function () { view = state.topics.length ? 'plan' : 'interests'; render(); } },
           state.topics.length ? t('firstItemBtn') : t('firstTopicBtn'))
       ));
       return;
@@ -1089,6 +1173,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var it = { id: uid(), title: r.creator ? r.title + ' - ' + r.creator : r.title, url: searchUrl(r), kind: r.kind, lang: r.lang, topic: topicId || '', days: dayList, later: !!later };
     var m = Math.round(minutesOf(r));
     if (m > 0) it.mins = m;
+    if (r.img) it.img = r.img;
     return it;
   }
   function topicByName(name, create) {
@@ -1515,10 +1600,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       if (!rs[0] && !rs[1]) throw new Error('apple');
       var out = [];
       ((rs[0] && rs[0].results) || []).forEach(function (x) {
-        if (x.collectionName) out.push({ source: 'Apple Podcasts', kind: 'podcast', whole: true, title: x.collectionName, creator: x.artistName || '', url: x.collectionViewUrl || '' });
+        if (x.collectionName) out.push({ source: 'Apple Podcasts', kind: 'podcast', whole: true, title: x.collectionName, creator: x.artistName || '', img: x.artworkUrl600 || x.artworkUrl100 || '', url: x.collectionViewUrl || '' });
       });
       ((rs[1] && rs[1].results) || []).forEach(function (x) {
-        if (x.trackName) out.push({ source: 'Apple Podcasts', kind: 'podcast', title: x.trackName, creator: x.collectionName || '', dur: (x.trackTimeMillis || 0) / 1000, url: x.trackViewUrl || x.collectionViewUrl || '' });
+        if (x.trackName) out.push({ source: 'Apple Podcasts', kind: 'podcast', title: x.trackName, creator: x.collectionName || '', dur: (x.trackTimeMillis || 0) / 1000, img: x.artworkUrl600 || x.artworkUrl160 || x.artworkUrl100 || '', url: x.trackViewUrl || x.collectionViewUrl || '' });
       });
       return out;
     });
@@ -1527,7 +1612,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var u = 'https://itunes.apple.com/search?media=movie&entity=movie&term=' + encodeURIComponent(q) + '&limit=' + (PAGE * (page + 1));
     return either(u).then(function (d) {
       return (d.results || []).filter(function (x) { return x.trackName; }).map(function (x) {
-        return { source: 'Apple TV', kind: 'video', title: x.trackName, creator: x.artistName || '', why: strip(x.shortDescription || '').slice(0, 160), dur: (x.trackTimeMillis || 0) / 1000, url: x.trackViewUrl || '' };
+        return { source: 'Apple TV', kind: 'video', title: x.trackName, creator: x.artistName || '', why: strip(x.shortDescription || '').slice(0, 160), dur: (x.trackTimeMillis || 0) / 1000, img: String(x.artworkUrl100 || '').replace('100x100', '400x400'), url: x.trackViewUrl || '' };
       });
     });
   }
@@ -1540,13 +1625,24 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       });
       out.suggestion = (d.query && d.query.searchinfo && d.query.searchinfo.suggestion) || '';
       return out;
+    }).then(function (out) {
+      // pictures come from a second, small request; without them the results still show
+      if (!out.length) return out;
+      var iu = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&prop=pageimages&piprop=thumbnail&pithumbsize=240&format=json&titles=' + encodeURIComponent(out.map(function (x) { return x.title; }).join('|'));
+      return either(iu + '&origin=*', iu).then(function (d) {
+        var pages = (d.query && d.query.pages) || {}, pic = {};
+        Object.keys(pages).forEach(function (k) { if (pages[k].thumbnail) pic[pages[k].title] = pages[k].thumbnail.source; });
+        ((d.query && d.query.normalized) || []).forEach(function (n) { if (pic[n.to]) pic[n.from] = pic[n.to]; });
+        out.forEach(function (x) { if (pic[x.title]) x.img = pic[x.title]; });
+        return out;
+      }, function () { return out; });
     });
   }
   function srcBooks(q, page) {
-    var u = 'https://openlibrary.org/search.json?limit=' + PAGE + '&page=' + (page + 1) + '&fields=key,title,author_name,first_publish_year,number_of_pages_median&q=' + encodeURIComponent(q);
+    var u = 'https://openlibrary.org/search.json?limit=' + PAGE + '&page=' + (page + 1) + '&fields=key,title,author_name,first_publish_year,number_of_pages_median,cover_i&q=' + encodeURIComponent(q);
     return either(u).then(function (d) {
       return (d.docs || []).map(function (x) {
-        return { source: 'Open Library', kind: 'article', title: x.title, creator: (x.author_name || []).slice(0, 2).join(', '), why: x.first_publish_year ? String(x.first_publish_year) : '', pages: x.number_of_pages_median || 0, url: 'https://openlibrary.org' + x.key };
+        return { source: 'Open Library', kind: 'article', title: x.title, creator: (x.author_name || []).slice(0, 2).join(', '), why: x.first_publish_year ? String(x.first_publish_year) : '', pages: x.number_of_pages_median || 0, img: x.cover_i ? 'https://covers.openlibrary.org/b/id/' + x.cover_i + '-M.jpg' : '', url: 'https://openlibrary.org' + x.key };
       });
     });
   }
@@ -1558,7 +1654,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         return !l || state.langs.indexOf(l) !== -1;
       }).map(function (x) {
         var v = x.volumeInfo || {};
-        return { source: 'Google Books', kind: 'article', lang: LANGS[v.language] ? v.language : '', title: v.title, creator: (v.authors || []).slice(0, 2).join(', '), why: strip(v.description || '').slice(0, 160), pages: v.pageCount || 0, url: v.infoLink || '' };
+        return { source: 'Google Books', kind: 'article', lang: LANGS[v.language] ? v.language : '', title: v.title, creator: (v.authors || []).slice(0, 2).join(', '), why: strip(v.description || '').slice(0, 160), pages: v.pageCount || 0, img: String((v.imageLinks && (v.imageLinks.thumbnail || v.imageLinks.smallThumbnail)) || '').replace(/^http:/, 'https:'), url: v.infoLink || '' };
       });
     });
   }
@@ -1567,15 +1663,15 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     return either(u).then(function (d) {
       return ((d.response && d.response.docs) || []).map(function (x) {
         return { source: 'Internet Archive', kind: x.mediatype === 'movies' ? 'video' : (x.mediatype === 'audio' ? 'podcast' : 'article'),
-          title: first(x.title), creator: first(x.creator) || '', url: 'https://archive.org/details/' + x.identifier };
+          title: first(x.title), creator: first(x.creator) || '', img: 'https://archive.org/services/img/' + encodeURIComponent(x.identifier), url: 'https://archive.org/details/' + x.identifier };
       });
     });
   }
   function srcDaily(q, page) {
-    var u = 'https://api.dailymotion.com/videos?limit=' + PAGE + '&page=' + (page + 1) + '&fields=title,url,owner.screenname,duration&search=' + encodeURIComponent(q);
+    var u = 'https://api.dailymotion.com/videos?limit=' + PAGE + '&page=' + (page + 1) + '&fields=title,url,owner.screenname,duration,thumbnail_360_url&search=' + encodeURIComponent(q);
     return getJson(u).then(function (d) {
       return (d.list || []).map(function (x) {
-        return { source: 'Dailymotion', kind: 'video', title: x.title, creator: x['owner.screenname'] || '', dur: x.duration || 0, url: x.url };
+        return { source: 'Dailymotion', kind: 'video', title: x.title, creator: x['owner.screenname'] || '', dur: x.duration || 0, img: x.thumbnail_360_url || '', url: x.url };
       });
     });
   }
@@ -1640,7 +1736,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
             var link = tag(it, 'link'), enc = it.getElementsByTagName('enclosure')[0];
             // many feeds give every episode the show's site as its link; the audio file is the episode itself
             if ((!link || link === tag(it.parentNode, 'link')) && enc) link = enc.getAttribute('url') || link;
+            var art = it.getElementsByTagName('itunes:image')[0];
             return { source: 'Podcast', kind: 'podcast', title: tag(it, 'title'), creator: show.collectionName || '', dur: secs(tag(it, 'itunes:duration')),
+              img: (art && art.getAttribute('href')) || show.artworkUrl600 || show.artworkUrl100 || '',
               why: strip(tag(it, 'description')).slice(0, 160), url: link || show.collectionViewUrl || '' };
           });
         }, function () { return []; });
@@ -1662,7 +1760,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       })(JSON.parse(m[1]));
       return found.slice(page * PAGE, (page + 1) * PAGE).map(function (v) {
         var desc = ((v.detailedMetadataSnippets || [])[0] || {}).snippetText;
-        return { source: 'YouTube', kind: 'video', title: ytText(v.title), creator: ytText(v.ownerText), dur: secs(ytText(v.lengthText)), about: ytText(desc),
+        return { source: 'YouTube', kind: 'video', title: ytText(v.title), creator: ytText(v.ownerText), dur: secs(ytText(v.lengthText)), about: ytText(desc), img: 'https://i.ytimg.com/vi/' + v.videoId + '/hqdefault.jpg',
           why: ytText(desc) || [ytText(v.lengthText), ytText(v.publishedTimeText)].filter(Boolean).join(' · '), url: 'https://www.youtube.com/watch?v=' + v.videoId };
       });
     });
@@ -1826,9 +1924,19 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
 
   // ---------------- one card for any kind of result ----------------
+  var KIND_EMOJI = { video: '🎬', show: '📺', podcast: '🎧', article: '📖', idea: '✏️', other: '✨' };
+  function emojiOf(r) { return r.source === 'Google News' ? '📰' : r.source === 'Web' ? '🌐' : (KIND_EMOJI[r.kind] || '✨'); }
+  // a picture when the source gave one (videos get a wide one on top), else an emoji for the kind
+  function thumbOf(r) {
+    var emo = function () { return h('span', { class: 'sg-thumb', 'aria-hidden': 'true', text: emojiOf(r) }); };
+    if (!r.img) return emo();
+    return h('img', { class: 'sg-thumb', src: r.img, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer', onerror: function (e) { e.target.replaceWith(emo()); } });
+  }
   function cardFor(r) {
+    var wide = r.img && r.kind === 'video';
     var li = h('li', { class: 'sg' });
-    li.appendChild(h('div', { class: 'name', text: r.title }));
+    if (wide) li.appendChild(h('img', { class: 'sg-banner', src: r.img, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer', onerror: function (e) { e.target.remove(); } }));
+    li.appendChild(h('div', { class: 'sg-head' }, wide ? null : thumbOf(r), h('div', { class: 'name', text: r.title })));
     li.appendChild(h('div', { class: 'meta' },
       r.creator ? h('span', { text: r.creator }) : null,
       h('span', { text: t('k_' + (KIND_OK[r.kind] ? r.kind : 'other')) }),
@@ -1850,7 +1958,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var a = h('div', { class: 'acts' });
     links(r).forEach(function (l) {
       a.appendChild(h('a', { class: 'btn small', href: l[1], target: '_blank', rel: 'noopener noreferrer', onclick: function () {
-        logHistory({ title: r.creator && !r.direct ? r.title + ' - ' + r.creator : r.title, url: l[1], kind: r.kind, lang: r.lang }, 'open', topicLabel(r));
+        logHistory({ title: r.creator && !r.direct ? r.title + ' - ' + r.creator : r.title, url: l[1], kind: r.kind, lang: r.lang, mins: Math.round(minutesOf(r)) }, 'open', topicLabel(r));
       } }, l[0]));
     });
     if (!r.site) {
@@ -1864,6 +1972,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       a.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.open ? 'true' : 'false', onclick: function () { r.open = !r.open; render(); } }, t('sDays')));
       a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { addSuggestion(r, true); } }, t('saveLater')));
     }
+    a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () {
+      shareText(t('shMsg', r.title + (r.creator ? ' – ' + r.creator : ''), niceUrl(r.site || r.url || searchUrl(r)), SITE_URL));
+    } }, t('shFriend')));
     if (!r.mine || r.liked) a.appendChild(likeBtn({ title: r.title, creator: r.creator, url: r.site || '', kind: r.kind, lang: r.lang, topic: topicLabel(r) }));
     if (r.mine) {
       var armedHere = libArmed === r.id;
@@ -1944,11 +2055,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
           h('button', { type: 'button', class: 'btn small solid', onclick: function () { addTopic(topicHint.guess, true); } }, t('tHintYes', topicHint.guess)),
           h('button', { type: 'button', class: 'btn small', onclick: function () { addTopic(topicHint.typed, true); } }, t('tHintNo', topicHint.typed)))));
     }
-    var left = SUGGESTIONS[state.ui].filter(function (s) { return !state.topics.some(function (x) { return x.name === s; }); });
-    if (left.length && state.topics.length < 3) {
-      var qs = h('div', { class: 'chips' });
-      left.forEach(function (s) { qs.appendChild(h('button', { type: 'button', class: 'chip', onclick: function () { addTopic(s, true); } }, '+ ' + s)); });
-      app.appendChild(h('div', { class: 'sugg' }, h('p', { text: t('tSugg') }), qs));
+    if (!state.topics.length) {
+      app.appendChild(h('div', { class: 'acts', style: 'margin-top:16px' },
+        h('button', { type: 'button', class: 'btn solid', style: 'min-height:48px;font-size:17px', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipOpen'))));
     }
 
     // ---- topic chips: tap one and its ideas appear below
@@ -1964,6 +2073,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       (tOpen ? state.topics : state.topics.filter(function (tp) { return cur && cur.id === tp.id; })).forEach(function (tp) {
         tcs.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': (cur && cur.id === tp.id) ? 'true' : 'false', onclick: function () { selectTopic(tp); } }, tp.name));
       });
+      if (tOpen) tcs.appendChild(h('button', { type: 'button', class: 'chip', style: 'border-style:dashed', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipMore')));
       app.appendChild(tcs);
       if (cur) {
         var armedCur = armed === 'topic:' + cur.id;
@@ -2062,6 +2172,12 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
           h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { runSearch(sr.suggest, sr.topic); } }, t('tHintYes', sr.suggest)))));
       }
       var shown = sr.only ? sr.items.filter(ONLY[sr.only]) : sr.items;
+      if (shown.length && sr.status === 'done') {
+        app.appendChild(h('div', { class: 'acts', style: 'margin:0 0 8px' }, h('button', { type: 'button', class: 'btn small', onclick: function () {
+          var lines = shown.slice(0, 5).map(function (r) { return '• ' + r.title + '\n' + niceUrl(r.site || r.url || searchUrl(r)); }).join('\n\n');
+          shareText(t('shListMsg', sr.q, lines, SITE_URL));
+        } }, t('shList'))));
+      }
       if (shown.length) {
         var rul = h('ul', { class: 'list' });
         shown.forEach(function (r) { rul.appendChild(cardFor(r)); });
@@ -2311,6 +2427,39 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     return bar;
   }
 
+  // ---- picking interests: big tiles, then ideas right away
+  var ipSel = [];
+  function interestName(x) { return x[{ he: 1, fr: 2, en: 3 }[state.ui] || 1]; }
+  function hasTopic(name) { return state.topics.some(function (tp) { return tp.name.toLowerCase() === name.toLowerCase(); }); }
+  function viewInterests(app) {
+    app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('ipTitle') }), h('p', { text: t('ipSub') })));
+    var grid = h('div', { class: 'tiles' });
+    INTERESTS.forEach(function (x, i) {
+      var name = interestName(x), have = hasTopic(name), on = have || ipSel.indexOf(i) !== -1;
+      grid.appendChild(h('button', { type: 'button', class: 'tile', 'aria-pressed': on ? 'true' : 'false', disabled: have, title: have ? t('ipHave') : null,
+        onclick: function () { toggle(ipSel, i); render(); } }, h('span', { class: 'emo', 'aria-hidden': 'true', text: x[0] }), h('span', { text: name })));
+    });
+    app.appendChild(grid);
+    if (ipSel.length) {
+      app.appendChild(h('button', { type: 'button', class: 'btn solid ip-go', onclick: function () {
+        var added = [];
+        ipSel.forEach(function (i) {
+          var name = interestName(INTERESTS[i]);
+          if (hasTopic(name)) return;
+          var tp = { id: uid(), name: name, color: COLORS[state.topics.length % COLORS.length] };
+          state.topics.push(tp); added.push(tp);
+        });
+        ipSel = [];
+        state.welcomed = true; save();
+        view = 'ideas'; armed = null;
+        if (added.length) { sug.topics = [added[0].id]; sug.all = false; autoDone = true; runSearch(added[0].name, added[0].name); }
+        render(); window.scrollTo(0, 0);
+      } }, t('ipGo', ipSel.length)));
+    } else if (state.topics.length) {
+      app.appendChild(h('button', { type: 'button', class: 'btn ip-go', onclick: function () { view = 'ideas'; render(); window.scrollTo(0, 0); } }, t('ipBack')));
+    }
+  }
+
   // ---- daily reminder: a notification in the Android app, a repeating calendar event on the website
   var rmOpen = false;
   function nativeReminder() { return !!(window.GlilaAndroid && window.GlilaAndroid.setReminder); }
@@ -2386,6 +2535,19 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     return wrap;
   }
 
+  // ---- sending something to a friend: Android's share menu in the app, the phone's share sheet on the
+  // website, else WhatsApp
+  // links readable in a message: Hebrew stays Hebrew instead of %D7%A4...
+  function niceUrl(u) { try { return decodeURI(u); } catch (e) { return u; } }
+  function shareText(text) {
+    if (window.GlilaAndroid && window.GlilaAndroid.share) { window.GlilaAndroid.share(text); return; }
+    function wa() { window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener'); }
+    try {
+      if (navigator.share) { navigator.share({ text: text }).catch(function (e) { if (!e || e.name !== 'AbortError') wa(); }); return; }
+    } catch (e) {}
+    wa();
+  }
+
   // ---- something shared from another app (Android's "Share", or the installed website's share target)
   function guessKind(u) {
     var host = hostOf(u);
@@ -2453,9 +2615,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.textContent = '';
     var ib = installBar();
     if (ib) app.appendChild(ib);
-    document.querySelector('nav.tabs').style.display = view === 'welcome' ? 'none' : '';
+    document.querySelector('nav.tabs').style.display = (view === 'welcome' || view === 'interests') ? 'none' : '';
     if (view !== 'welcome') app.appendChild(langBar());
     if (view === 'welcome') viewWelcome(app);
+    else if (view === 'interests') viewInterests(app);
     else if (view === 'today') viewToday(app);
     else if (view === 'history') viewHistory(app);
     else viewIdeas(app);

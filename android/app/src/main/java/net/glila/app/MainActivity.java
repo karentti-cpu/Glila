@@ -179,6 +179,19 @@ public class MainActivity extends Activity {
     }
 
     private class Bridge {
+        // "Send to a friend": Android's own share menu with the text
+        @JavascriptInterface
+        public void share(String text) {
+            runOnUiThread(() -> {
+                Intent send = new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text);
+                try {
+                    startActivity(Intent.createChooser(send, null));
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
         // {on, hour, minute, title, channel, lines: [text for Sunday .. Saturday], ask: ask for permission to notify}
         @JavascriptInterface
         public void setReminder(String json) {
