@@ -632,6 +632,13 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function load() {
     var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null };
     try {
+      // the Android app used to keep its own copy of the data; it is handed over once
+      if (!localStorage.getItem(KEY) && window.GlilaAndroid && window.GlilaAndroid.takeOldData) {
+        var old = window.GlilaAndroid.takeOldData();
+        if (old) localStorage.setItem(KEY, old);
+      }
+    } catch (e) {}
+    try {
       var raw = localStorage.getItem(KEY);
       if (!raw) return def;
       var p = JSON.parse(raw);

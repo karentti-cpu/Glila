@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>גלילה חכמה</title>
+</head>
+<body style="background:#EEF2F1">
+<script>
+// Runs once inside the Android app, from the copy of the app built into it: hands the data saved
+// there to the app, which then opens the live website (where updates arrive by themselves).
+(function () {
+  var data = '';
+  try { data = localStorage.getItem('content-planner-v1') || ''; } catch (e) {}
+  try { GlilaAndroid.keepOldData(data); } catch (e) { location.replace('https://karentti-cpu.github.io/Glila/'); }
+})();
+</script>
+</body>
+</html>
