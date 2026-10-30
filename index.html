@@ -548,6 +548,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    tab_library: 'הספרייה', lAll: 'הכול ({0})', lNoTopic: 'ללא נושא', lGo: '♡ לספרייה שלי ({0})',
     ipTitle: 'מה מעניין אותך?', ipSub: 'בוחרים כמה תחומים, וההצעות מגיעות מיד. אפשר לשנות בכל רגע.',
     ipGo: 'יאללה, להצעות ({0})', ipBack: 'חזרה', ipHave: 'כבר ברשימה', ipMore: '+ עוד תחומים', ipOpen: '✨ בחירת תחומים',
     stStreak: '🔥 {0} ימים ברצף שבחרת במקום לגלול', stToday: '✨ היום בחרת במקום לגלול', stKeep: '🔥 {0} ימים ברצף. דבר אחד היום ממשיך אותו',
@@ -569,6 +570,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    tab_library: 'Bibliothèque', lAll: 'Tout ({0})', lNoTopic: 'Sans sujet', lGo: '♡ Ma bibliothèque ({0})',
     ipTitle: 'Qu’est-ce qui vous intéresse ?', ipSub: 'Choisissez quelques thèmes et les idées arrivent tout de suite. Vous pourrez changer à tout moment.',
     ipGo: 'C’est parti ({0})', ipBack: 'Retour', ipHave: 'Déjà dans la liste', ipMore: '+ D’autres thèmes', ipOpen: '✨ Choisir des thèmes',
     stStreak: '🔥 {0} jours de suite à choisir au lieu de faire défiler', stToday: '✨ Aujourd’hui, vous avez choisi au lieu de faire défiler', stKeep: '🔥 {0} jours de suite. Une seule chose aujourd’hui et ça continue',
@@ -590,6 +592,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    tab_library: 'Library', lAll: 'All ({0})', lNoTopic: 'No topic', lGo: '♡ My library ({0})',
     ipTitle: 'What are you into?', ipSub: 'Pick a few and ideas show up right away. You can change them anytime.',
     ipGo: 'Let’s go ({0})', ipBack: 'Back', ipHave: 'Already on your list', ipMore: '+ More interests', ipOpen: '✨ Pick interests',
     stStreak: '🔥 {0} days in a row you chose instead of scrolling', stToday: '✨ Today you chose instead of scrolling', stKeep: '🔥 {0} days in a row. One thing today keeps it going',
@@ -645,6 +648,15 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null
       };
     } catch (e) { return def; }
+  }
+  // items saved before YouTube results from web search were recognised: a video, without "- YouTube" in the title
+  function fixSaved(list) {
+    list.forEach(function (x) {
+      if (!ytIdOf(x.url)) return;
+      x.title = cleanTitle(x.title) || x.title;
+      if (x.kind === 'article') x.kind = 'video';
+      if (!x.img && list === state.items) x.img = 'https://i.ytimg.com/vi/' + ytIdOf(x.url) + '/hqdefault.jpg';
+    });
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} syncReminder(); }
   function uid() { return Math.random().toString(36).slice(2, 10); }
@@ -725,6 +737,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     topics: '<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>'
   };
   ICONS.ideas = ICONS.suggest;
+  ICONS.library = '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>';
   ICONS.history = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg>';
   function icon(svg) { var s = h('span'); s.innerHTML = svg; return s.firstChild; }
 
@@ -732,7 +745,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var box = document.getElementById('tabs');
     document.querySelector('nav.tabs').setAttribute('aria-label', t('navAria'));
     box.textContent = '';
-    ['today', 'ideas', 'history'].forEach(function (id) {
+    ['today', 'ideas', 'library', 'history'].forEach(function (id) {
       box.appendChild(h('button', {
         type: 'button', 'aria-current': view === id ? 'page' : null,
         onclick: function () { view = id; armed = null; planMsg = ''; backupMsg = ''; libMsg = ''; topicHint = null; topicEditId = null; render(); window.scrollTo(0, 0); }
@@ -1529,7 +1542,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
   function editLib(x) {
     libDraft = { title: x.title, url: x.url || '', kind: SKINDS.indexOf(x.kind) !== -1 ? x.kind : 'article', lang: x.lang || '', topic: x.topic || '', error: '', editing: x.id };
-    libMsg = ''; render(); window.scrollTo(0, 999999);
+    libMsg = ''; view = 'library'; render(); window.scrollTo(0, 999999);
   }
 
   // ---------------- in-app search: open sources that allow browser requests ----------------
@@ -1774,6 +1787,17 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function srcWeb(q, page) {
     return srcDdg(q, page).catch(function () { return srcBing(q, page); });
   }
+  // a YouTube video found by web search becomes a video card: its own link, picture and a clean title
+  function ytIdOf(u) {
+    var m = /^https?:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/)|youtu\.be\/)([\w-]{11})/.exec(u || '');
+    return m ? m[1] : '';
+  }
+  function cleanTitle(x) { return String(x || '').replace(/(\s*[-–|]\s*(youtube|youtube\.com))+\s*$/i, '').trim(); }
+  function webResult(url, title, why) {
+    var id = ytIdOf(url);
+    if (id) return { source: 'YouTube', kind: 'video', title: cleanTitle(title), creator: '', why: why, url: 'https://www.youtube.com/watch?v=' + id, img: 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg' };
+    return { source: 'Web', kind: 'article', title: title, creator: hostOf(url), why: why, url: url };
+  }
   function srcBing(q, page) {
     var lang = /[\u0590-\u05FF]/.test(q) ? 'he' : (state.ui || 'en');
     return fetchText('https://www.bing.com/search?format=rss&count=30&setlang=' + lang + '&q=' + encodeURIComponent(q)).then(function (text) {
@@ -1781,7 +1805,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       if (!items.length) throw new Error('bing');
       return items.slice(page * PAGE, (page + 1) * PAGE).map(function (it) {
         var url = tag(it, 'link');
-        return { source: 'Web', kind: 'article', title: tag(it, 'title'), creator: hostOf(url), why: strip(tag(it, 'description')).slice(0, 160), url: url };
+        return webResult(url, tag(it, 'title'), strip(tag(it, 'description')).slice(0, 160));
       }).filter(function (x) { return /^https?:/.test(x.url); });
     });
   }
@@ -1796,7 +1820,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         var url = m ? decodeURIComponent(m[1]) : href;
         if (!/^https?:/.test(url)) return;
         var sn = el.querySelector('.result__snippet');
-        out.push({ source: 'Web', kind: 'article', title: a.textContent.trim(), creator: hostOf(url), why: sn ? sn.textContent.trim().slice(0, 160) : '', url: url });
+        out.push(webResult(url, a.textContent.trim(), sn ? sn.textContent.trim().slice(0, 160) : ''));
       });
       if (!out.length && !doc.querySelector('.no-results')) throw new Error('web');
       return out.slice(page * PAGE, (page + 1) * PAGE);
@@ -2216,63 +2240,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     // ---- plan: everything chosen above lands here, by day
     viewPlan(app, true);
 
-    // ---- 3. MY LIBRARY: only after the suggestions
-    var cname = cur ? cur.name.toLowerCase() : '';
-    var mine = state.library.filter(function (x) {
-      var topicOk = !explicit || !x.topic || String(x.topic).toLowerCase() === cname;
-      var kindOk = SKINDS.indexOf(x.kind) === -1 || sug.kinds.indexOf(x.kind) !== -1;
-      var langOk = !x.lang || state.langs.indexOf(x.lang) !== -1;
-      return topicOk && kindOk && langOk;
-    }).map(mineView);
-    app.appendChild(h('h2', { class: 'sec', style: 'font-size:24px', text: t('lItems', mine.length) }));
-    if (!mine.length) app.appendChild(h('p', { class: 'none-line', text: t('lEmpty') }));
-    else {
-      var mulst = h('ul', { class: 'list' });
-      mine.forEach(function (r) { mulst.appendChild(cardFor(r)); });
-      app.appendChild(mulst);
-    }
-
-    var lib = h('form', { class: 'card', style: 'margin-top:20px', novalidate: true, onsubmit: function (e) {
-      e.preventDefault();
-      var title = libDraft.title.trim();
-      if (!title) { libDraft.error = t('errName'); render(); return; }
-      var url = libDraft.url.trim() ? safeUrl(libDraft.url) : '';
-      if (libDraft.url.trim() && !url) { libDraft.error = t('errLink'); render(); return; }
-      var fields = { title: title, creator: '', url: url, kind: libDraft.kind, lang: libDraft.lang, topic: libDraft.topic };
-      if (libDraft.editing) {
-        var it = state.library.filter(function (x) { return x.id === libDraft.editing; })[0];
-        if (it) Object.keys(fields).forEach(function (k) { it[k] = fields[k]; });
-      } else {
-        fields.id = uid(); state.library.unshift(fields);
-      }
-      save(); libMsg = t('lAdded');
-      libDraft = { title: '', url: '', kind: libDraft.kind, lang: libDraft.lang, topic: libDraft.topic, error: '', editing: null };
-      render();
-    } });
-    lib.appendChild(h('h2', { text: libDraft.editing ? t('editTitle') : t('lTitle') }));
-    lib.appendChild(h('p', { class: 'none-line', style: 'margin:0', text: t('lSub') }));
-    lib.appendChild(h('label', { class: 'f' }, t('fName'),
-      h('input', { type: 'text', dir: 'auto', spellcheck: 'true', value: libDraft.title, placeholder: t('fNamePh'), oninput: function (e) { libDraft.title = e.target.value; } })));
-    lib.appendChild(h('label', { class: 'f' }, t('fLink'),
-      h('input', { type: 'url', dir: 'ltr', inputmode: 'url', value: libDraft.url, placeholder: 'https://', oninput: function (e) { libDraft.url = e.target.value; } })));
-    var kSel = h('select', { onchange: function (e) { libDraft.kind = e.target.value; } });
-    SKINDS.forEach(function (k) { var o = h('option', { value: k, text: t('k_' + k) }); if (k === libDraft.kind) o.selected = true; kSel.appendChild(o); });
-    lib.appendChild(h('label', { class: 'f' }, t('fKind'), kSel));
-    var lSel = h('select', { onchange: function (e) { libDraft.lang = e.target.value; } });
-    lSel.appendChild(h('option', { value: '', text: t('fLangNone') }));
-    Object.keys(LANGS).forEach(function (k) { var o = h('option', { value: k, text: LANGS[k] }); if (k === libDraft.lang) o.selected = true; lSel.appendChild(o); });
-    lib.appendChild(h('label', { class: 'f' }, t('fLang'), lSel));
-    var tSel = h('select', { onchange: function (e) { libDraft.topic = e.target.value; } });
-    tSel.appendChild(h('option', { value: '', text: t('fNoTopic') }));
-    state.topics.forEach(function (tp) { var o = h('option', { value: tp.name, text: tp.name }); if (tp.name === libDraft.topic) o.selected = true; tSel.appendChild(o); });
-    lib.appendChild(h('label', { class: 'f' }, t('fTopic'), tSel));
-    lib.appendChild(h('p', { class: 'err', role: 'alert', text: libDraft.error }));
-    var lacts = h('div', { class: 'acts' });
-    lacts.appendChild(h('button', { type: 'submit', class: 'btn solid' }, libDraft.editing ? t('saveChanges') : t('lAdd')));
-    if (libDraft.editing) lacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: function () { libDraft = { title: '', url: '', kind: libDraft.kind, lang: libDraft.lang, topic: libDraft.topic, error: '', editing: null }; render(); } }, t('cancel')));
-    lib.appendChild(lacts);
-    if (libMsg) lib.appendChild(h('p', { class: 'added', role: 'status', style: 'margin:0', text: libMsg }));
-    app.appendChild(lib);
+    // ---- the library has its own tab; this is the way there
+    app.appendChild(h('div', { class: 'acts', style: 'margin-top:26px' }, h('button', { type: 'button', class: 'btn', onclick: function () { view = 'library'; armed = null; render(); window.scrollTo(0, 0); } }, t('lGo', state.library.length))));
 
     // ---- backup and restore, about
     app.appendChild(h('h2', { class: 'sec' }, t('bkTitle')));
@@ -2436,6 +2405,72 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     });
     top.appendChild(bar);
     return top;
+  }
+
+  // ---- my library: everything saved with ♡ or added by hand, filtered by topic if wanted
+  var libFilter = '';
+  function viewLibrary(app) {
+    app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('lTitle') }), h('p', { text: t('lSub') })));
+    var names = [];
+    state.library.forEach(function (x) { var n = x.topic || '-'; if (names.indexOf(n) === -1) names.push(n); });
+    if (libFilter && names.indexOf(libFilter) === -1) libFilter = '';
+    if (names.length > 1) {
+      var fc = h('div', { class: 'chips', style: 'margin-top:14px' });
+      fc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': libFilter ? 'false' : 'true', onclick: function () { libFilter = ''; render(); } }, t('lAll', state.library.length)));
+      names.forEach(function (n) {
+        fc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': libFilter === n ? 'true' : 'false', onclick: function () { libFilter = n; render(); } }, n === '-' ? t('lNoTopic') : n));
+      });
+      app.appendChild(fc);
+    }
+    var mine = state.library.filter(function (x) { return !libFilter || (x.topic || '-') === libFilter; }).map(mineView);
+    if (!mine.length) app.appendChild(h('p', { class: 'none-line', style: 'margin-top:14px', text: t('lEmpty') }));
+    else {
+      var mulst = h('ul', { class: 'list', style: 'margin-top:14px' });
+      mine.forEach(function (r) { mulst.appendChild(cardFor(r)); });
+      app.appendChild(mulst);
+    }
+
+    var lib = h('form', { class: 'card', style: 'margin-top:20px', novalidate: true, onsubmit: function (e) {
+      e.preventDefault();
+      var title = libDraft.title.trim();
+      if (!title) { libDraft.error = t('errName'); render(); return; }
+      var url = libDraft.url.trim() ? safeUrl(libDraft.url) : '';
+      if (libDraft.url.trim() && !url) { libDraft.error = t('errLink'); render(); return; }
+      var fields = { title: title, creator: '', url: url, kind: libDraft.kind, lang: libDraft.lang, topic: libDraft.topic };
+      if (libDraft.editing) {
+        var it = state.library.filter(function (x) { return x.id === libDraft.editing; })[0];
+        if (it) Object.keys(fields).forEach(function (k) { it[k] = fields[k]; });
+      } else {
+        fields.id = uid(); state.library.unshift(fields);
+      }
+      save(); libMsg = t('lAdded');
+      libDraft = { title: '', url: '', kind: libDraft.kind, lang: libDraft.lang, topic: libDraft.topic, error: '', editing: null };
+      render();
+    } });
+    lib.appendChild(h('h2', { text: libDraft.editing ? t('editTitle') : t('lTitle') }));
+    lib.appendChild(h('p', { class: 'none-line', style: 'margin:0', text: t('lSub') }));
+    lib.appendChild(h('label', { class: 'f' }, t('fName'),
+      h('input', { type: 'text', dir: 'auto', spellcheck: 'true', value: libDraft.title, placeholder: t('fNamePh'), oninput: function (e) { libDraft.title = e.target.value; } })));
+    lib.appendChild(h('label', { class: 'f' }, t('fLink'),
+      h('input', { type: 'url', dir: 'ltr', inputmode: 'url', value: libDraft.url, placeholder: 'https://', oninput: function (e) { libDraft.url = e.target.value; } })));
+    var kSel = h('select', { onchange: function (e) { libDraft.kind = e.target.value; } });
+    SKINDS.forEach(function (k) { var o = h('option', { value: k, text: t('k_' + k) }); if (k === libDraft.kind) o.selected = true; kSel.appendChild(o); });
+    lib.appendChild(h('label', { class: 'f' }, t('fKind'), kSel));
+    var lSel = h('select', { onchange: function (e) { libDraft.lang = e.target.value; } });
+    lSel.appendChild(h('option', { value: '', text: t('fLangNone') }));
+    Object.keys(LANGS).forEach(function (k) { var o = h('option', { value: k, text: LANGS[k] }); if (k === libDraft.lang) o.selected = true; lSel.appendChild(o); });
+    lib.appendChild(h('label', { class: 'f' }, t('fLang'), lSel));
+    var tSel = h('select', { onchange: function (e) { libDraft.topic = e.target.value; } });
+    tSel.appendChild(h('option', { value: '', text: t('fNoTopic') }));
+    state.topics.forEach(function (tp) { var o = h('option', { value: tp.name, text: tp.name }); if (tp.name === libDraft.topic) o.selected = true; tSel.appendChild(o); });
+    lib.appendChild(h('label', { class: 'f' }, t('fTopic'), tSel));
+    lib.appendChild(h('p', { class: 'err', role: 'alert', text: libDraft.error }));
+    var lacts = h('div', { class: 'acts' });
+    lacts.appendChild(h('button', { type: 'submit', class: 'btn solid' }, libDraft.editing ? t('saveChanges') : t('lAdd')));
+    if (libDraft.editing) lacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: function () { libDraft = { title: '', url: '', kind: libDraft.kind, lang: libDraft.lang, topic: libDraft.topic, error: '', editing: null }; render(); } }, t('cancel')));
+    lib.appendChild(lacts);
+    if (libMsg) lib.appendChild(h('p', { class: 'added', role: 'status', style: 'margin:0', text: libMsg }));
+    app.appendChild(lib);
   }
 
   // ---- picking interests: big tiles, then ideas right away
@@ -2630,6 +2665,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (view !== 'welcome') app.appendChild(langBar());
     if (view === 'welcome') viewWelcome(app);
     else if (view === 'interests') viewInterests(app);
+    else if (view === 'library') viewLibrary(app);
     else if (view === 'today') viewToday(app);
     else if (view === 'history') viewHistory(app);
     else viewIdeas(app);
@@ -2639,6 +2675,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (jump) window.scrollTo(0, jump.getBoundingClientRect().top + window.scrollY - 12); else window.scrollTo(0, y);
   }
 
+  fixSaved(state.items); fixSaved(state.library);
   applyLang();
   render();
   syncReminder();
