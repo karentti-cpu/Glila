@@ -6,7 +6,7 @@ plugins {
 def webDir = layout.buildDirectory.dir('generated/web')
 def copyWeb = tasks.register('copyWeb', Copy) {
     from(rootProject.file('..')) {
-        include 'index.html', 'manifest.webmanifest', 'sw.js', 'icon-192.png', 'icon-512.png'
+        include 'index.html', 'migrate.html', 'manifest.webmanifest', 'sw.js', 'icon-192.png', 'icon-512.png'
     }
     into webDir
 }

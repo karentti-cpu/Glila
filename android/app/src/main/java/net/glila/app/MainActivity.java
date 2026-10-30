@@ -37,12 +37,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Shows the web app from the APK's assets. The assets are served from an https origin
- * (appassets.androidplatform.net), so localStorage and the search APIs behave as on the website.
+ * Shows the live website, so every update to the app reaches the phone without reinstalling.
+ * The copy of the app built into the APK (served from appassets.androidplatform.net) is used once,
+ * by migrate.html, to hand over the data that earlier versions saved there.
  */
 public class MainActivity extends Activity {
     private static final String HOST = "appassets.androidplatform.net";
-    private static final String START_URL = "https://" + HOST + "/index.html";
+    private static final String LIVE_HOST = "karentti-cpu.github.io";
+    private static final String LIVE_URL = "https://" + LIVE_HOST + "/Glila/";
+    private static final String MIGRATE_URL = "https://" + HOST + "/migrate.html";
+    private static final String PREFS_MOVE = "moved";
     private static final int REQ_PICK_FILE = 1;
     private static final int REQ_SAVE_FILE = 2;
     private static final int REQ_NOTIFY = 3;
@@ -107,6 +111,7 @@ public class MainActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 if (HOST.equals(uri.getHost())) return false;
+                if (LIVE_HOST.equals(uri.getHost()) && String.valueOf(uri.getPath()).startsWith("/Glila")) return false;
                 openExternal(uri);
                 return true;
             }
@@ -137,7 +142,8 @@ public class MainActivity extends Activity {
         });
 
         if (savedInstanceState != null) web.restoreState(savedInstanceState);
-        else web.loadUrl(START_URL);
+        else if (getSharedPreferences(PREFS_MOVE, MODE_PRIVATE).getBoolean("done", false)) web.loadUrl(LIVE_URL);
+        else web.loadUrl(MIGRATE_URL);
         takeShare(getIntent());
     }
 
@@ -179,6 +185,23 @@ public class MainActivity extends Activity {
     }
 
     private class Bridge {
+        // migrate.html: the data saved by the built-in copy (kept here; also a fallback copy)
+        @JavascriptInterface
+        public void keepOldData(String data) {
+            getSharedPreferences(PREFS_MOVE, MODE_PRIVATE).edit()
+                .putString("old", data == null ? "" : data).putBoolean("done", true).apply();
+            runOnUiThread(() -> web.loadUrl(LIVE_URL));
+        }
+
+        // the live website, on its first run with nothing saved: the data from before, once
+        @JavascriptInterface
+        public String takeOldData() {
+            SharedPreferences p = getSharedPreferences(PREFS_MOVE, MODE_PRIVATE);
+            if (p.getBoolean("given", false)) return "";
+            p.edit().putBoolean("given", true).apply();
+            return p.getString("old", "");
+        }
+
         // "Send to a friend": Android's own share menu with the text
         @JavascriptInterface
         public void share(String text) {
