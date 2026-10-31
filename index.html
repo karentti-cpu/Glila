@@ -186,6 +186,18 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .searchbox .btn { min-height: 52px; padding: 10px 20px; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
 .searchbox .btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
 .tp-head { margin-top: 18px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; min-height: 48px; font-weight: 700; font-size: 17px; color: inherit; text-align: start; }
+.sugbox { display: none; flex-direction: column; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: -4px; }
+.sugbox.open { display: flex; }
+.sugbox .sg-h { font-size: 13px; font-weight: 700; color: var(--muted); padding: 8px 12px 2px; }
+.sugbox .sg-row { display: flex; align-items: center; border-top: 1px solid var(--line); }
+.sugbox .sg-row:first-of-type { border-top: 0; }
+.sugbox .sg-pick { flex: 1; text-align: start; background: none; border: 0; padding: 10px 12px; min-height: 46px; color: inherit; font-size: 16px; }
+.sugbox .sg-del { background: none; border: 0; color: var(--danger); min-width: 46px; min-height: 46px; font-weight: 700; }
+.sugbox .sg-del.armed { background: var(--danger); color: var(--surface); padding: 0 12px; }
+.sugbox .sg-more { background: none; border: 0; border-top: 1px solid var(--line); color: var(--accent); font-weight: 700; padding: 10px 12px; text-align: start; min-height: 44px; }
+.cur-pill { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cur-pill .chip { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.searchbox .cur-pill .btn { width: auto; min-height: 34px; padding: 4px 12px; font-size: 14px; }
 .tp-head .fb-go { color: var(--accent); }
 .chip.del { border-color: var(--danger); color: var(--danger); }
 .tp-sel { display: inline-flex; }
@@ -556,6 +568,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
+    mvWhere: '📺 איפה לצפות',
     upNew: '✨ יש גרסה חדשה של האפליקציה', upNow: 'לעדכון עכשיו', upCheck: '🔄 בדיקת עדכונים', upLatest: 'יש לך את הגרסה האחרונה.', upChecking: 'בודקת…', upVer: 'גרסה {0}',
     tEditList: '✏️ עריכת הרשימה', tEditDone: '✓ סיום', tEditHint: 'לחיצה על ✕ מוחקת נושא. לחיצה שנייה מאשרת.', tDelTp: 'למחוק את "{0}"?', tDelTpN: 'למחוק את "{0}" ו־{1} פריטים מהתוכנית?',
     tab_library: 'הספרייה', lAll: 'הכול ({0})', lNoTopic: 'ללא נושא', lGo: '♡ לספרייה שלי ({0})',
@@ -580,6 +594,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
+    mvWhere: '📺 Où le regarder',
     upNew: '✨ Une nouvelle version est disponible', upNow: 'Mettre à jour', upCheck: '🔄 Vérifier les mises à jour', upLatest: 'Vous avez la dernière version.', upChecking: 'Vérification…', upVer: 'Version {0}',
     tEditList: '✏️ Modifier la liste', tEditDone: '✓ Terminé', tEditHint: 'Appuyez sur ✕ pour supprimer un sujet, puis une seconde fois pour confirmer.', tDelTp: 'Supprimer « {0} » ?', tDelTpN: 'Supprimer « {0} » et {1} éléments du plan ?',
     tab_library: 'Bibliothèque', lAll: 'Tout ({0})', lNoTopic: 'Sans sujet', lGo: '♡ Ma bibliothèque ({0})',
@@ -604,6 +620,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', sgNone: 'No topic with that name yet. “Search” will look for it.',
+    mvWhere: '📺 Where to watch',
     upNew: '✨ A new version of the app is ready', upNow: 'Update now', upCheck: '🔄 Check for updates', upLatest: 'You have the latest version.', upChecking: 'Checking…', upVer: 'Version {0}',
     tEditList: '✏️ Edit list', tEditDone: '✓ Done', tEditHint: 'Tap ✕ to delete a topic, then tap again to confirm.', tDelTp: 'Delete “{0}”?', tDelTpN: 'Delete “{0}” and {1} planned items?',
     tab_library: 'Library', lAll: 'All ({0})', lNoTopic: 'No topic', lGo: '♡ My library ({0})',
@@ -2029,6 +2047,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       a.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.open ? 'true' : 'false', onclick: function () { r.open = !r.open; render(); } }, t('sDays')));
       a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { addSuggestion(r, true); } }, t('saveLater')));
     }
+    if (r.kind === 'movie') {
+      var jw = 'https://www.justwatch.com/' + ({ he: 'il', fr: 'fr', en: 'us' }[state.ui] || 'us') + '/search?q=' + encodeURIComponent(String(r.title).replace(/\s*\((סרט|film|movie)[^)]*\)\s*$/i, ''));
+      a.appendChild(h('a', { class: 'btn small', href: jw, target: '_blank', rel: 'noopener noreferrer' }, t('mvWhere')));
+    }
     a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () {
       shareText(t('shMsg', r.title + (r.creator ? ' – ' + r.creator : ''), niceUrl(r.site || r.url || searchUrl(r)), SITE_URL));
     } }, t('shFriend')));
@@ -2085,18 +2107,82 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     }
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('ideasTitle') }), h('p', { text: t('ideasSub') })));
 
-    // ---- search: one field for anything; a search can then be saved as a topic
+    // ---- search: one field for anything. Tapping it lists my topics and past searches, matching what is typed.
+    var eff = effective();
+    var cur = curTopic();
+    function topicNamed(x) { x = norm(x).toLowerCase(); return state.topics.filter(function (tp) { return tp.name.toLowerCase() === x; })[0]; }
     var free = h('form', { class: 'searchbox', role: 'search', novalidate: true, onsubmit: function (e) {
       e.preventDefault();
+      var tp = topicNamed(sug.free);
+      if (tp) { sug.free = ''; if (!(cur && cur.id === tp.id)) selectTopic(tp); return; }
       sug.topics = [];
       runSearch(sug.free, '');
     } });
-    var freeIn = h('input', { id: 'free-q', type: 'search', enterkeyhint: 'search', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
-    freeIn.addEventListener('input', function (e) { sug.free = e.target.value; });
     free.appendChild(h('label', { for: 'free-q', text: t('sFree') }));
+    if (cur) {
+      // the chosen topic, with its ✕ to delete it (a second tap confirms) and a way to unselect it
+      var armedX = armed === 'topic:' + cur.id;
+      var cnt = state.items.filter(function (i) { return i.topic === cur.id; }).length;
+      free.appendChild(h('div', { class: 'cur-pill' }, h('span', { class: 'meta', text: t('sgCur') }),
+        h('span', { class: 'tp-sel' }, h('span', { class: 'chip', text: cur.name }),
+          h('button', { type: 'button', class: 'tp-x' + (armedX ? ' armed' : ''), 'aria-label': t('tDelTp', cur.name), onclick: function () {
+            if (armedX) deleteTopic(cur.id); else { armed = 'topic:' + cur.id; render(); }
+          } }, armedX ? t('sure') : '\u2715')),
+        h('button', { type: 'button', class: 'btn small', onclick: function () { selectTopic(cur); } }, t('sgOff'))));
+      if (armedX) free.appendChild(h('p', { class: 'err', role: 'alert', style: 'margin:0', text: cnt ? t('tDelTpN', cur.name, cnt) : t('tDelTp', cur.name) }));
+    }
+    var freeIn = h('input', { id: 'free-q', type: 'search', enterkeyhint: 'search', autocomplete: 'off', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
+    var box = h('div', { class: 'sugbox', role: 'listbox' });
+    // tapping inside the list must not close it before the tap lands
+    box.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    var boxArmed = '';
+    function fillBox() {
+      var q = norm(freeIn.value || '').toLowerCase();
+      box.textContent = '';
+      var tps = state.topics.filter(function (tp) { return !q || tp.name.toLowerCase().indexOf(q) !== -1; }).slice(0, 8);
+      var seen = {}, past = [];
+      state.history.forEach(function (e) {
+        var k = String(e.title || '').toLowerCase();
+        if (e.action !== 'search' || !k || seen[k] || topicNamed(k)) return;
+        seen[k] = 1;
+        if (!q || k.indexOf(q) !== -1) past.push(e.title);
+      });
+      past = past.slice(0, 4);
+      if (tps.length) {
+        box.appendChild(h('div', { class: 'sg-h', text: t('sgTopics') + ' (' + state.topics.length + ')' }));
+        tps.forEach(function (tp) {
+          var on = boxArmed === tp.id;
+          box.appendChild(h('div', { class: 'sg-row' },
+            h('button', { type: 'button', class: 'sg-pick', onclick: function () { sug.free = ''; freeIn.blur(); if (!(cur && cur.id === tp.id)) selectTopic(tp); else render(); } }, '📌 ' + tp.name),
+            h('button', { type: 'button', class: 'sg-del' + (on ? ' armed' : ''), 'aria-label': t('tDelTp', tp.name), onclick: function () {
+              if (on) { boxArmed = ''; deleteTopic(tp.id); } else { boxArmed = tp.id; fillBox(); }
+            } }, on ? t('sure') : '\u2715')));
+        });
+      }
+      if (past.length) {
+        box.appendChild(h('div', { class: 'sg-h', text: t('sgPast') }));
+        past.forEach(function (x) {
+          box.appendChild(h('div', { class: 'sg-row' }, h('button', { type: 'button', class: 'sg-pick', onclick: function () {
+            sug.free = x; freeIn.blur(); sug.topics = []; runSearch(x, '');
+          } }, '🕘 ' + x)));
+        });
+      }
+      if (q && !tps.length && !past.length) box.appendChild(h('div', { class: 'sg-h', style: 'padding-bottom:8px', text: t('sgNone') }));
+      box.appendChild(h('button', { type: 'button', class: 'sg-more', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipMore')));
+    }
+    freeIn.addEventListener('focus', function () { fillBox(); box.classList.add('open'); });
+    freeIn.addEventListener('input', function (e) { sug.free = e.target.value; boxArmed = ''; fillBox(); box.classList.add('open'); });
+    freeIn.addEventListener('blur', function () { setTimeout(function () { box.classList.remove('open'); boxArmed = ''; }, 150); });
     free.appendChild(freeIn);
+    free.appendChild(box);
     free.appendChild(h('button', { type: 'submit', class: 'btn solid' }, icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'), t('sGoSearch')));
     app.appendChild(free);
+    if (cur) {
+      var curCount = state.items.filter(function (i) { return i.topic === cur.id; }).length;
+      app.appendChild(h('div', { class: 'acts', style: 'margin-top:10px' },
+        h('button', { type: 'button', class: 'btn small solid', onclick: function () { view = 'plan'; armed = null; planMsg = ''; draft.topic = cur.id; render(); } }, t('tToPlan', curCount)),
+        h('button', { type: 'button', class: 'btn small', onclick: function () { topicEditId = cur.id; topicHint = null; render(); window.scrollTo(0, 0); } }, t('tEditCur'))));
+    }
 
     // ---- renaming a topic (with spelling help); new topics come from a search or the quick ideas
     var editTp = state.topics.filter(function (x) { return x.id === topicEditId; })[0];
@@ -2116,53 +2202,6 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (!state.topics.length) {
       app.appendChild(h('div', { class: 'acts', style: 'margin-top:16px' },
         h('button', { type: 'button', class: 'btn solid', style: 'min-height:48px;font-size:17px', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipOpen'))));
-    }
-
-    // ---- topic chips: tap one and its ideas appear below
-    var eff = effective();
-    var cur = curTopic();
-    if (state.topics.length) {
-      var tOpen = state.topicsOpen === null ? state.topics.length <= 6 : state.topicsOpen;
-      app.appendChild(h('button', { type: 'button', class: 'tp-head', 'aria-expanded': tOpen ? 'true' : 'false', onclick: function () {
-        state.topicsOpen = !tOpen; save(); render();
-      } }, h('span', { text: t('tMine', state.topics.length) }), h('span', { class: 'fb-go', text: tOpen ? '\u25B4' : '\u25BE' })));
-      var tcs = h('div', { class: 'chips', style: 'margin-top:10px' });
-      var editing = tOpen && tpEdit, delNote = '';
-      if (editing) app.appendChild(h('p', { class: 'none-line', style: 'margin:10px 0 0', text: t('tEditHint') }));
-      // closed: only the chosen topic stays in sight
-      (tOpen ? state.topics : state.topics.filter(function (tp) { return cur && cur.id === tp.id; })).forEach(function (tp) {
-        if (editing) {
-          // editing: each topic deletes on a second tap, saying how many planned items go with it
-          var armedTp = armed === 'topic:' + tp.id;
-          var n = state.items.filter(function (i) { return i.topic === tp.id; }).length;
-          tcs.appendChild(h('button', { type: 'button', class: 'chip del' + (armedTp ? ' armed' : ''), onclick: function () {
-            if (armedTp) deleteTopic(tp.id); else { armed = 'topic:' + tp.id; render(); }
-          } }, armedTp ? (n ? t('tDelTpN', tp.name, n) : t('tDelTp', tp.name)) : '\u2715 ' + tp.name));
-          return;
-        }
-        var chip = h('button', { type: 'button', class: 'chip', 'aria-pressed': (cur && cur.id === tp.id) ? 'true' : 'false', onclick: function () { selectTopic(tp); } }, tp.name);
-        if (!(cur && cur.id === tp.id)) { tcs.appendChild(chip); return; }
-        // the chosen topic carries its own ✕: a first tap asks, a second deletes
-        var armedX = armed === 'topic:' + tp.id;
-        var cnt = state.items.filter(function (i) { return i.topic === tp.id; }).length;
-        tcs.appendChild(h('span', { class: 'tp-sel' }, chip,
-          h('button', { type: 'button', class: 'tp-x' + (armedX ? ' armed' : ''), 'aria-label': t('tDelTp', tp.name), onclick: function () {
-            if (armedX) deleteTopic(tp.id); else { armed = 'topic:' + tp.id; render(); }
-          } }, armedX ? t('sure') : '\u2715')));
-        if (armedX) delNote = cnt ? t('tDelTpN', tp.name, cnt) : t('tDelTp', tp.name);
-      });
-      if (tOpen && !editing) tcs.appendChild(h('button', { type: 'button', class: 'chip', style: 'border-style:dashed', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipMore')));
-      if (tOpen) tcs.appendChild(h('button', { type: 'button', class: 'chip' + (editing ? ' solid' : ''), style: editing ? 'background:var(--accent);color:var(--accent-ink);border-color:var(--accent)' : 'border-style:dashed', onclick: function () {
-        tpEdit = !tpEdit; armed = null; render();
-      } }, editing ? t('tEditDone') : t('tEditList')));
-      app.appendChild(tcs);
-      if (delNote) app.appendChild(h('p', { class: 'err', role: 'alert', style: 'margin:8px 0 0', text: delNote }));
-      if (cur) {
-        var curCount = state.items.filter(function (i) { return i.topic === cur.id; }).length;
-        app.appendChild(h('div', { class: 'acts', style: 'margin-top:10px' },
-          h('button', { type: 'button', class: 'btn small solid', onclick: function () { view = 'plan'; armed = null; planMsg = ''; draft.topic = cur.id; render(); } }, t('tToPlan', curCount)),
-          h('button', { type: 'button', class: 'btn small', onclick: function () { topicEditId = cur.id; topicHint = null; render(); window.scrollTo(0, 0); } }, t('tEditCur'))));
-      }
     }
 
     // languages and content types: always in sight with what is chosen now; the choices open below it
