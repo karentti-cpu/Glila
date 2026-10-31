@@ -186,6 +186,10 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .tp-head { margin-top: 18px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; min-height: 48px; font-weight: 700; font-size: 17px; color: inherit; text-align: start; }
 .tp-head .fb-go { color: var(--accent); }
 .chip.del { border-color: var(--danger); color: var(--danger); }
+.tp-sel { display: inline-flex; }
+.tp-sel .chip { border-start-end-radius: 0; border-end-end-radius: 0; }
+.tp-x { border: 1.5px solid var(--accent); border-inline-start: 1px solid color-mix(in srgb, var(--accent-ink) 40%, var(--accent)); background: var(--accent); color: var(--accent-ink); border-start-end-radius: 999px; border-end-end-radius: 999px; min-width: 40px; min-height: 38px; padding: 0 12px; font-weight: 700; }
+.tp-x.armed { background: var(--danger); border-color: var(--danger); color: var(--surface); }
 .chip.del.armed { background: var(--danger); color: var(--surface); }
 .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
 .tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 96px; padding: 10px 6px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--surface); color: inherit; font-weight: 600; font-size: 15px; line-height: 1.2; text-align: center; }
@@ -2110,7 +2114,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         state.topicsOpen = !tOpen; save(); render();
       } }, h('span', { text: t('tMine', state.topics.length) }), h('span', { class: 'fb-go', text: tOpen ? '\u25B4' : '\u25BE' })));
       var tcs = h('div', { class: 'chips', style: 'margin-top:10px' });
-      var editing = tOpen && tpEdit;
+      var editing = tOpen && tpEdit, delNote = '';
       if (editing) app.appendChild(h('p', { class: 'none-line', style: 'margin:10px 0 0', text: t('tEditHint') }));
       // closed: only the chosen topic stays in sight
       (tOpen ? state.topics : state.topics.filter(function (tp) { return cur && cur.id === tp.id; })).forEach(function (tp) {
@@ -2123,22 +2127,28 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
           } }, armedTp ? (n ? t('tDelTpN', tp.name, n) : t('tDelTp', tp.name)) : '\u2715 ' + tp.name));
           return;
         }
-        tcs.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': (cur && cur.id === tp.id) ? 'true' : 'false', onclick: function () { selectTopic(tp); } }, tp.name));
+        var chip = h('button', { type: 'button', class: 'chip', 'aria-pressed': (cur && cur.id === tp.id) ? 'true' : 'false', onclick: function () { selectTopic(tp); } }, tp.name);
+        if (!(cur && cur.id === tp.id)) { tcs.appendChild(chip); return; }
+        // the chosen topic carries its own ✕: a first tap asks, a second deletes
+        var armedX = armed === 'topic:' + tp.id;
+        var cnt = state.items.filter(function (i) { return i.topic === tp.id; }).length;
+        tcs.appendChild(h('span', { class: 'tp-sel' }, chip,
+          h('button', { type: 'button', class: 'tp-x' + (armedX ? ' armed' : ''), 'aria-label': t('tDelTp', tp.name), onclick: function () {
+            if (armedX) deleteTopic(tp.id); else { armed = 'topic:' + tp.id; render(); }
+          } }, armedX ? t('sure') : '\u2715')));
+        if (armedX) delNote = cnt ? t('tDelTpN', tp.name, cnt) : t('tDelTp', tp.name);
       });
       if (tOpen && !editing) tcs.appendChild(h('button', { type: 'button', class: 'chip', style: 'border-style:dashed', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipMore')));
       if (tOpen) tcs.appendChild(h('button', { type: 'button', class: 'chip' + (editing ? ' solid' : ''), style: editing ? 'background:var(--accent);color:var(--accent-ink);border-color:var(--accent)' : 'border-style:dashed', onclick: function () {
         tpEdit = !tpEdit; armed = null; render();
       } }, editing ? t('tEditDone') : t('tEditList')));
       app.appendChild(tcs);
+      if (delNote) app.appendChild(h('p', { class: 'err', role: 'alert', style: 'margin:8px 0 0', text: delNote }));
       if (cur) {
-        var armedCur = armed === 'topic:' + cur.id;
         var curCount = state.items.filter(function (i) { return i.topic === cur.id; }).length;
         app.appendChild(h('div', { class: 'acts', style: 'margin-top:10px' },
           h('button', { type: 'button', class: 'btn small solid', onclick: function () { view = 'plan'; armed = null; planMsg = ''; draft.topic = cur.id; render(); } }, t('tToPlan', curCount)),
-          h('button', { type: 'button', class: 'btn small', onclick: function () { topicEditId = cur.id; topicHint = null; render(); window.scrollTo(0, 0); } }, t('tEditCur')),
-          h('button', { type: 'button', class: 'btn small danger' + (armedCur ? ' armed' : ''), onclick: function () {
-            if (armedCur) deleteTopic(cur.id); else { armed = 'topic:' + cur.id; render(); }
-          } }, armedCur ? (curCount ? t('delWith', curCount) : t('sure')) : t('tDelCur'))));
+          h('button', { type: 'button', class: 'btn small', onclick: function () { topicEditId = cur.id; topicHint = null; render(); window.scrollTo(0, 0); } }, t('tEditCur'))));
       }
     }
 
