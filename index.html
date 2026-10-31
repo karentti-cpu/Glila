@@ -185,6 +185,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .searchbox .btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
 .tp-head { margin-top: 18px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 14px; min-height: 48px; font-weight: 700; font-size: 17px; color: inherit; text-align: start; }
 .tp-head .fb-go { color: var(--accent); }
+.chip.del { border-color: var(--danger); color: var(--danger); }
+.chip.del.armed { background: var(--danger); color: var(--surface); }
 .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
 .tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 96px; padding: 10px 6px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--surface); color: inherit; font-weight: 600; font-size: 15px; line-height: 1.2; text-align: center; }
 .tile .emo { font-size: 34px; line-height: 1; }
@@ -548,6 +550,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    tEditList: '✏️ עריכת הרשימה', tEditDone: '✓ סיום', tEditHint: 'לחיצה על ✕ מוחקת נושא. לחיצה שנייה מאשרת.', tDelTp: 'למחוק את "{0}"?', tDelTpN: 'למחוק את "{0}" ו־{1} פריטים מהתוכנית?',
     tab_library: 'הספרייה', lAll: 'הכול ({0})', lNoTopic: 'ללא נושא', lGo: '♡ לספרייה שלי ({0})',
     ipTitle: 'מה מעניין אותך?', ipSub: 'בוחרים כמה תחומים, וההצעות מגיעות מיד. אפשר לשנות בכל רגע.',
     ipGo: 'יאללה, להצעות ({0})', ipBack: 'חזרה', ipHave: 'כבר ברשימה', ipMore: '+ עוד תחומים', ipOpen: '✨ בחירת תחומים',
@@ -570,6 +573,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    tEditList: '✏️ Modifier la liste', tEditDone: '✓ Terminé', tEditHint: 'Appuyez sur ✕ pour supprimer un sujet, puis une seconde fois pour confirmer.', tDelTp: 'Supprimer « {0} » ?', tDelTpN: 'Supprimer « {0} » et {1} éléments du plan ?',
     tab_library: 'Bibliothèque', lAll: 'Tout ({0})', lNoTopic: 'Sans sujet', lGo: '♡ Ma bibliothèque ({0})',
     ipTitle: 'Qu’est-ce qui vous intéresse ?', ipSub: 'Choisissez quelques thèmes et les idées arrivent tout de suite. Vous pourrez changer à tout moment.',
     ipGo: 'C’est parti ({0})', ipBack: 'Retour', ipHave: 'Déjà dans la liste', ipMore: '+ D’autres thèmes', ipOpen: '✨ Choisir des thèmes',
@@ -592,6 +596,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    tEditList: '✏️ Edit list', tEditDone: '✓ Done', tEditHint: 'Tap ✕ to delete a topic, then tap again to confirm.', tDelTp: 'Delete “{0}”?', tDelTpN: 'Delete “{0}” and {1} planned items?',
     tab_library: 'Library', lAll: 'All ({0})', lNoTopic: 'No topic', lGo: '♡ My library ({0})',
     ipTitle: 'What are you into?', ipSub: 'Pick a few and ideas show up right away. You can change them anytime.',
     ipGo: 'Let’s go ({0})', ipBack: 'Back', ipHave: 'Already on your list', ipMore: '+ More interests', ipOpen: '✨ Pick interests',
@@ -2105,11 +2110,25 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         state.topicsOpen = !tOpen; save(); render();
       } }, h('span', { text: t('tMine', state.topics.length) }), h('span', { class: 'fb-go', text: tOpen ? '\u25B4' : '\u25BE' })));
       var tcs = h('div', { class: 'chips', style: 'margin-top:10px' });
+      var editing = tOpen && tpEdit;
+      if (editing) app.appendChild(h('p', { class: 'none-line', style: 'margin:10px 0 0', text: t('tEditHint') }));
       // closed: only the chosen topic stays in sight
       (tOpen ? state.topics : state.topics.filter(function (tp) { return cur && cur.id === tp.id; })).forEach(function (tp) {
+        if (editing) {
+          // editing: each topic deletes on a second tap, saying how many planned items go with it
+          var armedTp = armed === 'topic:' + tp.id;
+          var n = state.items.filter(function (i) { return i.topic === tp.id; }).length;
+          tcs.appendChild(h('button', { type: 'button', class: 'chip del' + (armedTp ? ' armed' : ''), onclick: function () {
+            if (armedTp) deleteTopic(tp.id); else { armed = 'topic:' + tp.id; render(); }
+          } }, armedTp ? (n ? t('tDelTpN', tp.name, n) : t('tDelTp', tp.name)) : '\u2715 ' + tp.name));
+          return;
+        }
         tcs.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': (cur && cur.id === tp.id) ? 'true' : 'false', onclick: function () { selectTopic(tp); } }, tp.name));
       });
-      if (tOpen) tcs.appendChild(h('button', { type: 'button', class: 'chip', style: 'border-style:dashed', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipMore')));
+      if (tOpen && !editing) tcs.appendChild(h('button', { type: 'button', class: 'chip', style: 'border-style:dashed', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipMore')));
+      if (tOpen) tcs.appendChild(h('button', { type: 'button', class: 'chip' + (editing ? ' solid' : ''), style: editing ? 'background:var(--accent);color:var(--accent-ink);border-color:var(--accent)' : 'border-style:dashed', onclick: function () {
+        tpEdit = !tpEdit; armed = null; render();
+      } }, editing ? t('tEditDone') : t('tEditList')));
       app.appendChild(tcs);
       if (cur) {
         var armedCur = armed === 'topic:' + cur.id;
@@ -2415,7 +2434,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
 
   // ---- my library: everything saved with ♡ or added by hand, filtered by topic if wanted
-  var libFilter = '';
+  var libFilter = '', tpEdit = false;
   function viewLibrary(app) {
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('lTitle') }), h('p', { text: t('lSub') })));
     var names = [];
