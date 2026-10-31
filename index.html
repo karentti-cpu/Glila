@@ -172,6 +172,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .filterbar .fb-sum { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
 .filterbar .fb-go { font-weight: 700; color: var(--accent); flex: none; }
 .filterbar .fb-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 14px; }
+.update { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: var(--sun); color: #2A1D00; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-weight: 700; }
+.update .btn { background: #2A1D00; color: #fff; border-color: #2A1D00; margin-inline-start: auto; }
 .install { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); display: flex; flex-direction: column; gap: 8px; }
 .install .in-top { display: flex; align-items: center; gap: 10px; }
 .install .in-title { flex: 1; font-weight: 700; }
@@ -554,6 +556,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    upNew: '✨ יש גרסה חדשה של האפליקציה', upNow: 'לעדכון עכשיו', upCheck: '🔄 בדיקת עדכונים', upLatest: 'יש לך את הגרסה האחרונה.', upChecking: 'בודקת…', upVer: 'גרסה {0}',
     tEditList: '✏️ עריכת הרשימה', tEditDone: '✓ סיום', tEditHint: 'לחיצה על ✕ מוחקת נושא. לחיצה שנייה מאשרת.', tDelTp: 'למחוק את "{0}"?', tDelTpN: 'למחוק את "{0}" ו־{1} פריטים מהתוכנית?',
     tab_library: 'הספרייה', lAll: 'הכול ({0})', lNoTopic: 'ללא נושא', lGo: '♡ לספרייה שלי ({0})',
     ipTitle: 'מה מעניין אותך?', ipSub: 'בוחרים כמה תחומים, וההצעות מגיעות מיד. אפשר לשנות בכל רגע.',
@@ -577,6 +580,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    upNew: '✨ Une nouvelle version est disponible', upNow: 'Mettre à jour', upCheck: '🔄 Vérifier les mises à jour', upLatest: 'Vous avez la dernière version.', upChecking: 'Vérification…', upVer: 'Version {0}',
     tEditList: '✏️ Modifier la liste', tEditDone: '✓ Terminé', tEditHint: 'Appuyez sur ✕ pour supprimer un sujet, puis une seconde fois pour confirmer.', tDelTp: 'Supprimer « {0} » ?', tDelTpN: 'Supprimer « {0} » et {1} éléments du plan ?',
     tab_library: 'Bibliothèque', lAll: 'Tout ({0})', lNoTopic: 'Sans sujet', lGo: '♡ Ma bibliothèque ({0})',
     ipTitle: 'Qu’est-ce qui vous intéresse ?', ipSub: 'Choisissez quelques thèmes et les idées arrivent tout de suite. Vous pourrez changer à tout moment.',
@@ -600,6 +604,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    upNew: '✨ A new version of the app is ready', upNow: 'Update now', upCheck: '🔄 Check for updates', upLatest: 'You have the latest version.', upChecking: 'Checking…', upVer: 'Version {0}',
     tEditList: '✏️ Edit list', tEditDone: '✓ Done', tEditHint: 'Tap ✕ to delete a topic, then tap again to confirm.', tDelTp: 'Delete “{0}”?', tDelTpN: 'Delete “{0}” and {1} planned items?',
     tab_library: 'Library', lAll: 'All ({0})', lNoTopic: 'No topic', lGo: '♡ My library ({0})',
     ipTitle: 'What are you into?', ipSub: 'Pick a few and ideas show up right away. You can change them anytime.',
@@ -2298,7 +2303,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.appendChild(fi);
     if (backupMsg) app.appendChild(h('p', { class: 'status', role: 'status', text: backupMsg }));
     app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about'))));
-    app.appendChild(h('p', { class: 'none-line', dir: 'ltr', style: 'margin-top:14px;text-align:center;font-size:12px', text: 'v2026-10-19' }));
+    app.appendChild(h('div', { class: 'acts', style: 'margin-top:12px;justify-content:center' }, h('button', { type: 'button', class: 'btn small', onclick: function () { checkUpdate(true); } }, upMsg === 'checking' ? t('upChecking') : t('upCheck'))));
+    if (upMsg === 'latest') app.appendChild(h('p', { class: 'added', role: 'status', style: 'margin:8px 0 0;text-align:center', text: t('upLatest') }));
+    app.appendChild(h('p', { class: 'none-line', dir: 'ltr', style: 'margin-top:14px;text-align:center;font-size:12px', text: t('upVer', MY_VERSION) }));
   }
 
 /* ---------- topics, backup, interface language ---------- */
@@ -2659,6 +2666,37 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
   window.__glilaShared = function (d) { if (d) takeShared(d.title, d.text, d.url); };
 
+  // ---- updates: the running code is compared with the code on the site; a newer one is offered at once
+  function codeHash(x) { var hsh = 5381; for (var i = 0; i < x.length; i++) hsh = ((hsh * 33) ^ x.charCodeAt(i)) >>> 0; return ('0000000' + hsh.toString(16)).slice(-8); }
+  // the page's own code (the tags are written split, so this script doesn't end itself)
+  var TAG_OPEN = '<scr' + 'ipt>', TAG_CLOSE = '</scr' + 'ipt>';
+  function scriptOf(html) { var a = html.lastIndexOf(TAG_OPEN), b = html.indexOf(TAG_CLOSE, a); return a === -1 || b === -1 ? '' : html.slice(a + TAG_OPEN.length, b); }
+  var MY_VERSION = (function () { var sc = document.querySelectorAll('script:not([src])'); return sc.length ? codeHash(sc[sc.length - 1].textContent).slice(0, 6) : '?'; })();
+  var updateReady = false, upMsg = '';
+  function checkUpdate(byHand) {
+    if (window.location.protocol !== 'https:') return;
+    if (byHand) { upMsg = 'checking'; render(); }
+    fetch(window.location.pathname, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
+      var code = scriptOf(html);
+      if (code && codeHash(code).slice(0, 6) !== MY_VERSION) {
+        if (byHand) refreshApp(); else { updateReady = true; render(); }
+      } else if (byHand) { upMsg = 'latest'; render(); }
+    }, function () { if (byHand) { upMsg = ''; render(); } });
+  }
+  // drops the saved copies and loads the newest version
+  function refreshApp() {
+    var jobs = [];
+    try { if (window.caches) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); })); } catch (e) {}
+    try { if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.update(); })); })); } catch (e) {}
+    Promise.all(jobs).then(function () { window.location.reload(); }, function () { window.location.reload(); });
+  }
+  function updateBar() {
+    if (!updateReady) return null;
+    return h('div', { class: 'update', role: 'status' }, h('span', { text: t('upNew') }),
+      h('button', { type: 'button', class: 'btn small', onclick: refreshApp }, t('upNow')));
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') checkUpdate(false); });
+
   // ---- installing the website as an app: shown on the website only, until installed or closed
   var installEvt = null, installHidden = false;
   try { installHidden = localStorage.getItem('glila-install-hidden') === '1'; } catch (e) {}
@@ -2703,6 +2741,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var app = document.getElementById('app');
     var y = window.scrollY;
     app.textContent = '';
+    var ub = updateBar();
+    if (ub) app.appendChild(ub);
     var ib = installBar();
     if (ib) app.appendChild(ib);
     document.querySelector('nav.tabs').style.display = (view === 'welcome' || view === 'interests') ? 'none' : '';
@@ -2723,6 +2763,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   applyLang();
   render();
   syncReminder();
+  setTimeout(function () { checkUpdate(false); }, 3000);
   (function () {
     var q = new URLSearchParams(window.location.search);
     if (!q.get('url') && !q.get('text') && !q.get('title')) return;
