@@ -217,7 +217,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .topbar { display: flex; align-items: center; gap: 10px; margin: -6px 0 12px; }
 .brand { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; color: var(--accent); background: none; border: 0; padding: 0; text-align: start; }
 .brand img { width: 34px; height: 34px; border-radius: 9px; flex: none; }
-.brand span { font-family: var(--serif); font-weight: 700; font-size: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand .names { display: flex; flex-direction: column; min-width: 0; line-height: 1.1; }
+.brand .names span { font-family: var(--serif); font-weight: 700; font-size: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand .names small { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .langbar { display: flex; gap: 6px; flex: none; }
 .langbar .chip.small { padding: 2px 10px; min-width: 40px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
@@ -575,7 +577,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tab_library: 'הספרייה', lAll: 'הכול ({0})', lNoTopic: 'ללא נושא', lGo: '♡ לספרייה שלי ({0})',
     ipTitle: 'מה מעניין אותך?', ipSub: 'בוחרים כמה תחומים, וההצעות מגיעות מיד. אפשר לשנות בכל רגע.',
     ipGo: 'יאללה, להצעות ({0})', ipBack: 'חזרה', ipHave: 'כבר ברשימה', ipMore: '+ עוד תחומים', ipOpen: '✨ בחירת תחומים',
-    stStreak: '🔥 {0} ימים ברצף שבחרת במקום לגלול', stToday: '✨ היום בחרת במקום לגלול', stKeep: '🔥 {0} ימים ברצף. דבר אחד היום ממשיך אותו',
+    stStreak: '🔥 {0} ימים ברצף שבחרת במקום לגלול', stToday: '✨ היום בחרת במקום לגלול', stKeep: '🔥 {0} ימים ברצף. דבר אחד היום ממשיך אותו', stKeep1: '🔥 יום אחד ברצף. דבר אחד היום ממשיך אותו', tagline: 'לגלול מבחירה',
     stWeek: 'השבוע: {0}', stItems: '{0} דברים', stItem1: 'דבר אחד', stTime: 'כ־{0}', stTop: 'בעיקר {0}',
     shFriend: '📤 לחבר', shList: '📤 שליחת הרשימה לחבר',
     shMsg: '{0}\n{1}\n\nמצאתי את זה בגלילה חכמה – במקום לגלול, בוחרים מה לראות: {2}',
@@ -601,7 +603,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tab_library: 'Bibliothèque', lAll: 'Tout ({0})', lNoTopic: 'Sans sujet', lGo: '♡ Ma bibliothèque ({0})',
     ipTitle: 'Qu’est-ce qui vous intéresse ?', ipSub: 'Choisissez quelques thèmes et les idées arrivent tout de suite. Vous pourrez changer à tout moment.',
     ipGo: 'C’est parti ({0})', ipBack: 'Retour', ipHave: 'Déjà dans la liste', ipMore: '+ D’autres thèmes', ipOpen: '✨ Choisir des thèmes',
-    stStreak: '🔥 {0} jours de suite à choisir au lieu de faire défiler', stToday: '✨ Aujourd’hui, vous avez choisi au lieu de faire défiler', stKeep: '🔥 {0} jours de suite. Une seule chose aujourd’hui et ça continue',
+    stStreak: '🔥 {0} jours de suite à choisir au lieu de faire défiler', stToday: '✨ Aujourd’hui, vous avez choisi au lieu de faire défiler', stKeep: '🔥 {0} jours de suite. Une seule chose aujourd’hui et ça continue', stKeep1: '🔥 Un jour d’affilée. Une seule chose aujourd’hui et ça continue', tagline: 'Défiler par choix',
     stWeek: 'Cette semaine : {0}', stItems: '{0} contenus', stItem1: 'un contenu', stTime: 'environ {0}', stTop: 'surtout {0}',
     shFriend: '📤 À un ami', shList: '📤 Envoyer la liste à un ami',
     shMsg: '{0}\n{1}\n\nTrouvé sur Glila – au lieu de faire défiler, on choisit ce qu’on regarde : {2}',
@@ -627,7 +629,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     tab_library: 'Library', lAll: 'All ({0})', lNoTopic: 'No topic', lGo: '♡ My library ({0})',
     ipTitle: 'What are you into?', ipSub: 'Pick a few and ideas show up right away. You can change them anytime.',
     ipGo: 'Let’s go ({0})', ipBack: 'Back', ipHave: 'Already on your list', ipMore: '+ More interests', ipOpen: '✨ Pick interests',
-    stStreak: '🔥 {0} days in a row you chose instead of scrolling', stToday: '✨ Today you chose instead of scrolling', stKeep: '🔥 {0} days in a row. One thing today keeps it going',
+    stStreak: '🔥 {0} days in a row you chose instead of scrolling', stToday: '✨ Today you chose instead of scrolling', stKeep: '🔥 {0} days in a row. One thing today keeps it going', stKeep1: '🔥 One day so far. One thing today keeps it going', tagline: 'Scroll by choice',
     stWeek: 'This week: {0}', stItems: '{0} things', stItem1: 'one thing', stTime: 'about {0}', stTop: 'mostly {0}',
     shFriend: '📤 To a friend', shList: '📤 Send the list to a friend',
     shMsg: '{0}\n{1}\n\nFound it on Scroll Wise – instead of scrolling, you choose what to watch: {2}',
@@ -1080,10 +1082,11 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var s = streakInfo(), w = weekInfo();
     if (!s.n && !w.count) return null;
     var box = h('div', { class: 'stats', role: 'status' });
-    if (s.n) box.appendChild(h('div', { class: 'big', text: !s.today ? t('stKeep', s.n) : (s.n > 1 ? t('stStreak', s.n) : t('stToday')) }));
+    if (s.n) box.appendChild(h('div', { class: 'big', text: !s.today ? (s.n > 1 ? t('stKeep', s.n) : t('stKeep1')) : (s.n > 1 ? t('stStreak', s.n) : t('stToday')) }));
     if (w.count) {
       var parts = [w.count > 1 ? t('stItems', w.count) : t('stItem1')];
-      if (w.mins >= 5) parts.push(t('stTime', fmtDur(w.mins * 60)));
+      // under an hour the length already says "about" (dMin); only hours get it added
+      if (w.mins >= 5) parts.push(w.mins < 59.5 ? fmtDur(w.mins * 60) : t('stTime', fmtDur(w.mins * 60)));
       if (w.top) parts.push(t('stTop', w.top));
       box.appendChild(h('div', { class: 'small', text: t('stWeek', parts.join(' · ')) }));
     }
@@ -2488,7 +2491,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   function langBar() {
     var top = h('div', { class: 'topbar' });
     top.appendChild(h('button', { type: 'button', class: 'brand', onclick: function () { view = 'today'; armed = null; render(); window.scrollTo(0, 0); } },
-      h('img', { src: 'icon-192.png', alt: '' }), h('span', { text: t('appName') })));
+      h('img', { src: 'icon-192.png', alt: '' }), h('span', { class: 'names' }, h('span', { text: t('appName') }), h('small', { text: t('tagline') }))));
     var bar = h('div', { class: 'langbar', role: 'group', 'aria-label': 'Language' });
     Object.keys(LANGS).forEach(function (k) {
       bar.appendChild(h('button', { type: 'button', class: 'chip small', lang: k, title: LANGS[k], 'aria-label': LANGS[k], 'aria-pressed': state.ui === k ? 'true' : 'false', onclick: function () { state.ui = k; save(); applyLang(); render(); } }, LANG_SHORT[k]));
