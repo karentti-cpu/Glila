@@ -570,6 +570,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    tdAdd: '+ להיום', tdAdded: '✓ נוסף להיום', coYesterday: 'לא הספקת אתמול', coLater: 'שמרת לאחר כך',
     sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
     mvWhere: '📺 איפה לצפות',
     upNew: '✨ יש גרסה חדשה של האפליקציה', upNow: 'לעדכון עכשיו', upCheck: '🔄 בדיקת עדכונים', upLatest: 'יש לך את הגרסה האחרונה.', upChecking: 'בודקת…', upVer: 'גרסה {0}',
@@ -596,6 +597,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    tdAdd: '+ Aujourd’hui', tdAdded: '✓ Ajouté à aujourd’hui', coYesterday: 'Pas eu le temps hier', coLater: 'Gardé pour plus tard',
     sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
     mvWhere: '📺 Où le regarder',
     upNew: '✨ Une nouvelle version est disponible', upNow: 'Mettre à jour', upCheck: '🔄 Vérifier les mises à jour', upLatest: 'Vous avez la dernière version.', upChecking: 'Vérification…', upVer: 'Version {0}',
@@ -622,6 +624,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    tdAdd: '+ Today', tdAdded: '✓ Added to today', coYesterday: 'Didn’t get to it yesterday', coLater: 'Saved for later',
     sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', sgNone: 'No topic with that name yet. “Search” will look for it.',
     mvWhere: '📺 Where to watch',
     upNew: '✨ A new version of the app is ready', upNow: 'Update now', upCheck: '🔄 Check for updates', upLatest: 'You have the latest version.', upChecking: 'Checking…', upVer: 'Version {0}',
@@ -856,7 +859,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       }
       var url = safeUrl(e.url);
       var time = new Date(e.ts).toLocaleTimeString(LOCALE[state.ui], { hour: '2-digit', minute: '2-digit' });
-      ul.appendChild(h('li', { class: 'row' },
+      ul.appendChild(h('li', { class: 'row wrap' },
         h('div', { class: 'body' },
           h('div', { class: 'title', text: e.title }),
           h('div', { class: 'meta' },
@@ -867,6 +870,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
             e.topic ? h('span', { text: e.topic }) : null)),
         url ? h('a', { class: 'btn small', href: url, target: '_blank', rel: 'noopener noreferrer' }, t('open')) : null,
         (e.action === 'search' && !url) ? h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'ideas'; armed = null; runSearch(e.title, e.topic || ''); window.scrollTo(0, 0); } }, t('sGoSearch')) : null,
+        (e.action !== 'search') ? (tdDone[String(e.title).toLowerCase()] ? h('span', { class: 'added', text: t('tdAdded') }) :
+          h('button', { type: 'button', class: 'btn small solid', onclick: function () { addToToday({ title: e.title, url: e.url, kind: e.kind, lang: e.lang, topic: e.topic, mins: e.mins }); } }, t('tdAdd'))) : null,
         (e.action !== 'search') ? likeBtn({ title: e.title, creator: '', url: e.url || '', kind: e.kind, lang: e.lang, topic: e.topic || '' }) : null));
     });
     var a = armed === 'hist';
@@ -1057,7 +1062,45 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
   function viewToday(app) {
     viewTodayBody(app);
+    carryOver(app);
     app.appendChild(reminderCard());
+  }
+  // something seen before (history), planned for today: the planned item if there is one, else a new one
+  var tdDone = {};
+  function addToToday(x) {
+    var idx = new Date().getDay(), key = String(x.title || '').toLowerCase();
+    var it = state.items.filter(function (i) { return String(i.title).toLowerCase() === key || (x.url && i.url === x.url); })[0];
+    if (it) {
+      if (it.days.indexOf(idx) === -1) it.days.push(idx);
+      it.later = false;
+    } else {
+      var tp = x.topic ? topicByName(x.topic, false) : null;
+      it = { id: uid(), title: x.title, url: x.url || '', kind: KIND_OK[x.kind] ? x.kind : 'other', lang: x.lang || '', topic: tp ? tp.id : '', days: [idx], later: false };
+      if (x.mins) it.mins = x.mins;
+      state.items.push(it);
+      logHistory(it, 'planned');
+    }
+    tdDone[key] = 1;
+    save(); render();
+  }
+  // under today's plan: what yesterday's plan left undone (it moves to today) and what was saved for later
+  function carryOver(app) {
+    var now = new Date(), idx = now.getDay(), y = new Date(now.getTime() - 86400000), yIdx = y.getDay();
+    var yDone = state.done[dateKey(y)] || [];
+    var missed = state.items.filter(function (i) { return i.days.indexOf(yIdx) !== -1 && i.days.indexOf(idx) === -1 && yDone.indexOf(i.id) === -1; }).slice(0, 6);
+    var later = state.items.filter(function (i) { return i.later; }).slice(0, 6);
+    [[missed, 'coYesterday', function (i) { i.days = i.days.filter(function (d) { return d !== yIdx; }).concat([idx]); }],
+     [later, 'coLater', function (i) { i.later = false; i.days = [idx]; }]].forEach(function (g) {
+      if (!g[0].length) return;
+      app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: g[1] === 'coYesterday' ? t('coYesterday') : t('coLater') }));
+      var ul = h('ul', { class: 'list' });
+      g[0].forEach(function (i) {
+        ul.appendChild(h('li', { class: 'row' },
+          h('div', { class: 'body' }, h('div', { class: 'title', text: i.title }), metaEl(i)),
+          h('button', { type: 'button', class: 'btn small solid', onclick: function () { g[2](i); save(); render(); } }, t('tdAdd'))));
+      });
+      app.appendChild(ul);
+    });
   }
   // days on which something was opened or done, counted back from today (yesterday keeps it alive)
   function streakInfo() {
