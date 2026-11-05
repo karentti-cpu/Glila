@@ -221,6 +221,19 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .brand .names { display: flex; flex-direction: column; min-width: 0; line-height: 1.1; }
 .brand .names span { font-family: var(--serif); font-weight: 700; font-size: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .brand .names small { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.big body { zoom: 1.15; }
+html.big .brand .names span { font-size: 18px; }
+html.big .brand img { width: 30px; height: 30px; }
+html.big .langbar .chip.small { padding: 2px 7px; min-width: 32px; }
+html.big .gear { min-width: 34px; }
+.gear { flex: none; background: none; border: 1.5px solid var(--line); border-radius: 999px; min-width: 40px; min-height: 36px; font-size: 18px; color: inherit; }
+.picks { margin-top: 16px; padding: 14px; border-radius: 16px; background: var(--surface); border: 1.5px solid var(--accent); display: flex; flex-direction: column; gap: 10px; }
+.picks h2 { margin: 0; font-size: 19px; }
+.pick-row { display: flex; align-items: center; gap: 10px; }
+.pick-row .sg-thumb { width: 52px; height: 52px; font-size: 24px; }
+.pick-row .txt { flex: 1; min-width: 0; }
+.pick-row .txt b { display: block; font-size: 15px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.pick-row .txt small { color: var(--muted); font-size: 13px; }
 .langbar { display: flex; gap: 6px; flex: none; }
 .langbar .chip.small { padding: 2px 10px; min-width: 40px; }
 @media (prefers-reduced-motion: reduce) { .progress .bar span { transition: none; } }
@@ -498,7 +511,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     lTitle: 'הספרייה שלי', lSub: 'שמרי כאן תכנים שמצאת. הם יופיעו בהצעות לפי הנושא שבחרת.', lAdd: 'הוספה לספרייה', lMine: 'שלי', lAdded: 'נוסף לספרייה שלי.',
     like: 'אהבתי', liked: 'נשמר בספרייה',
     tab_ideas: 'תכנון והצעות', tab_history: 'היסטוריה',
-    ideasTitle: 'תכנון והצעות', ideasSub: 'כותבים נושא, בוחרים מההצעות ומתכננים לפי ימים – הכול במקום אחד.', mgTopics: 'ניהול נושאים',
+    ideasTitle: 'תכנון והצעות', ideasSub: 'מחפשים, בוחרים מההצעות ומתכננים לכל יום.', mgTopics: 'ניהול נושאים',
     sGoSearch: 'חיפוש', sGoogle: 'חיפוש בגוגל', sToday: 'להיום', sDays: 'לימים אחרים', sSeePlan: 'לתכנון', tToPlan: 'לתכנון ({0})', sForYou: 'לפי מה שאהבת', sAlso: 'לחפש גם ב:', sGoogleVideos: 'סרטונים בגוגל', sGoogleNews: 'חדשות', sAll: 'הכול', sWeb: 'אתרים', sVideos: 'סרטונים', sShow: 'להציג:', sResultsFor: 'תוצאות עבור "{0}"', sSearching: 'מחפשת…',
     sNoResults: 'לא נמצאו תוצאות. אפשר לנסות ניסוח אחר או סוג תוכן נוסף.',
     sSugFor: 'הצעות עבור "{0}"', sSugAll: 'הצעות מהרשימה', sPickTopic: 'בחרי נושא כדי לראות גם תוצאות חיפוש עבורו.',
@@ -521,7 +534,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     lTitle: 'Ma bibliothèque', lSub: 'Gardez ici les contenus que vous avez trouvés. Ils apparaîtront dans les idées selon le sujet choisi.', lAdd: 'Ajouter à la bibliothèque', lMine: 'Ajouté par moi', lAdded: 'Ajouté à ma bibliothèque.',
     like: 'J’aime', liked: 'Dans la bibliothèque',
     tab_ideas: 'Plan et idées', tab_history: 'Historique',
-    ideasTitle: 'Plan et idées', ideasSub: 'Écrivez un sujet, choisissez parmi les idées et planifiez par jour – tout au même endroit.', mgTopics: 'Gérer les sujets',
+    ideasTitle: 'Plan et idées', ideasSub: 'Cherchez, choisissez parmi les idées et planifiez chaque jour.', mgTopics: 'Gérer les sujets',
     sGoSearch: 'Rechercher', sGoogle: 'Chercher sur Google', sToday: 'Pour aujourd’hui', sDays: 'Autres jours', sSeePlan: 'Voir le plan', tToPlan: 'Voir le plan ({0})', sForYou: 'D’après vos goûts', sAlso: 'Chercher aussi sur :', sGoogleVideos: 'Vidéos Google', sGoogleNews: 'Actualités', sAll: 'Tout', sWeb: 'Sites web', sVideos: 'Vidéos', sShow: 'Afficher :', sResultsFor: 'Résultats pour « {0} »', sSearching: 'Recherche…',
     sNoResults: 'Aucun résultat. Essayez une autre formulation ou un autre type de contenu.',
     sSugFor: 'Idées pour « {0} »', sSugAll: 'Idées de la liste', sPickTopic: 'Choisissez un sujet pour voir aussi des résultats de recherche.',
@@ -544,7 +557,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     lTitle: 'My library', lSub: 'Keep content you found here. It will show up in the ideas by topic.', lAdd: 'Add to library', lMine: 'Mine', lAdded: 'Added to my library.',
     like: 'Like', liked: 'In library',
     tab_ideas: 'Plan & ideas', tab_history: 'History',
-    ideasTitle: 'Plan and ideas', ideasSub: 'Write a topic, pick from the ideas and plan by day – all in one place.', mgTopics: 'Manage topics',
+    ideasTitle: 'Plan and ideas', ideasSub: 'Search, pick from the ideas and plan each day.', mgTopics: 'Manage topics',
     sGoSearch: 'Search', sGoogle: 'Search on Google', sToday: 'For today', sDays: 'Other days', sSeePlan: 'See plan', tToPlan: 'Plan ({0})', sForYou: 'Based on what you liked', sAlso: 'Also search on:', sGoogleVideos: 'Google Videos', sGoogleNews: 'News', sAll: 'All', sWeb: 'Websites', sVideos: 'Videos', sShow: 'Show:', sResultsFor: 'Results for “{0}”', sSearching: 'Searching…',
     sNoResults: 'No results. Try another wording or another content type.',
     sSugFor: 'Ideas for “{0}”', sSugAll: 'Ideas from the list', sPickTopic: 'Pick a topic to also see search results for it.',
@@ -571,6 +584,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    pkTitle: '✨ נבחר בשבילך להיום', pkFrom: 'מתוך: {0}', pkOther: '🔄 הצעות אחרות', pkLoading: 'מחפשת לך משהו טוב…', pkPick: 'בוחרים תחומים, ומקבלים כאן הצעות כל יום.',
+    stTitle: 'הגדרות', stLook: 'תצוגה', stThemeAuto: 'לפי הטלפון', stThemeLight: '☀️ בהיר', stThemeDark: '🌙 כהה', stBig: 'טקסט גדול', stApp: 'האפליקציה', stOpen: 'הגדרות',
     mMore: '⋯ עוד', mList: '➕ לרשימה', lsNew: '+ רשימה חדשה', lsNamePh: 'שם הרשימה, למשל: לאוטו', lsCreate: 'יצירה',
     lsDone: '✓ סיימתי', lsUndo: 'החזרה', lsRemove: 'הסרה', lsDel: 'מחיקת הרשימה', lsLeft: 'נותרו: {0}', lsNext: '🎧 הבא בתור:',
     lsEmpty: 'הרשימה ריקה. מוסיפים מכל כרטיס: ⋯ עוד ← ➕ לרשימה.', lsPick: 'לאיזו רשימה?',
@@ -601,6 +616,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    pkTitle: '✨ Choisi pour vous aujourd’hui', pkFrom: 'Sur : {0}', pkOther: '🔄 D’autres idées', pkLoading: 'Je cherche quelque chose de bien…', pkPick: 'Choisissez des thèmes et recevez ici des idées chaque jour.',
+    stTitle: 'Réglages', stLook: 'Affichage', stThemeAuto: 'Comme le téléphone', stThemeLight: '☀️ Clair', stThemeDark: '🌙 Sombre', stBig: 'Grand texte', stApp: 'L’application', stOpen: 'Réglages',
     mMore: '⋯ Plus', mList: '➕ À une liste', lsNew: '+ Nouvelle liste', lsNamePh: 'Nom de la liste, par ex. : en voiture', lsCreate: 'Créer',
     lsDone: '✓ Terminé', lsUndo: 'Remettre', lsRemove: 'Retirer', lsDel: 'Supprimer la liste', lsLeft: 'Reste : {0}', lsNext: '🎧 À suivre :',
     lsEmpty: 'Liste vide. Ajoutez depuis n’importe quelle carte : ⋯ Plus → ➕ À une liste.', lsPick: 'Dans quelle liste ?',
@@ -631,6 +648,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    pkTitle: '✨ Picked for you today', pkFrom: 'On: {0}', pkOther: '🔄 Other ideas', pkLoading: 'Looking for something good…', pkPick: 'Pick some interests and get ideas here every day.',
+    stTitle: 'Settings', stLook: 'Display', stThemeAuto: 'Like the phone', stThemeLight: '☀️ Light', stThemeDark: '🌙 Dark', stBig: 'Large text', stApp: 'The app', stOpen: 'Settings',
     mMore: '⋯ More', mList: '➕ To a list', lsNew: '+ New list', lsNamePh: 'List name, e.g. for the car', lsCreate: 'Create',
     lsDone: '✓ Done', lsUndo: 'Put back', lsRemove: 'Remove', lsDel: 'Delete list', lsLeft: 'Left: {0}', lsNext: '🎧 Up next:',
     lsEmpty: 'Empty list. Add from any card: ⋯ More → ➕ To a list.', lsPick: 'Which list?',
@@ -679,7 +698,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   var sug = { cats: [], topics: [], all: false, kinds: ['video', 'movie', 'podcast', 'show', 'article'], free: '' };
 
   function load() {
-    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null, lists: [] };
+    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null, lists: [], theme: 'auto', big: false };
     try {
       // the Android app used to keep its own copy of the data; it is handed over once
       if (!localStorage.getItem(KEY) && window.GlilaAndroid && window.GlilaAndroid.takeOldData) {
@@ -702,7 +721,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         platforms: (Array.isArray(p.platforms) && p.platforms.length) ? p.platforms : ['youtube', 'apple'],
         reminder: (p.reminder && /^\d\d:\d\d$/.test(p.reminder.time)) ? { on: !!p.reminder.on, time: p.reminder.time } : { on: false, time: '20:00' },
         topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null,
-        lists: Array.isArray(p.lists) ? p.lists : []
+        lists: Array.isArray(p.lists) ? p.lists : [],
+        theme: p.theme === 'light' || p.theme === 'dark' ? p.theme : 'auto',
+        big: !!p.big
       };
     } catch (e) { return def; }
   }
@@ -724,6 +745,11 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     return s;
   }
   function days() { return DAYNAMES[state.ui] || DAYNAMES.he; }
+  function applyLook() {
+    var de = document.documentElement;
+    if (state.theme === 'auto') de.removeAttribute('data-theme'); else de.setAttribute('data-theme', state.theme);
+    de.classList.toggle('big', !!state.big);
+  }
   function applyLang() {
     document.documentElement.lang = state.ui;
     document.documentElement.dir = state.ui === 'he' ? 'rtl' : 'ltr';
@@ -1073,8 +1099,69 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     app.appendChild(wrap);
   }
 
+  // three ideas a day from one of my topics (a different topic each day): a short video, a podcast, an article
+  var picks = { key: '', status: 'idle', items: [], shift: 0 };
+  function picksTopic() {
+    if (!state.topics.length) return null;
+    var day = Math.floor(Date.now() / 86400000);
+    return state.topics[(day + picks.shift) % state.topics.length];
+  }
+  function loadPicks() {
+    var tp = picksTopic();
+    if (!tp) return;
+    var key = dateKey(new Date()) + '|' + tp.id;
+    if (picks.key === key) return;
+    picks = { key: key, status: 'loading', items: [], shift: picks.shift, topic: tp.name };
+    var q = tp.name, lang = /[\u0590-\u05FF]/.test(q) ? 'he' : (state.langs[0] || 'en');
+    function safe(pr) { return pr.then(function (x) { return x || []; }, function () { return []; }); }
+    Promise.all([safe(srcYouTube(q, 0)), safe(srcDaily(q, 0)), safe(srcApple(q, 0)), safe(srcWiki(q, lang, 0))]).then(function (rs) {
+      if (picks.key !== key) return;
+      var vids = rs[0].concat(rs[1]), short = vids.filter(function (r) { return r.dur && r.dur <= 15 * 60; });
+      var pod = rs[2].filter(function (r) { return !r.whole; })[0] || rs[2][0];
+      var out = [short[0] || vids[0], pod, rs[3][0]].filter(Boolean);
+      if (!out.length) {
+        // nothing came back (offline?): ideas from the ready-made list that match the topic
+        var cats = topicCats(tp);
+        out = LIB.filter(function (x) { return cats.indexOf(x.cat) !== -1; }).slice(0, 3);
+      }
+      out.forEach(function (r) { r.direct = !!r.url; r.site = r.site || r.url || ''; r.days = [new Date().getDay()]; r.added = ''; });
+      picks.items = out; picks.status = 'done';
+      if (view === 'today') render();
+    });
+  }
+  function picksCard() {
+    var box = h('div', { class: 'picks' });
+    var tp = picksTopic();
+    if (!tp) {
+      box.appendChild(h('h2', { text: t('pkTitle') }));
+      box.appendChild(h('p', { class: 'none-line', text: t('pkPick') }));
+      box.appendChild(h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn solid', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipOpen'))));
+      return box;
+    }
+    loadPicks();
+    box.appendChild(h('h2', { text: t('pkTitle') }));
+    box.appendChild(h('div', { class: 'meta', text: t('pkFrom', tp.name) }));
+    if (picks.status === 'loading') box.appendChild(h('p', { class: 'status', style: 'margin:0', text: t('pkLoading') }));
+    picks.items.forEach(function (r) {
+      var url = safeUrl(r.site || r.url) || searchUrl(r);
+      var m = Math.round(minutesOf(r));
+      box.appendChild(h('div', { class: 'pick-row' }, thumbOf(r),
+        h('div', { class: 'txt' }, h('b', { text: r.title }), h('small', { text: t('k_' + (KIND_OK[r.kind] ? r.kind : 'other')) + (m ? ' · ' + fmtDur(m * 60) : '') })),
+        h('a', { class: 'btn small', href: url, target: '_blank', rel: 'noopener noreferrer', onclick: function () {
+          logHistory({ title: r.title, url: url, kind: r.kind, lang: r.lang, mins: m }, 'open', tp.name);
+        } }, '\u25B6'),
+        r.added ? h('span', { class: 'added', text: '\u2713' }) : h('button', { type: 'button', class: 'btn small solid', 'aria-label': t('tdAdd'), onclick: function () {
+          r.days = [new Date().getDay()]; r.topic = tp.name; r.mine = false;
+          var nt = itemFromSuggestion(r, tp.id, r.days, false);
+          state.items.push(nt); logHistory(nt, 'planned'); r.added = 'plan'; save(); render();
+        } }, t('tdAdd'))));
+    });
+    if (picks.status === 'done' && state.topics.length > 1) box.appendChild(h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small', onclick: function () { picks.shift++; picks.key = ''; render(); } }, t('pkOther'))));
+    return box;
+  }
   function viewToday(app) {
     viewTodayBody(app);
+    app.appendChild(picksCard());
     carryOver(app);
     app.appendChild(reminderCard());
   }
@@ -1171,7 +1258,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       app.appendChild(tc);
     }
     if (pick.id || pick.msg) app.appendChild(pickCard());
+    // with topics, "picked for you today" (below) fills an empty day; the empty notes are only for a start from nothing
     if (!state.items.length) {
+      if (state.topics.length) return;
       app.appendChild(h('div', { class: 'empty', style: 'margin-top:20px' },
         h('h2', { text: t('emptyAllTitle') }),
         h('p', { text: t('emptyAllText') }),
@@ -1182,6 +1271,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     }
     var todays = state.items.filter(function (i) { return i.days.indexOf(idx) !== -1; });
     if (!todays.length) {
+      if (state.topics.length) return;
       app.appendChild(h('div', { class: 'empty', style: 'margin-top:20px' },
         h('h2', { text: t('emptyDayTitle') }),
         h('p', { text: t('emptyDayText', days()[idx]) }),
@@ -2523,20 +2613,6 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     // ---- the library has its own tab; this is the way there
     app.appendChild(h('div', { class: 'acts', style: 'margin-top:26px' }, h('button', { type: 'button', class: 'btn', onclick: function () { view = 'library'; armed = null; render(); window.scrollTo(0, 0); } }, t('lGo', state.library.length))));
 
-    // ---- backup and restore, about
-    app.appendChild(h('h2', { class: 'sec' }, t('bkTitle')));
-    app.appendChild(h('p', { class: 'none-line', text: t('bkText') }));
-    var fi = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none', 'aria-hidden': 'true', tabindex: '-1', onchange: function (e) { doRestore(e.target.files && e.target.files[0]); } });
-    var bacts = h('div', { class: 'acts', style: 'margin-top:12px' });
-    bacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: doBackup }, t('bkSave')));
-    bacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: function () { fi.click(); } }, t('bkRestore')));
-    app.appendChild(bacts);
-    app.appendChild(fi);
-    if (backupMsg) app.appendChild(h('p', { class: 'status', role: 'status', text: backupMsg }));
-    app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about'))));
-    app.appendChild(h('div', { class: 'acts', style: 'margin-top:12px;justify-content:center' }, h('button', { type: 'button', class: 'btn small', onclick: function () { checkUpdate(true); } }, upMsg === 'checking' ? t('upChecking') : t('upCheck'))));
-    if (upMsg === 'latest') app.appendChild(h('p', { class: 'added', role: 'status', style: 'margin:8px 0 0;text-align:center', text: t('upLatest') }));
-    app.appendChild(h('p', { class: 'none-line', dir: 'ltr', style: 'margin-top:14px;text-align:center;font-size:12px', text: t('upVer', MY_VERSION) }));
   }
 
 /* ---------- topics, backup, interface language ---------- */
@@ -2585,7 +2661,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         var hist = (Array.isArray(p.history) ? p.history : []).filter(function (x) { return x && typeof x === 'object' && typeof x.ts === 'number'; }).slice(0, 1000).map(function (x) {
           return { id: String(x.id || uid()), title: String(x.title || '').slice(0, 300), url: x.url ? safeUrl(String(x.url)) : '', kind: KIND_OK[x.kind] ? x.kind : 'other', lang: LANGS[x.lang] ? x.lang : '', topic: String(x.topic || '').slice(0, 100), action: (x.action === 'done' || x.action === 'planned' || x.action === 'search') ? x.action : 'open', ts: x.ts };
         });
-        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms, reminder: state.reminder, topicsOpen: state.topicsOpen,
+        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms, reminder: state.reminder, topicsOpen: state.topicsOpen, theme: state.theme, big: state.big,
           lists: Array.isArray(p.lists) ? p.lists.filter(function (l) { return l && Array.isArray(l.items); }) : state.lists };
         draft = newDraft(); armed = null; pick = { id: null, msg: '' }; save();
         backupMsg = t('rsDone');
@@ -2687,6 +2763,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       bar.appendChild(h('button', { type: 'button', class: 'chip small', lang: k, title: LANGS[k], 'aria-label': LANGS[k], 'aria-pressed': state.ui === k ? 'true' : 'false', onclick: function () { state.ui = k; save(); applyLang(); render(); } }, LANG_SHORT[k]));
     });
     top.appendChild(bar);
+    top.appendChild(h('button', { type: 'button', class: 'gear', 'aria-label': t('stOpen'), title: t('stOpen'), 'aria-pressed': view === 'settings' ? 'true' : 'false', onclick: function () { view = 'settings'; armed = null; render(); window.scrollTo(0, 0); } }, '\u2699\uFE0F'));
     return top;
   }
 
@@ -2780,6 +2857,33 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     lib.appendChild(lacts);
     if (libMsg) lib.appendChild(h('p', { class: 'added', role: 'status', style: 'margin:0', text: libMsg }));
     app.appendChild(lib);
+  }
+
+  // ---- settings: display (theme, text size), backup and restore, about, updates
+  function viewSettings(app) {
+    app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('stTitle') })));
+    app.appendChild(h('h2', { class: 'sec' }, t('stLook')));
+    var tc = h('div', { class: 'chips' });
+    [['auto', 'stThemeAuto'], ['light', 'stThemeLight'], ['dark', 'stThemeDark']].forEach(function (o) {
+      tc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': state.theme === o[0] ? 'true' : 'false', onclick: function () { state.theme = o[0]; save(); applyLook(); render(); } }, t(o[1])));
+    });
+    app.appendChild(tc);
+    app.appendChild(h('div', { class: 'chips', style: 'margin-top:10px' },
+      h('button', { type: 'button', class: 'chip', 'aria-pressed': state.big ? 'true' : 'false', onclick: function () { state.big = !state.big; save(); applyLook(); render(); } }, 'A\u207A ' + t('stBig'))));
+    // ---- backup and restore, about
+    app.appendChild(h('h2', { class: 'sec' }, t('bkTitle')));
+    app.appendChild(h('p', { class: 'none-line', text: t('bkText') }));
+    var fi = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none', 'aria-hidden': 'true', tabindex: '-1', onchange: function (e) { doRestore(e.target.files && e.target.files[0]); } });
+    var bacts = h('div', { class: 'acts', style: 'margin-top:12px' });
+    bacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: doBackup }, t('bkSave')));
+    bacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: function () { fi.click(); } }, t('bkRestore')));
+    app.appendChild(bacts);
+    app.appendChild(fi);
+    if (backupMsg) app.appendChild(h('p', { class: 'status', role: 'status', text: backupMsg }));
+    app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about'))));
+    app.appendChild(h('div', { class: 'acts', style: 'margin-top:12px;justify-content:center' }, h('button', { type: 'button', class: 'btn small', onclick: function () { checkUpdate(true); } }, upMsg === 'checking' ? t('upChecking') : t('upCheck'))));
+    if (upMsg === 'latest') app.appendChild(h('p', { class: 'added', role: 'status', style: 'margin:8px 0 0;text-align:center', text: t('upLatest') }));
+    app.appendChild(h('p', { class: 'none-line', style: 'margin-top:14px;text-align:center;font-size:12px' }, t('upVer', ''), h('bdi', { text: MY_VERSION })));
   }
 
   // ---- picking interests: big tiles, then ideas right away
@@ -3008,6 +3112,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (view === 'welcome') viewWelcome(app);
     else if (view === 'interests') viewInterests(app);
     else if (view === 'library') viewLibrary(app);
+    else if (view === 'settings') viewSettings(app);
     else if (view === 'today') viewToday(app);
     else if (view === 'history') viewHistory(app);
     else viewIdeas(app);
@@ -3018,6 +3123,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
 
   fixSaved(state.items); fixSaved(state.library);
+  applyLook();
   applyLang();
   render();
   syncReminder();
