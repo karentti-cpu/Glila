@@ -589,6 +589,7 @@ html.big .gear { min-width: 34px; }
     mMore: '⋯ עוד', mList: '➕ לרשימה', lsNew: '+ רשימה חדשה', lsNamePh: 'שם הרשימה, למשל: לאוטו', lsCreate: 'יצירה',
     lsDone: '✓ סיימתי', lsUndo: 'החזרה', lsRemove: 'הסרה', lsDel: 'מחיקת הרשימה', lsLeft: 'נותרו: {0}', lsNext: '🎧 הבא בתור:',
     lsEmpty: 'הרשימה ריקה. מוסיפים מכל כרטיס: ⋯ עוד ← ➕ לרשימה.', lsPick: 'לאיזו רשימה?',
+    hAllTopics: 'כל הנושאים',
     tdAdd: '+ להיום', tdAdded: '✓ נוסף להיום', coYesterday: 'לא הספקת אתמול', coLater: 'שמרת לאחר כך',
     sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
     mvWhere: '📺 איפה לצפות',
@@ -621,6 +622,7 @@ html.big .gear { min-width: 34px; }
     mMore: '⋯ Plus', mList: '➕ À une liste', lsNew: '+ Nouvelle liste', lsNamePh: 'Nom de la liste, par ex. : en voiture', lsCreate: 'Créer',
     lsDone: '✓ Terminé', lsUndo: 'Remettre', lsRemove: 'Retirer', lsDel: 'Supprimer la liste', lsLeft: 'Reste : {0}', lsNext: '🎧 À suivre :',
     lsEmpty: 'Liste vide. Ajoutez depuis n’importe quelle carte : ⋯ Plus → ➕ À une liste.', lsPick: 'Dans quelle liste ?',
+    hAllTopics: 'Tous les sujets',
     tdAdd: '+ Aujourd’hui', tdAdded: '✓ Ajouté à aujourd’hui', coYesterday: 'Pas eu le temps hier', coLater: 'Gardé pour plus tard',
     sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
     mvWhere: '📺 Où le regarder',
@@ -653,6 +655,7 @@ html.big .gear { min-width: 34px; }
     mMore: '⋯ More', mList: '➕ To a list', lsNew: '+ New list', lsNamePh: 'List name, e.g. for the car', lsCreate: 'Create',
     lsDone: '✓ Done', lsUndo: 'Put back', lsRemove: 'Remove', lsDel: 'Delete list', lsLeft: 'Left: {0}', lsNext: '🎧 Up next:',
     lsEmpty: 'Empty list. Add from any card: ⋯ More → ➕ To a list.', lsPick: 'Which list?',
+    hAllTopics: 'All topics',
     tdAdd: '+ Today', tdAdded: '✓ Added to today', coYesterday: 'Didn’t get to it yesterday', coLater: 'Saved for later',
     sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', sgNone: 'No topic with that name yet. “Search” will look for it.',
     mvWhere: '📺 Where to watch',
@@ -866,7 +869,7 @@ html.big .gear { min-width: 34px; }
     if (state.history.length > 1000) state.history.length = 1000;
     save();
   }
-  var histFilter = 'all';
+  var histFilter = 'all', histTopic = '';
   function actionLabel(a) {
     return a === 'done' ? t('histDone') : a === 'planned' ? t('histPlanned') : a === 'search' ? t('histSearch') : t('histOpened');
   }
@@ -884,7 +887,20 @@ html.big .gear { min-width: 34px; }
       fchips.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': histFilter === f[0] ? 'true' : 'false', onclick: function () { histFilter = f[0]; render(); } }, t(f[1])));
     });
     app.appendChild(fchips);
-    var shown = state.history.filter(function (e) { return histFilter === 'all' || e.action === histFilter; });
+    // and by topic: the topics that appear in the history, most used first
+    var tcount = {};
+    state.history.forEach(function (e) { if (e.topic && e.action !== 'search') tcount[e.topic] = (tcount[e.topic] || 0) + 1; });
+    var tnames = Object.keys(tcount).sort(function (a, b) { return tcount[b] - tcount[a]; });
+    if (histTopic && tnames.indexOf(histTopic) === -1) histTopic = '';
+    if (tnames.length > 1) {
+      var tch = h('div', { class: 'chips', style: 'margin-top:10px' });
+      tch.appendChild(h('button', { type: 'button', class: 'chip small', 'aria-pressed': histTopic ? 'false' : 'true', onclick: function () { histTopic = ''; render(); } }, t('hAllTopics')));
+      tnames.forEach(function (n) {
+        tch.appendChild(h('button', { type: 'button', class: 'chip small', 'aria-pressed': histTopic === n ? 'true' : 'false', onclick: function () { histTopic = n; render(); } }, n + ' (' + tcount[n] + ')'));
+      });
+      app.appendChild(tch);
+    }
+    var shown = state.history.filter(function (e) { return (histFilter === 'all' || e.action === histFilter) && (!histTopic || e.topic === histTopic); });
     if (!shown.length) {
       app.appendChild(h('div', { class: 'empty', style: 'margin-top:20px' }, h('p', { style: 'margin:0', text: t('histEmpty') })));
       return;
@@ -899,7 +915,7 @@ html.big .gear { min-width: 34px; }
       var url = safeUrl(e.url);
       var time = new Date(e.ts).toLocaleTimeString(LOCALE[state.ui], { hour: '2-digit', minute: '2-digit' });
       ul.appendChild(h('li', { class: 'row wrap' },
-        h('div', { class: 'body' },
+        h('div', { class: 'body', style: 'flex-basis:100%' },
           h('div', { class: 'title', text: e.title }),
           h('div', { class: 'meta' },
             h('span', { text: time }),
