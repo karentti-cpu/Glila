@@ -198,6 +198,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .cur-pill { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .cur-pill .chip { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .searchbox .cur-pill .btn { width: auto; min-height: 34px; padding: 4px 12px; font-size: 14px; }
+.more { padding-top: 10px; border-top: 1px dashed var(--line); }
 .tp-head .fb-go { color: var(--accent); }
 .chip.del { border-color: var(--danger); color: var(--danger); }
 .tp-sel { display: inline-flex; }
@@ -570,6 +571,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
+    mMore: '⋯ עוד', mList: '➕ לרשימה', lsNew: '+ רשימה חדשה', lsNamePh: 'שם הרשימה, למשל: לאוטו', lsCreate: 'יצירה',
+    lsDone: '✓ סיימתי', lsUndo: 'החזרה', lsRemove: 'הסרה', lsDel: 'מחיקת הרשימה', lsLeft: 'נותרו: {0}', lsNext: '🎧 הבא בתור:',
+    lsEmpty: 'הרשימה ריקה. מוסיפים מכל כרטיס: ⋯ עוד ← ➕ לרשימה.', lsPick: 'לאיזו רשימה?',
     tdAdd: '+ להיום', tdAdded: '✓ נוסף להיום', coYesterday: 'לא הספקת אתמול', coLater: 'שמרת לאחר כך',
     sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
     mvWhere: '📺 איפה לצפות',
@@ -597,6 +601,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
+    mMore: '⋯ Plus', mList: '➕ À une liste', lsNew: '+ Nouvelle liste', lsNamePh: 'Nom de la liste, par ex. : en voiture', lsCreate: 'Créer',
+    lsDone: '✓ Terminé', lsUndo: 'Remettre', lsRemove: 'Retirer', lsDel: 'Supprimer la liste', lsLeft: 'Reste : {0}', lsNext: '🎧 À suivre :',
+    lsEmpty: 'Liste vide. Ajoutez depuis n’importe quelle carte : ⋯ Plus → ➕ À une liste.', lsPick: 'Dans quelle liste ?',
     tdAdd: '+ Aujourd’hui', tdAdded: '✓ Ajouté à aujourd’hui', coYesterday: 'Pas eu le temps hier', coLater: 'Gardé pour plus tard',
     sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
     mvWhere: '📺 Où le regarder',
@@ -624,6 +631,9 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
+    mMore: '⋯ More', mList: '➕ To a list', lsNew: '+ New list', lsNamePh: 'List name, e.g. for the car', lsCreate: 'Create',
+    lsDone: '✓ Done', lsUndo: 'Put back', lsRemove: 'Remove', lsDel: 'Delete list', lsLeft: 'Left: {0}', lsNext: '🎧 Up next:',
+    lsEmpty: 'Empty list. Add from any card: ⋯ More → ➕ To a list.', lsPick: 'Which list?',
     tdAdd: '+ Today', tdAdded: '✓ Added to today', coYesterday: 'Didn’t get to it yesterday', coLater: 'Saved for later',
     sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', sgNone: 'No topic with that name yet. “Search” will look for it.',
     mvWhere: '📺 Where to watch',
@@ -653,6 +663,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     ['🗣️', 'שפות', 'Langues', 'Languages'], ['🤔', 'פילוסופיה', 'Philosophie', 'Philosophy']
   ];
   var SITE_URL = 'https://karentti-cpu.github.io/Glila/';
+  var LIST_PRESETS = [['🚗', 'לאוטו', 'En voiture', 'For the car'], ['🚶', 'להליכה', 'Pour marcher', 'For a walk'],
+    ['🛏️', 'לפני השינה', 'Avant de dormir', 'Before sleep'], ['🍳', 'לבישול', 'En cuisinant', 'While cooking']];
 
   var state = load();
   var view = (state.showWelcome || !state.welcomed) ? 'welcome' : 'today';
@@ -667,7 +679,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   var sug = { cats: [], topics: [], all: false, kinds: ['video', 'movie', 'podcast', 'show', 'article'], free: '' };
 
   function load() {
-    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null };
+    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null, lists: [] };
     try {
       // the Android app used to keep its own copy of the data; it is handed over once
       if (!localStorage.getItem(KEY) && window.GlilaAndroid && window.GlilaAndroid.takeOldData) {
@@ -689,7 +701,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         library: Array.isArray(p.library) ? p.library : [],
         platforms: (Array.isArray(p.platforms) && p.platforms.length) ? p.platforms : ['youtube', 'apple'],
         reminder: (p.reminder && /^\d\d:\d\d$/.test(p.reminder.time)) ? { on: !!p.reminder.on, time: p.reminder.time } : { on: false, time: '20:00' },
-        topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null
+        topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null,
+        lists: Array.isArray(p.lists) ? p.lists : []
       };
     } catch (e) { return def; }
   }
@@ -1148,6 +1161,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     if (state.items.length) topBar.appendChild(h('button', { class: 'btn solid', type: 'button', onclick: pickBored }, t('bored')));
     topBar.appendChild(h('button', { class: 'btn', type: 'button', onclick: function () { view = 'ideas'; armed = null; render(); window.scrollTo(0, 0); } }, t('tab_ideas')));
     if (topBar.childNodes.length) app.appendChild(topBar);
+    var un = upNextRow();
+    if (un) app.appendChild(un);
     if (state.items.length) {
       var tc = h('div', { class: 'chips', style: 'margin-top:12px;align-items:center' }, h('span', { class: 'meta', style: 'font-weight:700', text: t('tmHave') }));
       MINUTES.forEach(function (n) {
@@ -1596,7 +1611,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
     var on = !!ex;
     return h('button', { type: 'button', class: 'btn small' + (on ? ' solid' : ''), 'aria-pressed': on ? 'true' : 'false', 'aria-label': t('like'), onclick: function () {
       if (ex) {
-        if (ex.liked) { state.library = state.library.filter(function (y) { return y !== ex; }); save(); }
+        if (ex.liked) { removeFromLibrary(ex.id); save(); }
       } else {
         var tp = obj.topic ? topicByName(obj.topic, true) : null;
         state.library.unshift({ id: uid(), title: obj.title, creator: obj.creator || '', url: obj.url || '', kind: KIND_OK[obj.kind] ? obj.kind : 'other', lang: obj.lang || '', topic: tp ? tp.name : '', liked: true });
@@ -1604,6 +1619,128 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       }
       render();
     } }, (on ? '\u2665 ' + t('liked') : '\u2661 ' + t('like')));
+  }
+
+  // ---- my lists (for the car, for a walk…): library items in an order, with what is done
+  function listName(l) { return l.emoji + ' ' + l.name; }
+  function libItemFor(r) {
+    if (r.mine) return state.library.filter(function (y) { return y.id === r.id; })[0];
+    var ex = libFind(r.title, r.creator);
+    if (ex) return ex;
+    var tp = topicLabel(r) ? topicByName(topicLabel(r), true) : null;
+    ex = { id: uid(), title: r.title, creator: r.creator || '', url: r.site || r.url || '', kind: KIND_OK[r.kind] ? r.kind : 'other', lang: r.lang || '', topic: tp ? tp.name : '' };
+    var mn = Math.round(minutesOf(r));
+    if (mn > 0) ex.mins = mn;
+    if (r.img) ex.img = r.img;
+    state.library.unshift(ex);
+    return ex;
+  }
+  function removeFromLibrary(id) {
+    state.library = state.library.filter(function (y) { return y.id !== id; });
+    state.lists.forEach(function (l) { l.items = l.items.filter(function (x) { return x !== id; }); l.heard = (l.heard || []).filter(function (x) { return x !== id; }); });
+    delete libUi[id];
+  }
+  function newList(emoji, name) {
+    var l = { id: uid(), emoji: emoji || '🎧', name: name, items: [], heard: [] };
+    state.lists.push(l);
+    return l;
+  }
+  var listDraft = '';
+  // the lists to put a card in: tap to add or take out; presets when there are no lists yet
+  function listPicker(r) {
+    var box = h('div', { class: 'card', style: 'gap:10px;padding:12px' }, h('div', { class: 'meta', style: 'font-weight:700', text: t('lsPick') }));
+    var cur = r.mine ? r.id : (libFind(r.title, r.creator) || {}).id;
+    var chips = h('div', { class: 'chips' });
+    state.lists.forEach(function (l) {
+      var on = !!cur && l.items.indexOf(cur) !== -1;
+      chips.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': on ? 'true' : 'false', onclick: function () {
+        var it = libItemFor(r);
+        if (l.items.indexOf(it.id) === -1) l.items.push(it.id); else l.items = l.items.filter(function (x) { return x !== it.id; });
+        save(); render();
+      } }, listName(l)));
+    });
+    if (!state.lists.length) {
+      LIST_PRESETS.forEach(function (p) {
+        chips.appendChild(h('button', { type: 'button', class: 'chip', style: 'border-style:dashed', onclick: function () {
+          var l = newList(p[0], p[{ he: 1, fr: 2, en: 3 }[state.ui] || 1]);
+          l.items.push(libItemFor(r).id); save(); render();
+        } }, '+ ' + p[0] + ' ' + p[{ he: 1, fr: 2, en: 3 }[state.ui] || 1]));
+      });
+    }
+    box.appendChild(chips);
+    var inp = h('input', { type: 'text', dir: 'auto', value: listDraft, placeholder: t('lsNamePh'), 'aria-label': t('lsNew') });
+    inp.addEventListener('input', function (e) { listDraft = e.target.value; });
+    box.appendChild(h('form', { class: 'topic-add', onsubmit: function (e) {
+      e.preventDefault();
+      var name = norm(listDraft);
+      if (!name) return;
+      var l = newList('🎧', name); listDraft = '';
+      l.items.push(libItemFor(r).id); save(); render();
+    } }, inp, h('button', { type: 'submit', class: 'btn small solid' }, t('lsCreate'))));
+    return box;
+  }
+  function listLeft(l) {
+    var mins = 0;
+    l.items.forEach(function (id) {
+      if ((l.heard || []).indexOf(id) !== -1) return;
+      var x = state.library.filter(function (y) { return y.id === id; })[0];
+      if (x && x.mins) mins += x.mins;
+    });
+    return mins;
+  }
+  function nextInList(l) {
+    var heard = l.heard || [];
+    for (var i = 0; i < l.items.length; i++) {
+      if (heard.indexOf(l.items[i]) !== -1) continue;
+      var x = state.library.filter(function (y) { return y.id === l.items[i]; })[0];
+      if (x) return x;
+    }
+    return null;
+  }
+  function openLibItem(x) {
+    var url = safeUrl(x.url) || searchUrl({ title: x.title, kind: x.kind, lang: x.lang, search: x.title + (x.creator ? ' ' + x.creator : '') });
+    logHistory({ title: x.title, url: url, kind: x.kind, lang: x.lang, mins: x.mins }, 'open', x.topic || '');
+    openUrl(url);
+  }
+  function viewList(app, l) {
+    var left = listLeft(l), armedDel = armed === 'list:' + l.id;
+    app.appendChild(h('h2', { class: 'sec', style: 'font-size:22px;margin-top:18px', text: listName(l) + (left ? ' · ' + t('lsLeft', fmtDur(left * 60)) : '') }));
+    var heard = l.heard || [];
+    var order = l.items.filter(function (id) { return heard.indexOf(id) === -1; }).concat(l.items.filter(function (id) { return heard.indexOf(id) !== -1; }));
+    var rows = order.map(function (id) { return state.library.filter(function (y) { return y.id === id; })[0]; }).filter(Boolean);
+    if (!rows.length) app.appendChild(h('p', { class: 'none-line', text: t('lsEmpty') }));
+    var ul = h('ul', { class: 'list' });
+    rows.forEach(function (x) {
+      var isDone = heard.indexOf(x.id) !== -1;
+      ul.appendChild(h('li', { class: 'row wrap' + (isDone ? ' done' : '') },
+        h('div', { class: 'body', style: 'flex-basis:100%' }, h('div', { class: 'title', text: (KIND_EMOJI[x.kind] || '✨') + ' ' + x.title }),
+          h('div', { class: 'meta' }, x.creator ? h('span', { text: x.creator }) : null, x.mins ? h('span', { class: 'tag', text: t('tmLen', fmtDur(x.mins * 60)) }) : null)),
+        isDone ? null : h('button', { type: 'button', class: 'btn small solid', onclick: function () { openLibItem(x); } }, '\u25B6 ' + t('open')),
+        h('button', { type: 'button', class: 'btn small', onclick: function () {
+          if (isDone) l.heard = heard.filter(function (y) { return y !== x.id; });
+          else { l.heard = heard.concat([x.id]); l.items = l.items.filter(function (y) { return y !== x.id; }).concat([x.id]); }
+          save(); render();
+        } }, isDone ? t('lsUndo') : t('lsDone')),
+        h('button', { type: 'button', class: 'btn small', onclick: function () {
+          l.items = l.items.filter(function (y) { return y !== x.id; }); l.heard = heard.filter(function (y) { return y !== x.id; }); save(); render();
+        } }, t('lsRemove'))));
+    });
+    app.appendChild(ul);
+    app.appendChild(h('div', { class: 'acts', style: 'margin-top:14px' }, h('button', { type: 'button', class: 'btn small danger' + (armedDel ? ' armed' : ''), onclick: function () {
+      if (armedDel) { state.lists = state.lists.filter(function (y) { return y !== l; }); libList = ''; armed = null; save(); }
+      else armed = 'list:' + l.id;
+      render();
+    } }, armedDel ? t('sure') : t('lsDel'))));
+  }
+  // on Today: one tap opens the next thing in each list (shown only when a list has something left)
+  function upNextRow() {
+    var ls = state.lists.filter(function (l) { return nextInList(l); });
+    if (!ls.length) return null;
+    var row = h('div', { class: 'chips', style: 'margin-top:12px;align-items:center' }, h('span', { class: 'meta', style: 'font-weight:700', text: t('lsNext') }));
+    ls.forEach(function (l) {
+      row.appendChild(h('button', { type: 'button', class: 'chip', title: nextInList(l).title, onclick: function () { openLibItem(nextInList(l)); } }, '\u25B6 ' + listName(l)));
+    });
+    return row;
   }
 
   function topicLabel(r) { return (r.mine || r.direct) ? (r.topic || '') : catName(r); }
@@ -2090,29 +2227,38 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
       a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'plan'; armed = null; planMsg = ''; render(); } }, t('sSeePlan')));
     } else {
       a.appendChild(h('button', { type: 'button', class: 'btn small solid', onclick: function () { r.days = [new Date().getDay()]; addSuggestion(r, false); } }, t('sToday')));
-      a.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.open ? 'true' : 'false', onclick: function () { r.open = !r.open; render(); } }, t('sDays')));
-      a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { addSuggestion(r, true); } }, t('saveLater')));
     }
-    if (r.kind === 'movie') {
-      var jw = 'https://www.justwatch.com/' + ({ he: 'il', fr: 'fr', en: 'us' }[state.ui] || 'us') + '/search?q=' + encodeURIComponent(String(r.title).replace(/\s*\((סרט|film|movie)[^)]*\)\s*$/i, ''));
-      a.appendChild(h('a', { class: 'btn small', href: jw, target: '_blank', rel: 'noopener noreferrer' }, t('mvWhere')));
-    }
-    a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () {
-      shareText(t('shMsg', r.title + (r.creator ? ' – ' + r.creator : ''), niceUrl(r.site || r.url || searchUrl(r)), SITE_URL));
-    } }, t('shFriend')));
-    if (!r.mine || r.liked) a.appendChild(likeBtn({ title: r.title, creator: r.creator, url: r.site || '', kind: r.kind, lang: r.lang, topic: topicLabel(r) }));
-    if (r.mine) {
-      var armedHere = libArmed === r.id;
-      a.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () {
-        var x = state.library.filter(function (y) { return y.id === r.id; })[0]; if (x) editLib(x);
-      } }, t('edit')));
-      a.appendChild(h('button', { type: 'button', class: 'btn small danger' + (armedHere ? ' armed' : ''), onclick: function () {
-        if (armedHere) { state.library = state.library.filter(function (y) { return y.id !== r.id; }); delete libUi[r.id]; libArmed = null; save(); }
-        else libArmed = r.id;
-        render();
-      } }, armedHere ? t('sure') : t('del')));
-    }
+    a.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.more ? 'true' : 'false', onclick: function () { r.more = !r.more; render(); } }, t('mMore')));
     li.appendChild(a);
+    if (r.more) {
+      var m = h('div', { class: 'acts more' });
+      if (!r.added) {
+        m.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.open ? 'true' : 'false', onclick: function () { r.open = !r.open; render(); } }, t('sDays')));
+        m.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { addSuggestion(r, true); } }, t('saveLater')));
+      }
+      if (r.kind === 'movie') {
+        var jw = 'https://www.justwatch.com/' + ({ he: 'il', fr: 'fr', en: 'us' }[state.ui] || 'us') + '/search?q=' + encodeURIComponent(String(r.title).replace(/\s*\((סרט|film|movie)[^)]*\)\s*$/i, ''));
+        m.appendChild(h('a', { class: 'btn small', href: jw, target: '_blank', rel: 'noopener noreferrer' }, t('mvWhere')));
+      }
+      if (!r.mine || r.liked) m.appendChild(likeBtn({ title: r.title, creator: r.creator, url: r.site || '', kind: r.kind, lang: r.lang, topic: topicLabel(r) }));
+      m.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.pick ? 'true' : 'false', onclick: function () { r.pick = !r.pick; render(); } }, t('mList')));
+      m.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () {
+        shareText(t('shMsg', r.title + (r.creator ? ' – ' + r.creator : ''), niceUrl(r.site || r.url || searchUrl(r)), SITE_URL));
+      } }, t('shFriend')));
+      if (r.mine) {
+        var armedHere = libArmed === r.id;
+        m.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () {
+          var x = state.library.filter(function (y) { return y.id === r.id; })[0]; if (x) editLib(x);
+        } }, t('edit')));
+        m.appendChild(h('button', { type: 'button', class: 'btn small danger' + (armedHere ? ' armed' : ''), onclick: function () {
+          if (armedHere) { removeFromLibrary(r.id); libArmed = null; save(); }
+          else libArmed = r.id;
+          render();
+        } }, armedHere ? t('sure') : t('del')));
+      }
+      li.appendChild(m);
+      if (r.pick) li.appendChild(listPicker(r));
+    }
     if (r.open && !r.added) {
       var dc = h('div', { class: 'chips' });
       days().forEach(function (d, i) {
@@ -2395,7 +2541,7 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 
 /* ---------- topics, backup, interface language ---------- */
   function doBackup() {
-    var data = JSON.stringify({ app: 'galila-hakhama', version: 2, topics: state.topics, items: state.items, done: state.done, langs: state.langs, history: state.history, library: state.library, platforms: state.platforms });
+    var data = JSON.stringify({ app: 'galila-hakhama', version: 2, topics: state.topics, items: state.items, done: state.done, langs: state.langs, history: state.history, library: state.library, platforms: state.platforms, lists: state.lists });
     try {
       var blob = new Blob([data], { type: 'application/json' });
       var url = URL.createObjectURL(blob);
@@ -2439,7 +2585,8 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
         var hist = (Array.isArray(p.history) ? p.history : []).filter(function (x) { return x && typeof x === 'object' && typeof x.ts === 'number'; }).slice(0, 1000).map(function (x) {
           return { id: String(x.id || uid()), title: String(x.title || '').slice(0, 300), url: x.url ? safeUrl(String(x.url)) : '', kind: KIND_OK[x.kind] ? x.kind : 'other', lang: LANGS[x.lang] ? x.lang : '', topic: String(x.topic || '').slice(0, 100), action: (x.action === 'done' || x.action === 'planned' || x.action === 'search') ? x.action : 'open', ts: x.ts };
         });
-        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms, reminder: state.reminder, topicsOpen: state.topicsOpen };
+        state = { topics: topics, items: items, done: done, langs: langs.length ? langs : ['he'], ui: state.ui, history: hist, welcomed: true, showWelcome: state.showWelcome, library: libr, platforms: state.platforms, reminder: state.reminder, topicsOpen: state.topicsOpen,
+          lists: Array.isArray(p.lists) ? p.lists.filter(function (l) { return l && Array.isArray(l.items); }) : state.lists };
         draft = newDraft(); armed = null; pick = { id: null, msg: '' }; save();
         backupMsg = t('rsDone');
       } catch (e) {
@@ -2544,9 +2691,35 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
   }
 
   // ---- my library: everything saved with ♡ or added by hand, filtered by topic if wanted
-  var libFilter = '', tpEdit = false;
+  var libFilter = '', tpEdit = false, libList = '', listFormOpen = false;
   function viewLibrary(app) {
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('lTitle') }), h('p', { text: t('lSub') })));
+    var lc = h('div', { class: 'chips', style: 'margin-top:14px' });
+    lc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': libList ? 'false' : 'true', onclick: function () { libList = ''; render(); } }, t('lAll', state.library.length)));
+    state.lists.forEach(function (l) {
+      lc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': libList === l.id ? 'true' : 'false', onclick: function () { libList = l.id; armed = null; render(); } }, listName(l) + ' (' + l.items.length + ')'));
+    });
+    lc.appendChild(h('button', { type: 'button', class: 'chip', style: 'border-style:dashed', 'aria-expanded': listFormOpen ? 'true' : 'false', onclick: function () { listFormOpen = !listFormOpen; render(); } }, t('lsNew')));
+    app.appendChild(lc);
+    if (listFormOpen) {
+      var pc = h('div', { class: 'chips', style: 'margin-top:10px' });
+      LIST_PRESETS.forEach(function (p) {
+        var nm = p[{ he: 1, fr: 2, en: 3 }[state.ui] || 1];
+        if (state.lists.some(function (l) { return l.name === nm; })) return;
+        pc.appendChild(h('button', { type: 'button', class: 'chip', onclick: function () { libList = newList(p[0], nm).id; listFormOpen = false; save(); render(); } }, '+ ' + p[0] + ' ' + nm));
+      });
+      app.appendChild(pc);
+      var li2 = h('input', { type: 'text', dir: 'auto', value: listDraft, placeholder: t('lsNamePh'), 'aria-label': t('lsNew') });
+      li2.addEventListener('input', function (e) { listDraft = e.target.value; });
+      app.appendChild(h('form', { class: 'topic-add', style: 'margin-top:10px', onsubmit: function (e) {
+        e.preventDefault();
+        var name = norm(listDraft); if (!name) return;
+        libList = newList('🎧', name).id; listDraft = ''; listFormOpen = false; save(); render();
+      } }, li2, h('button', { type: 'submit', class: 'btn solid' }, t('lsCreate'))));
+    }
+    var chosen = state.lists.filter(function (l) { return l.id === libList; })[0];
+    if (chosen) { viewList(app, chosen); return; }
+    libList = '';
     var names = [];
     state.library.forEach(function (x) { var n = x.topic || '-'; if (names.indexOf(n) === -1) names.push(n); });
     if (libFilter && names.indexOf(libFilter) === -1) libFilter = '';
