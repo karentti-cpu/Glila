@@ -579,7 +579,7 @@ html.big .gear { min-width: 34px; }
     rmGoogle: 'הוספה ל־Google Calendar', rmIcs: 'קובץ ליומן (אייפון ואחרים)',
     rmNotifTitle: 'גלילה חכמה', rmChannel: 'תזכורת יומית', rmLine: 'יש לך {0} דברים בתוכנית להיום', rmLine1: 'יש לך דבר אחד בתוכנית להיום',
     rmLineNone: 'אין תוכנית להיום. מה בא לך לראות?', rmCalText: 'מה בתוכנית היום?',
-    tmHave: '⏱ יש לי:', tmMin: '{0} דק׳', tmHour: 'שעה', tmFits: 'מתאים ל־{0}', tmUnknown: 'האורך לא ידוע',
+    tmHave: '⏱ זמן לרשותי:', tmLabel: 'זמן לרשותי', tmAny: 'הכול', tmUpTo: 'עד {0}', tmMin: '{0} דק׳', tmHour: 'שעה', tmFits: 'מתאים ל־{0}', tmUnknown: 'האורך לא ידוע',
     tmNone: 'אין בתוכנית משהו שמתאים ל־{0} דקות. אפשר לחפש תוכן קצר ב"תכנון והצעות".', tmLen: '⏱ {0}',
     fMins: 'כמה זמן זה לוקח? (לא חובה)',
     shGot: 'קיבלתי את מה ששיתפת. בחרי יום ושמרי.',
@@ -613,7 +613,7 @@ html.big .gear { min-width: 34px; }
     rmGoogle: 'Ajouter à Google Agenda', rmIcs: 'Fichier agenda (iPhone et autres)',
     rmNotifTitle: 'Glila', rmChannel: 'Rappel quotidien', rmLine: '{0} choses prévues aujourd’hui', rmLine1: 'Une chose prévue aujourd’hui',
     rmLineNone: 'Rien de prévu aujourd’hui. Qu’avez-vous envie de voir ?', rmCalText: 'Qu’y a-t-il au programme aujourd’hui ?',
-    tmHave: '⏱ J’ai :', tmMin: '{0} min', tmHour: '1 h', tmFits: 'Pour {0}', tmUnknown: 'Durée inconnue',
+    tmHave: '⏱ Temps disponible :', tmLabel: 'Temps disponible', tmAny: 'Tout', tmUpTo: 'jusqu’à {0}', tmMin: '{0} min', tmHour: '1 h', tmFits: 'Pour {0}', tmUnknown: 'Durée inconnue',
     tmNone: 'Rien de prévu ne tient en {0} minutes. Cherchez un contenu court dans « Plan et idées ».', tmLen: '⏱ {0}',
     fMins: 'Combien de temps cela dure-t-il ? (facultatif)',
     shGot: 'Contenu reçu. Choisissez un jour, puis enregistrez.',
@@ -647,7 +647,7 @@ html.big .gear { min-width: 34px; }
     rmGoogle: 'Add to Google Calendar', rmIcs: 'Calendar file (iPhone and others)',
     rmNotifTitle: 'Scroll Wise', rmChannel: 'Daily reminder', rmLine: '{0} things planned for today', rmLine1: 'One thing planned for today',
     rmLineNone: 'Nothing planned today. What would you like to see?', rmCalText: 'What’s on the plan today?',
-    tmHave: '⏱ I have:', tmMin: '{0} min', tmHour: '1 hour', tmFits: 'Fits {0}', tmUnknown: 'Length unknown',
+    tmHave: '⏱ Time I have:', tmLabel: 'Time I have', tmAny: 'Any', tmUpTo: 'up to {0}', tmMin: '{0} min', tmHour: '1 hour', tmFits: 'Fits {0}', tmUnknown: 'Length unknown',
     tmNone: 'Nothing planned fits in {0} minutes. Look for something short in “Plan & ideas”.', tmLen: '⏱ {0}',
     fMins: 'How long does it take? (optional)',
     shGot: 'Got what you shared. Pick a day and save.',
@@ -2512,7 +2512,8 @@ html.big .gear { min-width: 34px; }
       h('span', { class: 'fb-text' },
         h('span', { class: 'fb-title', text: t('mgFilters') }),
         h('span', { class: 'fb-sum', text: (Object.keys(LANGS).filter(function (k) { return state.langs.indexOf(k) !== -1; }).map(function (k) { return LANGS[k]; }).join(', ') || t('mgNone')) +
-          ' · ' + (SKINDS.filter(function (k) { return sug.kinds.indexOf(k) !== -1; }).map(function (k) { return t('kp_' + k); }).join(', ') || t('mgNone')) })),
+          ' · ' + (SKINDS.filter(function (k) { return sug.kinds.indexOf(k) !== -1; }).map(function (k) { return t('kp_' + k); }).join(', ') || t('mgNone')) +
+          (sug.maxMins ? ' · ⏱ ' + t('tmUpTo', minLabel(sug.maxMins)) : '') })),
       h('span', { class: 'fb-go', text: filtersOpen ? t('mgClose') + ' \u25B4' : t('mgChange') + ' \u25BE' }));
     fb.appendChild(fbHead);
     if (filtersOpen) {
@@ -2529,6 +2530,12 @@ html.big .gear { min-width: 34px; }
         kc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': sug.kinds.indexOf(k) !== -1 ? 'true' : 'false', onclick: function () { toggle(sug.kinds, k); refresh(); } }, t('kp_' + k)));
       });
       kf.appendChild(kc); card.appendChild(kf);
+      var tf = h('fieldset', null, h('legend', { text: t('tmLabel') }));
+      var tcx = h('div', { class: 'chips' });
+      [0].concat(MINUTES).forEach(function (n) {
+        tcx.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': (sug.maxMins || 0) === n ? 'true' : 'false', onclick: function () { sug.maxMins = n; render(); } }, n ? minLabel(n) : t('tmAny')));
+      });
+      tf.appendChild(tcx); card.appendChild(tf);
       card.appendChild(h('div', { class: 'chips' }, h('button', { type: 'button', class: 'chip', 'aria-pressed': sug.all ? 'true' : 'false', onclick: function () { sug.all = !sug.all; render(); } }, t('sFullList'))));
       fb.appendChild(card);
     }
@@ -2590,6 +2597,7 @@ html.big .gear { min-width: 34px; }
           h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { runSearch(sr.suggest, sr.topic); } }, t('tHintYes', sr.suggest)))));
       }
       var shown = sr.only ? sr.items.filter(ONLY[sr.only]) : sr.items;
+      if (sug.maxMins) shown = shown.filter(function (r) { var m = minutesOf(r); return !m || m <= sug.maxMins; });
       if (shown.length && sr.status === 'done') {
         app.appendChild(h('div', { class: 'acts', style: 'margin:0 0 8px' }, h('button', { type: 'button', class: 'btn small', onclick: function () {
           var lines = shown.slice(0, 5).map(function (r) { return '• ' + r.title + '\n' + niceUrl(r.site || r.url || searchUrl(r)); }).join('\n\n');
