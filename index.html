@@ -591,7 +591,7 @@ html.big .gear { min-width: 34px; }
     lsEmpty: 'הרשימה ריקה. מוסיפים מכל כרטיס: ⋯ עוד ← ➕ לרשימה.', lsPick: 'לאיזו רשימה?',
     hAllTopics: 'כל הנושאים',
     lTopicSel: 'נושא:', lNewShort: '+ רשימה',
-    tdAdd: '+ להיום', tdAdded: '✓ נוסף להיום', coYesterday: 'לא הספקת אתמול', coLater: 'שמרת לאחר כך',
+    tdAdd: '+ להיום', tdAdded: '✓ נוסף להיום', coYesterday: 'לא הספקת אתמול', coLater: 'שמרת לאחר כך', coDrop: 'להסיר', coMore: 'עוד {0}', coLess: 'פחות',
     sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
     mvWhere: '📺 איפה לצפות',
     upNew: '✨ יש גרסה חדשה של האפליקציה', upNow: 'לעדכון עכשיו', upCheck: '🔄 בדיקת עדכונים', upLatest: 'יש לך את הגרסה האחרונה.', upChecking: 'בודקת…', upVer: 'גרסה {0}',
@@ -625,7 +625,7 @@ html.big .gear { min-width: 34px; }
     lsEmpty: 'Liste vide. Ajoutez depuis n’importe quelle carte : ⋯ Plus → ➕ À une liste.', lsPick: 'Dans quelle liste ?',
     hAllTopics: 'Tous les sujets',
     lTopicSel: 'Sujet :', lNewShort: '+ Liste',
-    tdAdd: '+ Aujourd’hui', tdAdded: '✓ Ajouté à aujourd’hui', coYesterday: 'Pas eu le temps hier', coLater: 'Gardé pour plus tard',
+    tdAdd: '+ Aujourd’hui', tdAdded: '✓ Ajouté à aujourd’hui', coYesterday: 'Pas eu le temps hier', coLater: 'Gardé pour plus tard', coDrop: 'Retirer', coMore: '{0} de plus', coLess: 'Moins',
     sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
     mvWhere: '📺 Où le regarder',
     upNew: '✨ Une nouvelle version est disponible', upNow: 'Mettre à jour', upCheck: '🔄 Vérifier les mises à jour', upLatest: 'Vous avez la dernière version.', upChecking: 'Vérification…', upVer: 'Version {0}',
@@ -659,7 +659,7 @@ html.big .gear { min-width: 34px; }
     lsEmpty: 'Empty list. Add from any card: ⋯ More → ➕ To a list.', lsPick: 'Which list?',
     hAllTopics: 'All topics',
     lTopicSel: 'Topic:', lNewShort: '+ List',
-    tdAdd: '+ Today', tdAdded: '✓ Added to today', coYesterday: 'Didn’t get to it yesterday', coLater: 'Saved for later',
+    tdAdd: '+ Today', tdAdded: '✓ Added to today', coYesterday: 'Didn’t get to it yesterday', coLater: 'Saved for later', coDrop: 'Remove', coMore: '{0} more', coLess: 'Less',
     sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', sgNone: 'No topic with that name yet. “Search” will look for it.',
     mvWhere: '📺 Where to watch',
     upNew: '✨ A new version of the app is ready', upNow: 'Update now', upCheck: '🔄 Check for updates', upLatest: 'You have the latest version.', upChecking: 'Checking…', upVer: 'Version {0}',
@@ -1203,22 +1203,48 @@ html.big .gear { min-width: 34px; }
     save(); render();
   }
   // under today's plan: what yesterday's plan left undone (it moves to today) and what was saved for later
+  // titles that share most of their words count as the same thing ("L'histoire cachée de vos objets…" ×3)
+  function titleWords(x) {
+    return (x || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim().split(' ').filter(function (w) { return w.length > 1; });
+  }
+  function sameTitle(a, b) {
+    var A = titleWords(a), B = titleWords(b);
+    if (!A.length || !B.length) return false;
+    var inter = A.filter(function (w) { return B.indexOf(w) !== -1; }).length;
+    var union = A.length + B.length - inter;
+    return inter / union >= 0.5;
+  }
+  var coOpen = {};
   function carryOver(app) {
     var now = new Date(), idx = now.getDay(), y = new Date(now.getTime() - 86400000), yIdx = y.getDay();
     var yDone = state.done[dateKey(y)] || [];
-    var missed = state.items.filter(function (i) { return i.days.indexOf(yIdx) !== -1 && i.days.indexOf(idx) === -1 && yDone.indexOf(i.id) === -1; }).slice(0, 6);
-    var later = state.items.filter(function (i) { return i.later; }).slice(0, 6);
-    [[missed, 'coYesterday', function (i) { i.days = i.days.filter(function (d) { return d !== yIdx; }).concat([idx]); }],
-     [later, 'coLater', function (i) { i.later = false; i.days = [idx]; }]].forEach(function (g) {
-      if (!g[0].length) return;
-      app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: g[1] === 'coYesterday' ? t('coYesterday') : t('coLater') }));
-      var ul = h('ul', { class: 'list' });
+    var missed = state.items.filter(function (i) { return i.days.indexOf(yIdx) !== -1 && i.days.indexOf(idx) === -1 && yDone.indexOf(i.id) === -1; });
+    var later = state.items.filter(function (i) { return i.later; });
+    function fromYesterday(i) { i.days = i.days.filter(function (d) { return d !== yIdx; }); }
+    [[missed, 'coYesterday', function (i) { fromYesterday(i); i.days.push(idx); }, fromYesterday],
+     [later, 'coLater', function (i) { i.later = false; i.days = [idx]; }, function (i) { i.later = false; }]].forEach(function (g) {
+      // group look-alikes: show one, the rest go with it
+      var groups = [];
       g[0].forEach(function (i) {
+        var gr = groups.filter(function (x) { return sameTitle(x[0].title, i.title); })[0];
+        if (gr) gr.push(i); else groups.push([i]);
+      });
+      if (!groups.length) return;
+      app.appendChild(h('h2', { class: 'sec', style: 'font-size:20px', text: t(g[1]) }));
+      var ul = h('ul', { class: 'list' });
+      var open = coOpen[g[1]], shown = open ? groups : groups.slice(0, 3);
+      shown.forEach(function (gr) {
+        var i = gr[0], url = safeUrl(i.url);
         ul.appendChild(h('li', { class: 'row' },
-          h('div', { class: 'body' }, h('div', { class: 'title', text: i.title }), metaEl(i)),
-          h('button', { type: 'button', class: 'btn small solid', onclick: function () { g[2](i); save(); render(); } }, t('tdAdd'))));
+          h('div', { class: 'body' },
+            h('a', { class: 'title', href: url || webSearchUrl(i), target: '_blank', rel: 'noopener noreferrer', style: 'color:inherit;text-decoration:none', onclick: function () { logHistory(i, 'open'); } }, i.title, h('span', { 'aria-hidden': 'true', style: 'color:var(--accent,#1f6f6a);font-size:.85em' }, ' ↗')),
+            metaEl(i)),
+          h('button', { type: 'button', class: 'btn small solid', onclick: function () { g[2](i); gr.slice(1).forEach(g[3]); save(); render(); } }, t('tdAdd')),
+          h('button', { type: 'button', class: 'btn small', 'aria-label': t('coDrop'), title: t('coDrop'), onclick: function () { gr.forEach(g[3]); save(); render(); } }, '✕')));
       });
       app.appendChild(ul);
+      if (groups.length > 3) app.appendChild(h('button', { type: 'button', class: 'btn small', style: 'margin-top:8px', onclick: function () { coOpen[g[1]] = !open; render(); } },
+        open ? t('coLess') : t('coMore', groups.length - 3)));
     });
   }
   // days on which something was opened or done, counted back from today (yesterday keeps it alive)
