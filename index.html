@@ -342,7 +342,7 @@ html.big .gear { min-width: 34px; }
       bkSave: 'שמירת גיבוי', bkRestore: 'שחזור מקובץ', bkNoDl: 'שמירת גיבוי זמינה רק כשהדף נפתח בתוך Claude.',
       bkSaved: 'הגיבוי נשמר.', bkFail: 'לא הצלחתי לשמור את הקובץ.', rsRead: 'לא הצלחתי לקרוא את הקובץ.',
       rsDone: 'השחזור הושלם.', rsBad: 'הקובץ לא תקין. בחרי קובץ גיבוי שנשמר מהאפליקציה.',
-      back: 'חזרה', yesterday: 'אתמול', hist: 'היסטוריה', histTitle: 'מה ראית', histSub: 'מה שפתחת, סימנת, תכננת וחיפשת.',
+      back: 'חזרה', yesterday: 'אתמול', hist: 'היסטוריה', histTitle: 'מה ראית', histSub: 'מה שפתחת, סימנת ותכננת.',
       histEmpty: 'עוד אין היסטוריה. פריט שתפתחי או תסמני כבוצע יופיע כאן.', histOpened: 'נפתח', histDone: 'הושלם',
       histClear: 'ניקוי ההיסטוריה', histClearSure: 'למחוק הכול?',
       w_tag: 'במקום לגלול, את בוחרת מה לראות.',
@@ -420,7 +420,7 @@ html.big .gear { min-width: 34px; }
       bkSave: 'Enregistrer une sauvegarde', bkRestore: 'Restaurer depuis un fichier', bkNoDl: 'La sauvegarde n’est disponible que lorsque la page est ouverte dans Claude.',
       bkSaved: 'Sauvegarde enregistrée.', bkFail: 'Impossible d’enregistrer le fichier.', rsRead: 'Impossible de lire le fichier.',
       rsDone: 'Restauration terminée.', rsBad: 'Fichier non valide. Choisissez une sauvegarde créée par l’application.',
-      back: 'Retour', yesterday: 'Hier', hist: 'Historique', histTitle: 'Ce que vous avez vu', histSub: 'Ce que vous avez ouvert, terminé, prévu et recherché.',
+      back: 'Retour', yesterday: 'Hier', hist: 'Historique', histTitle: 'Ce que vous avez vu', histSub: 'Ce que vous avez ouvert, terminé et prévu.',
       histEmpty: 'Pas encore d’historique. Un élément ouvert ou terminé apparaîtra ici.', histOpened: 'Ouvert', histDone: 'Terminé',
       histClear: 'Effacer l’historique', histClearSure: 'Tout effacer ?',
       w_tag: 'Au lieu de faire défiler sans fin, choisissez ce que vous regardez.',
@@ -498,7 +498,7 @@ html.big .gear { min-width: 34px; }
       bkSave: 'Save a backup', bkRestore: 'Restore from file', bkNoDl: 'Saving a backup is only available when the page is opened in Claude.',
       bkSaved: 'Backup saved.', bkFail: 'Couldn’t save the file.', rsRead: 'Couldn’t read the file.',
       rsDone: 'Restore complete.', rsBad: 'Invalid file. Choose a backup created by this app.',
-      back: 'Back', yesterday: 'Yesterday', hist: 'History', histTitle: 'What you’ve seen', histSub: 'What you opened, finished, planned and searched for.',
+      back: 'Back', yesterday: 'Yesterday', hist: 'History', histTitle: 'What you’ve seen', histSub: 'What you opened, finished and planned.',
       histEmpty: 'No history yet. An item you open or finish will show up here.', histOpened: 'Opened', histDone: 'Done',
       histClear: 'Clear history', histClearSure: 'Delete everything?',
       w_tag: 'Instead of scrolling, you choose what you see.',
@@ -923,7 +923,8 @@ html.big .gear { min-width: 34px; }
   function viewHistory(app) {
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('histTitle') }), h('p', { text: t('histSub') })));
     var fchips = h('div', { class: 'chips', style: 'margin-top:14px' });
-    [['all', 'histAll'], ['open', 'histOpened'], ['done', 'histDone'], ['learned', 'lnFilter'], ['planned', 'histPlanned'], ['search', 'histSearch']].forEach(function (f) {
+    if (histFilter === 'planned' || histFilter === 'search') histFilter = 'all';
+    [['all', 'histAll'], ['open', 'histOpened'], ['done', 'histDone'], ['learned', 'lnFilter']].forEach(function (f) {
       fchips.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': histFilter === f[0] ? 'true' : 'false', onclick: function () { histFilter = f[0]; render(); } }, t(f[1])));
     });
     var rcH = recapCard(false);
@@ -942,7 +943,7 @@ html.big .gear { min-width: 34px; }
       });
       app.appendChild(tch);
     }
-    var shown = state.history.filter(function (e) { return (histFilter === 'all' || e.action === histFilter || (histFilter === 'learned' && e.learned)) && (!histTopic || e.topic === histTopic); });
+    var shown = state.history.filter(function (e) { return e.action !== 'search' && (histFilter === 'all' || e.action === histFilter || (histFilter === 'learned' && e.learned)) && (!histTopic || e.topic === histTopic); });
     if (!shown.length) {
       app.appendChild(h('div', { class: 'empty', style: 'margin-top:20px' }, h('p', { style: 'margin:0', text: t('histEmpty') })));
       return;
@@ -1728,21 +1729,22 @@ html.big .gear { min-width: 34px; }
     app.appendChild(form);
     }
 
-    var today = new Date().getDay();
+    var today = new Date().getDay(), anyDay = false;
     for (var n = 0; n < 7; n++) {
       var d = (today + n) % 7;
-      app.appendChild(h('h2', { class: 'sec' }, t('dayHeader', days()[d]), n === 0 ? h('span', { class: 'tag-today', text: t('today') }) : null));
       var its = state.items.filter(function (i) { return i.days.indexOf(d) !== -1; });
-      if (!its.length) { app.appendChild(h('p', { class: 'none-line', text: t('emptyLine') })); continue; }
+      if (!its.length) continue;
+      anyDay = true;
+      app.appendChild(h('h2', { class: 'sec' }, t('dayHeader', days()[d]), n === 0 ? h('span', { class: 'tag-today', text: t('today') }) : null));
       var ul = h('ul', { class: 'list' });
       its.forEach(function (it) { ul.appendChild(itemRow(it, { edit: true, remove: true })); });
       app.appendChild(ul);
     }
+    if (!anyDay) app.appendChild(h('p', { class: 'none-line', style: 'margin-top:14px', text: t('emptyLine') }));
 
-    app.appendChild(h('h2', { class: 'sec' }, t('laterTitle')));
     var laters = state.items.filter(function (i) { return i.later; });
-    if (!laters.length) app.appendChild(h('p', { class: 'none-line', text: t('laterEmpty') }));
-    else {
+    if (laters.length) {
+      app.appendChild(h('h2', { class: 'sec' }, t('laterTitle')));
       var lul = h('ul', { class: 'list' });
       laters.forEach(function (it) { lul.appendChild(itemRow(it, { edit: true, remove: true })); });
       app.appendChild(lul);
@@ -2454,14 +2456,6 @@ html.big .gear { min-width: 34px; }
       r.mine ? h('span', { class: 'tag', text: r.liked ? '\u2665 ' + t('like') : t('lMine') }) : null,
       (r.mine && r.topic) ? h('span', { text: r.topic }) : null));
     if (whyOf(r)) li.appendChild(h('p', { class: 'why', text: whyOf(r) }));
-    if (!r.mine) {
-      var qc = h('div', { class: 'chips' });
-      ['c2', 'c1', 'c4'].forEach(function (q) {
-        qc.appendChild(h('button', { type: 'button', class: 'chip small', 'aria-pressed': r.ask === q ? 'true' : 'false', onclick: function () { r.ask = r.ask === q ? '' : q; render(); } }, t(q)));
-      });
-      li.appendChild(qc);
-      if (r.ask) li.appendChild(h('p', { class: 'ans', role: 'status', text: answerFor(r, r.ask) }));
-    }
     var a = h('div', { class: 'acts' });
     links(r).forEach(function (l) {
       a.appendChild(h('a', { class: 'btn small', href: l[1], target: '_blank', rel: 'noopener noreferrer', onclick: function () {
@@ -2480,6 +2474,14 @@ html.big .gear { min-width: 34px; }
     a.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.more ? 'true' : 'false', onclick: function () { r.more = !r.more; render(); } }, t('mMore')));
     li.appendChild(a);
     if (r.more) {
+      if (!r.mine) {
+        var qc = h('div', { class: 'chips' });
+        ['c2', 'c1', 'c4'].forEach(function (q) {
+          qc.appendChild(h('button', { type: 'button', class: 'chip small', 'aria-pressed': r.ask === q ? 'true' : 'false', onclick: function () { r.ask = r.ask === q ? '' : q; render(); } }, t(q)));
+        });
+        li.appendChild(qc);
+        if (r.ask) li.appendChild(h('p', { class: 'ans', role: 'status', text: answerFor(r, r.ask) }));
+      }
       var m = h('div', { class: 'acts more' });
       if (!r.added) {
         m.appendChild(h('button', { type: 'button', class: 'btn small', 'aria-expanded': r.open ? 'true' : 'false', onclick: function () { r.open = !r.open; render(); } }, t('sDays')));
@@ -2725,9 +2727,7 @@ html.big .gear { min-width: 34px; }
         app.appendChild(h('div', { class: 'acts', style: 'margin:6px 0 10px' },
           h('span', { class: 'meta', text: t('sAlso') }),
           [['Google', 'https://www.google.com/search?q=' + eq],
-           ['YouTube', 'https://www.youtube.com/results?search_query=' + eq],
-           [t('sGoogleVideos'), 'https://www.google.com/search?tbm=vid&q=' + eq],
-           [t('sGoogleNews'), 'https://www.google.com/search?tbm=nws&q=' + eq]].map(function (l) {
+           ['YouTube', 'https://www.youtube.com/results?search_query=' + eq]].map(function (l) {
             return h('a', { class: 'btn small', href: l[1], target: '_blank', rel: 'noopener noreferrer', onclick: function () { logHistory({ title: sr.q + ' (' + l[0] + ')', url: l[1], kind: 'other', lang: '' }, 'open', sr.topic || ''); } }, l[0]);
           })));
       }
@@ -2837,85 +2837,6 @@ html.big .gear { min-width: 34px; }
       render();
     };
     rd.readAsText(file);
-  }
-
-  function viewTopics(app) {
-    app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('tTitle') }), h('p', { text: t('tSub') })));
-
-    var editTp = state.topics.filter(function (x) { return x.id === topicEditId; })[0];
-    var input = h('input', { type: 'text', dir: 'auto', spellcheck: 'true', value: editTp ? editTp.name : '', placeholder: t('tNewPh'), 'aria-label': t('tNewPh') });
-    function addTopic(name, skipCheck) {
-      name = norm(name || '');
-      if (!name) return;
-      if (topicEditId) { renameTopic(topicEditId, name); return; }
-      if (state.topics.some(function (x) { return x.name.toLowerCase() === name.toLowerCase(); })) { topicHint = null; render(); return; }
-      if (!skipCheck) {
-        var guess = closestKnown(name);
-        if (guess) { topicHint = { typed: name, guess: guess }; render(); return; }
-      }
-      topicHint = null;
-      state.topics.push({ id: uid(), name: name, color: COLORS[state.topics.length % COLORS.length] });
-      save(); render();
-    }
-    app.appendChild(h('form', { class: 'topic-add', style: 'margin-top:18px', onsubmit: function (e) { e.preventDefault(); addTopic(input.value); } },
-      input, h('button', { type: 'submit', class: 'btn solid' }, topicEditId ? t('saveChanges') : t('tAdd'))));
-    if (topicEditId) {
-      app.appendChild(h('div', { class: 'acts', style: 'margin-top:8px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { topicEditId = null; render(); } }, t('cancel'))));
-    }
-    if (topicHint) {
-      app.appendChild(h('div', { class: 'card', style: 'margin-top:12px' },
-        h('p', { style: 'margin:0', role: 'status', text: t('tHint', topicHint.guess) }),
-        h('div', { class: 'acts' },
-          h('button', { type: 'button', class: 'btn small solid', onclick: function () { addTopic(topicHint.guess, true); } }, t('tHintYes', topicHint.guess)),
-          h('button', { type: 'button', class: 'btn small', onclick: function () { addTopic(topicHint.typed, true); } }, t('tHintNo', topicHint.typed)))));
-    }
-
-    var left = SUGGESTIONS[state.ui].filter(function (s) { return !state.topics.some(function (x) { return x.name === s; }); });
-    if (left.length) {
-      var chips = h('div', { class: 'chips' });
-      left.forEach(function (s) { chips.appendChild(h('button', { type: 'button', class: 'chip', onclick: function () { addTopic(s); } }, '+ ' + s)); });
-      app.appendChild(h('div', { class: 'sugg' }, h('p', { text: t('tSugg') }), chips));
-    }
-
-    if (state.topics.length) {
-      var ul = h('ul', { class: 'list', style: 'margin-top:20px' });
-      state.topics.forEach(function (tp) {
-        var count = state.items.filter(function (i) { return i.topic === tp.id; }).length;
-        var a = armed === 'topic:' + tp.id;
-        ul.appendChild(h('li', { class: 'row' },
-          h('span', { class: 'dot', style: 'background:' + tp.color + ';width:14px;height:14px' }),
-          h('div', { class: 'body' }, h('div', { class: 'title', text: tp.name }), h('div', { class: 'meta', text: count ? t('count', count) : t('noItems') })),
-          h('button', { type: 'button', class: 'btn small danger' + (a ? ' armed' : ''), onclick: function () {
-            if (a) {
-              state.topics = state.topics.filter(function (x) { return x.id !== tp.id; });
-              state.items = state.items.filter(function (x) { return x.topic !== tp.id; });
-              if (draft.topic === tp.id) draft.topic = '';
-              armed = null; save();
-            } else armed = 'topic:' + tp.id;
-            render();
-          } }, a ? (count ? t('delWith', count) : t('sure')) : t('del'))
-        ));
-      });
-      app.appendChild(ul);
-    }
-
-    app.appendChild(h('h2', { class: 'sec' }, t('uiTitle')));
-    var uc = h('div', { class: 'chips' });
-    Object.keys(LANGS).forEach(function (k) {
-      uc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': state.ui === k ? 'true' : 'false', onclick: function () { state.ui = k; save(); applyLang(); render(); } }, LANGS[k]));
-    });
-    app.appendChild(uc);
-
-    app.appendChild(h('h2', { class: 'sec' }, t('bkTitle')));
-    app.appendChild(h('p', { class: 'none-line', text: t('bkText') }));
-    var fi = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none', 'aria-hidden': 'true', tabindex: '-1', onchange: function (e) { doRestore(e.target.files && e.target.files[0]); } });
-    var bacts = h('div', { class: 'acts', style: 'margin-top:12px' });
-    bacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: doBackup }, t('bkSave')));
-    bacts.appendChild(h('button', { type: 'button', class: 'btn', onclick: function () { fi.click(); } }, t('bkRestore')));
-    app.appendChild(bacts);
-    app.appendChild(fi);
-    if (backupMsg) app.appendChild(h('p', { class: 'status', role: 'status', text: backupMsg }));
-    app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about'))));
   }
 
   // the app's icon and name on every screen (a tap goes to Today), with short language buttons beside them
