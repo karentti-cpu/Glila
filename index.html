@@ -215,6 +215,19 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .stats { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--sun) 22%, var(--surface)); display: flex; flex-direction: column; gap: 4px; }
 .stats .big { font-weight: 700; }
 .stats .small { color: var(--muted); font-size: 15px; }
+.learned { margin-top: 4px; font-size: 15px; font-style: italic; color: var(--ink); }
+.learn { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.learn input { flex: 1 1 160px; min-width: 0; min-height: 40px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); font: inherit; background: var(--surface); color: var(--ink); }
+.stats .btn.small { font-size: 15px; color: var(--accent); }
+.stats .btn.small.solid { color: var(--accent-ink); }
+.recap { border: 1px solid color-mix(in srgb, var(--sun) 60%, transparent); }
+.tour { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.tour .emo { font-size: 64px; line-height: 1; }
+.tour h1 { font-family: var(--serif); font-size: 40px; line-height: 1.1; margin: 0; }
+.tour .txt { font-size: 19px; line-height: 1.5; margin: 0; }
+.tour-dots { display: flex; gap: 8px; }
+.tour-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.tour-dots span.on { background: var(--accent); }
 .topbar { display: flex; align-items: center; gap: 10px; margin: -6px 0 12px; }
 .brand { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; color: var(--accent); background: none; border: 0; padding: 0; text-align: start; }
 .brand img { width: 34px; height: 34px; border-radius: 9px; flex: none; }
@@ -586,6 +599,14 @@ html.big .gear { min-width: 34px; }
     tMine: 'הנושאים שלי ({0})', tSaveTopic: '+ שמירה כנושא',
     pkTitle: '✨ נבחר בשבילך להיום', pkFrom: 'מתוך: {0}', pkOther: '🔄 הצעות אחרות', pkLoading: 'מחפשת לך משהו טוב…', pkPick: 'בוחרים תחומים, ומקבלים כאן הצעות כל יום.',
     stTitle: 'הגדרות', stLook: 'תצוגה', stThemeAuto: 'לפי הטלפון', stThemeLight: '☀️ בהיר', stThemeDark: '🌙 כהה', stBig: 'טקסט גדול', stApp: 'האפליקציה', stOpen: 'הגדרות',
+    lnAsk: '💡 מה למדתי? (לא חובה)', lnPh: 'משפט אחד…', lnSave: 'שמירה', lnSkip: 'דילוג', lnFilter: '💡 מה למדתי',
+    rcTitle: '📅 השבוע שלך', rcTopics: 'נושאים: {0}', rcLearned: 'מה למדת:', rcLoved: '♥ הכי אהבת: {0}', rcShare: 'שיתוף', rcClose: 'סגירה',
+    rcShareHead: 'השבוע שלי בגלילה חכמה:',
+    sfTitle: 'מצב בטוח', sfOn: '🛡️ מצב בטוח', sfText: 'מסנן תוצאות לא מתאימות לבני נוער בחיפוש ובהצעות.',
+    trHow: 'איך זה עובד?', trNext: 'הבא', trSkip: 'דילוג', trGo: 'בואי נתחיל',
+    tr1t: 'בוחרים נושאים', tr1: 'מה מעניין אותך? בוחרים כמה תחומים, ומקבלים הצעות לסרטונים, פודקאסטים, סרטים ומאמרים.',
+    tr2t: 'מוסיפים להיום', tr2: 'מצאת משהו טוב? לחיצה על ״+ להיום״ שמה אותו ברשימה של היום. אפשר גם לבחור כמה זמן יש לך.',
+    tr3t: 'רואים ומסמנים', tr3: 'סיימת? מסמנים ✓, ואפשר לכתוב משפט על מה שלמדת. כשהכול מסומן, סיימת להיום.',
     mMore: '⋯ עוד', mList: '➕ לרשימה', lsNew: '+ רשימה חדשה', lsNamePh: 'שם הרשימה, למשל: לאוטו', lsCreate: 'יצירה',
     lsDone: '✓ סיימתי', lsUndo: 'החזרה', lsRemove: 'הסרה', lsDel: 'מחיקת הרשימה', lsLeft: 'נותרו: {0}', lsNext: '🎧 הבא בתור:',
     lsEmpty: 'הרשימה ריקה. מוסיפים מכל כרטיס: ⋯ עוד ← ➕ לרשימה.', lsPick: 'לאיזו רשימה?',
@@ -620,6 +641,14 @@ html.big .gear { min-width: 34px; }
     tMine: 'Mes sujets ({0})', tSaveTopic: '+ Enregistrer comme sujet',
     pkTitle: '✨ Choisi pour vous aujourd’hui', pkFrom: 'Sur : {0}', pkOther: '🔄 D’autres idées', pkLoading: 'Je cherche quelque chose de bien…', pkPick: 'Choisissez des thèmes et recevez ici des idées chaque jour.',
     stTitle: 'Réglages', stLook: 'Affichage', stThemeAuto: 'Comme le téléphone', stThemeLight: '☀️ Clair', stThemeDark: '🌙 Sombre', stBig: 'Grand texte', stApp: 'L’application', stOpen: 'Réglages',
+    lnAsk: '💡 Qu’ai-je appris ? (facultatif)', lnPh: 'Une phrase…', lnSave: 'Enregistrer', lnSkip: 'Passer', lnFilter: '💡 Appris',
+    rcTitle: '📅 Votre semaine', rcTopics: 'Sujets : {0}', rcLearned: 'Ce que vous avez appris :', rcLoved: '♥ Votre préféré : {0}', rcShare: 'Partager', rcClose: 'Fermer',
+    rcShareHead: 'Ma semaine sur Scroll Wise :',
+    sfTitle: 'Mode sûr', sfOn: '🛡️ Mode sûr', sfText: 'Filtre les résultats inadaptés aux ados dans la recherche et les suggestions.',
+    trHow: 'Comment ça marche ?', trNext: 'Suivant', trSkip: 'Passer', trGo: 'C’est parti',
+    tr1t: 'Choisir des sujets', tr1: 'Qu’est-ce qui vous intéresse ? Choisissez quelques domaines et recevez des vidéos, podcasts, films et articles.',
+    tr2t: 'Ajouter à aujourd’hui', tr2: 'Vous avez trouvé quelque chose ? « + Aujourd’hui » l’ajoute à la liste du jour. Vous pouvez aussi dire combien de temps vous avez.',
+    tr3t: 'Regarder et cocher', tr3: 'Fini ? Cochez ✓, et notez en une phrase ce que vous avez appris. Tout est coché : c’est fini pour aujourd’hui.',
     mMore: '⋯ Plus', mList: '➕ À une liste', lsNew: '+ Nouvelle liste', lsNamePh: 'Nom de la liste, par ex. : en voiture', lsCreate: 'Créer',
     lsDone: '✓ Terminé', lsUndo: 'Remettre', lsRemove: 'Retirer', lsDel: 'Supprimer la liste', lsLeft: 'Reste : {0}', lsNext: '🎧 À suivre :',
     lsEmpty: 'Liste vide. Ajoutez depuis n’importe quelle carte : ⋯ Plus → ➕ À une liste.', lsPick: 'Dans quelle liste ?',
@@ -654,6 +683,14 @@ html.big .gear { min-width: 34px; }
     tMine: 'My topics ({0})', tSaveTopic: '+ Save as a topic',
     pkTitle: '✨ Picked for you today', pkFrom: 'On: {0}', pkOther: '🔄 Other ideas', pkLoading: 'Looking for something good…', pkPick: 'Pick some interests and get ideas here every day.',
     stTitle: 'Settings', stLook: 'Display', stThemeAuto: 'Like the phone', stThemeLight: '☀️ Light', stThemeDark: '🌙 Dark', stBig: 'Large text', stApp: 'The app', stOpen: 'Settings',
+    lnAsk: '💡 What did I learn? (optional)', lnPh: 'One sentence…', lnSave: 'Save', lnSkip: 'Skip', lnFilter: '💡 Learned',
+    rcTitle: '📅 Your week', rcTopics: 'Topics: {0}', rcLearned: 'What you learned:', rcLoved: '♥ Your favorite: {0}', rcShare: 'Share', rcClose: 'Close',
+    rcShareHead: 'My week on Scroll Wise:',
+    sfTitle: 'Safe mode', sfOn: '🛡️ Safe mode', sfText: 'Filters out results that aren’t right for teens, in search and suggestions.',
+    trHow: 'How does it work?', trNext: 'Next', trSkip: 'Skip', trGo: 'Let’s start',
+    tr1t: 'Pick topics', tr1: 'What interests you? Pick a few areas and get videos, podcasts, movies and articles.',
+    tr2t: 'Add to today', tr2: 'Found something good? “+ Today” puts it on today’s list. You can also say how much time you have.',
+    tr3t: 'Watch and check off', tr3: 'Done? Check it ✓, and write one sentence about what you learned. All checked: you’re done for today.',
     mMore: '⋯ More', mList: '➕ To a list', lsNew: '+ New list', lsNamePh: 'List name, e.g. for the car', lsCreate: 'Create',
     lsDone: '✓ Done', lsUndo: 'Put back', lsRemove: 'Remove', lsDel: 'Delete list', lsLeft: 'Left: {0}', lsNext: '🎧 Up next:',
     lsEmpty: 'Empty list. Add from any card: ⋯ More → ➕ To a list.', lsPick: 'Which list?',
@@ -704,7 +741,7 @@ html.big .gear { min-width: 34px; }
   var sug = { cats: [], topics: [], all: false, kinds: ['video', 'movie', 'podcast', 'show', 'article'], free: '' };
 
   function load() {
-    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null, lists: [], theme: 'auto', big: false };
+    var def = { topics: [], items: [], done: {}, langs: ['he', 'fr', 'en'], ui: 'he', history: [], welcomed: false, showWelcome: true, library: [], platforms: ['youtube', 'apple'], reminder: { on: false, time: '20:00' }, topicsOpen: null, lists: [], theme: 'auto', big: false, safe: true, toured: false, recapSeen: '' };
     try {
       // the Android app used to keep its own copy of the data; it is handed over once
       if (!localStorage.getItem(KEY) && window.GlilaAndroid && window.GlilaAndroid.takeOldData) {
@@ -729,7 +766,7 @@ html.big .gear { min-width: 34px; }
         topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null,
         lists: Array.isArray(p.lists) ? p.lists : [],
         theme: p.theme === 'light' || p.theme === 'dark' ? p.theme : 'auto',
-        big: !!p.big
+        big: !!p.big, safe: p.safe !== false, toured: !!p.toured, recapSeen: p.recapSeen || ''
       };
     } catch (e) { return def; }
   }
@@ -886,9 +923,11 @@ html.big .gear { min-width: 34px; }
   function viewHistory(app) {
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('histTitle') }), h('p', { text: t('histSub') })));
     var fchips = h('div', { class: 'chips', style: 'margin-top:14px' });
-    [['all', 'histAll'], ['open', 'histOpened'], ['done', 'histDone'], ['planned', 'histPlanned'], ['search', 'histSearch']].forEach(function (f) {
+    [['all', 'histAll'], ['open', 'histOpened'], ['done', 'histDone'], ['learned', 'lnFilter'], ['planned', 'histPlanned'], ['search', 'histSearch']].forEach(function (f) {
       fchips.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': histFilter === f[0] ? 'true' : 'false', onclick: function () { histFilter = f[0]; render(); } }, t(f[1])));
     });
+    var rcH = recapCard(false);
+    if (rcH) app.appendChild(rcH);
     app.appendChild(fchips);
     // and by topic: the topics that appear in the history, most used first
     var tcount = {};
@@ -903,7 +942,7 @@ html.big .gear { min-width: 34px; }
       });
       app.appendChild(tch);
     }
-    var shown = state.history.filter(function (e) { return (histFilter === 'all' || e.action === histFilter) && (!histTopic || e.topic === histTopic); });
+    var shown = state.history.filter(function (e) { return (histFilter === 'all' || e.action === histFilter || (histFilter === 'learned' && e.learned)) && (!histTopic || e.topic === histTopic); });
     if (!shown.length) {
       app.appendChild(h('div', { class: 'empty', style: 'margin-top:20px' }, h('p', { style: 'margin:0', text: t('histEmpty') })));
       return;
@@ -925,7 +964,8 @@ html.big .gear { min-width: 34px; }
             h('span', { class: 'tag', text: actionLabel(e.action) }),
             e.action === 'search' ? null : h('span', { text: t('k_' + (KIND_OK[e.kind] ? e.kind : 'other')) }),
             (e.lang && LANGS[e.lang]) ? h('span', { class: 'tag', text: LANGS[e.lang] }) : null,
-            e.topic ? h('span', { text: e.topic }) : null)),
+            e.topic ? h('span', { text: e.topic }) : null),
+          e.learned ? h('div', { class: 'learned', text: '💡 ' + e.learned }) : null),
         url ? h('a', { class: 'btn small', href: url, target: '_blank', rel: 'noopener noreferrer' }, t('open')) : null,
         (e.action === 'search' && !url) ? h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'ideas'; armed = null; runSearch(e.title, e.topic || ''); window.scrollTo(0, 0); } }, t('sGoSearch')) : null,
         (e.action !== 'search') ? (tdDone[String(e.title).toLowerCase()] ? h('span', { class: 'added', text: t('tdAdded') }) :
@@ -948,6 +988,28 @@ html.big .gear { min-width: 34px; }
     view = 'plan'; armed = null; render();
   }
 
+  var learnFor = null, learnDraft = '';
+  // one sentence about what I learned: kept on the item and on its "done" line in the history (the journal)
+  function learnBox(it) {
+    var inp = h('input', { type: 'text', maxlength: '200', placeholder: t('lnPh'), 'aria-label': t('lnAsk'), value: learnDraft || it.learned || '', oninput: function (e) { learnDraft = e.target.value; } });
+    function keep() {
+      var v = norm(inp.value);
+      learnFor = null; learnDraft = '';
+      if (v) {
+        it.learned = v;
+        var e = state.history.filter(function (x) { return x.action === 'done' && x.title === it.title; })[0];
+        if (e) e.learned = v;
+        save();
+      }
+      render();
+    }
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') keep(); });
+    setTimeout(function () { try { inp.focus({ preventScroll: true }); } catch (e) {} }, 0);
+    return h('div', { class: 'learn' }, h('label', { class: 'meta', style: 'font-weight:700', text: t('lnAsk') }),
+      h('div', { class: 'acts' }, inp,
+        h('button', { type: 'button', class: 'btn small solid', onclick: keep }, t('lnSave')),
+        h('button', { type: 'button', class: 'btn small', onclick: function () { learnFor = null; learnDraft = ''; render(); } }, t('lnSkip'))));
+  }
   function webSearchUrl(it) {
     var q = encodeURIComponent(String(it.title || '') + ((it.kind === 'podcast') ? ' podcast' : ''));
     return 'https://www.google.com/search?' + (it.kind === 'video' ? 'tbm=vid&' : '') + 'q=' + q;
@@ -963,7 +1025,7 @@ html.big .gear { min-width: 34px; }
         onclick: function () {
           var list = state.done[key] || [];
           var i = list.indexOf(it.id);
-          if (i === -1) { list.push(it.id); logHistory(it, 'done'); } else list.splice(i, 1);
+          if (i === -1) { list.push(it.id); logHistory(it, 'done'); learnFor = it.id; learnDraft = ''; } else { list.splice(i, 1); if (learnFor === it.id) learnFor = null; }
           state.done[key] = list; save(); render();
         }
       });
@@ -971,7 +1033,9 @@ html.big .gear { min-width: 34px; }
       row.appendChild(cb);
     }
     row.appendChild(h('div', { class: 'body' }, h('div', { class: 'title', text: it.title }), metaEl(it),
-      opts.check ? h('div', { class: 'acts', style: 'margin-top:6px' }, likeBtn(itemLike(it))) : null));
+      (opts.check && it.learned) ? h('div', { class: 'learned', text: '💡 ' + it.learned }) : null,
+      opts.check ? h('div', { class: 'acts', style: 'margin-top:6px' }, likeBtn(itemLike(it))) : null,
+      (opts.check && isDone && learnFor === it.id) ? learnBox(it) : null));
     if (opts.open) {
       row.appendChild(h('a', { class: 'btn small', href: url || webSearchUrl(it), target: '_blank', rel: 'noopener noreferrer', onclick: function () { logHistory(it, 'open'); } }, url ? t('open') : t('sGoogle')));
     }
@@ -1104,7 +1168,7 @@ html.big .gear { min-width: 34px; }
     });
     wrap.appendChild(ul);
     wrap.appendChild(h('div', { class: 'acts', style: 'margin-top:8px' },
-      h('button', { type: 'button', class: 'btn solid', style: 'min-height:48px;padding:10px 28px;font-size:18px', onclick: function () { state.welcomed = true; save(); view = state.topics.length ? 'today' : 'interests'; render(); window.scrollTo(0, 0); } }, t('w_start'))));
+      h('button', { type: 'button', class: 'btn solid', style: 'min-height:48px;padding:10px 28px;font-size:18px', onclick: function () { state.welcomed = true; save(); var next = state.topics.length ? 'today' : 'interests'; if (!state.toured) { tourStep = 0; tourBack = next; view = 'tour'; } else view = next; render(); window.scrollTo(0, 0); } }, t('w_start'))));
     wrap.appendChild(h('div', { class: 'chips' }, h('button', { type: 'button', class: 'chip', 'aria-pressed': state.showWelcome ? 'true' : 'false', onclick: function () { state.showWelcome = !state.showWelcome; save(); render(); } }, t('w_always'))));
     var more = h('div', { class: 'acts' });
     more.appendChild(h('button', { type: 'button', class: 'btn', onclick: doShare }, t('w_share')));
@@ -1118,6 +1182,22 @@ html.big .gear { min-width: 34px; }
     app.appendChild(wrap);
   }
 
+  var tourStep = 0, tourBack = 'interests';
+  var TOUR = [['✨', 'tr1t', 'tr1'], ['➕', 'tr2t', 'tr2'], ['✅', 'tr3t', 'tr3']];
+  function viewTour(app) {
+    var s = TOUR[tourStep], last = tourStep === TOUR.length - 1;
+    function end() { state.toured = true; save(); view = tourBack; render(); window.scrollTo(0, 0); }
+    var dots = h('div', { class: 'tour-dots', 'aria-hidden': 'true' });
+    TOUR.forEach(function (x, i) { dots.appendChild(h('span', { class: i === tourStep ? 'on' : '' })); });
+    app.appendChild(h('div', { class: 'tour' },
+      h('div', { class: 'emo', 'aria-hidden': 'true', text: s[0] }),
+      h('h1', { text: t(s[1]) }),
+      h('p', { class: 'txt', text: t(s[2]) }),
+      dots,
+      h('div', { class: 'acts' },
+        h('button', { type: 'button', class: 'btn solid', style: 'min-height:48px;padding:10px 28px;font-size:18px', onclick: function () { if (last) end(); else { tourStep++; render(); window.scrollTo(0, 0); } } }, last ? t('trGo') : t('trNext')),
+        last ? null : h('button', { type: 'button', class: 'btn', onclick: end }, t('trSkip')))));
+  }
   // three ideas a day from one of my topics (a different topic each day): a short video, a podcast, an article
   var picks = { key: '', status: 'idle', items: [], shift: 0 };
   function picksTopic() {
@@ -1135,6 +1215,7 @@ html.big .gear { min-width: 34px; }
     function safe(pr) { return pr.then(function (x) { return x || []; }, function () { return []; }); }
     Promise.all([safe(srcYouTube(q, 0)), safe(srcDaily(q, 0)), safe(srcApple(q, 0)), safe(srcWiki(q, lang, 0))]).then(function (rs) {
       if (picks.key !== key) return;
+      rs = rs.map(function (l) { return l.filter(function (x) { return !unsafe(x); }); });
       var vids = rs[0].concat(rs[1]), short = vids.filter(function (r) { return r.dur && r.dur <= 15 * 60; });
       var pod = rs[2].filter(function (r) { return !r.whole; })[0] || rs[2][0];
       var out = [short[0] || vids[0], pod, rs[3][0]].filter(Boolean);
@@ -1266,8 +1347,45 @@ html.big .gear { min-width: 34px; }
     var top = Object.keys(topics).sort(function (a, b) { return topics[b] - topics[a]; })[0] || '';
     return { count: count, mins: mins, top: top };
   }
-  function statsCard() {
-    var s = streakInfo(), w = weekInfo();
+  function weekKey() { var d = new Date(); d.setDate(d.getDate() - d.getDay()); return dateKey(d); }
+  function recapData() {
+    var since = Date.now() - 7 * 86400000, seen = {}, count = 0, mins = 0, topics = {}, learned = [], loved = '';
+    state.history.forEach(function (e) {
+      if (e.ts < since || (e.action !== 'open' && e.action !== 'done')) return;
+      if (e.learned && learned.indexOf(e.learned) === -1) learned.push(e.learned);
+      if (seen[e.title]) return;
+      seen[e.title] = 1; count++; mins += e.mins || 0;
+      if (e.topic) topics[e.topic] = (topics[e.topic] || 0) + 1;
+      if (!loved) { var l = libFind(e.title, ''); if (l && l.liked) loved = e.title; }
+    });
+    return { count: count, mins: mins, learned: learned.slice(0, 3), loved: loved,
+      topics: Object.keys(topics).sort(function (a, b) { return topics[b] - topics[a]; }).slice(0, 3) };
+  }
+  // the week in one card: on Friday and Saturday on the Today screen (until closed), always at the top of the history
+  function recapCard(closable) {
+    var r = recapData();
+    if (!r.count) return null;
+    var parts = [r.count > 1 ? t('stItems', r.count) : t('stItem1')];
+    if (r.mins >= 5) parts.push(r.mins < 59.5 ? fmtDur(r.mins * 60) : t('stTime', fmtDur(r.mins * 60)));
+    var lines = [parts.join(' · ')];
+    if (r.topics.length) lines.push(t('rcTopics', r.topics.join(', ')));
+    if (r.loved) lines.push(t('rcLoved', r.loved));
+    var box = h('div', { class: 'stats recap' }, h('div', { class: 'big', text: t('rcTitle') }));
+    lines.forEach(function (x) { box.appendChild(h('div', { class: 'small', text: x })); });
+    if (r.learned.length) {
+      box.appendChild(h('div', { class: 'small', style: 'font-weight:700;margin-top:4px', text: t('rcLearned') }));
+      r.learned.forEach(function (x) { box.appendChild(h('div', { class: 'learned', text: '💡 ' + x })); });
+    }
+    var acts = h('div', { class: 'acts', style: 'margin-top:6px' },
+      h('button', { type: 'button', class: 'btn small solid', onclick: function () {
+        shareText([t('rcShareHead')].concat(lines, r.learned.map(function (x) { return '💡 ' + x; })).join('\n') + '\n' + APP_URL);
+      } }, t('rcShare')));
+    if (closable) acts.appendChild(h('button', { type: 'button', class: 'btn small', onclick: function () { state.recapSeen = weekKey(); save(); render(); } }, t('rcClose')));
+    box.appendChild(acts);
+    return box;
+  }
+  function statsCard(noWeek) {
+    var s = streakInfo(), w = noWeek ? { count: 0 } : weekInfo();
     if (!s.n && !w.count) return null;
     var box = h('div', { class: 'stats', role: 'status' });
     if (s.n) box.appendChild(h('div', { class: 'big', text: !s.today ? (s.n > 1 ? t('stKeep', s.n) : t('stKeep1')) : (s.n > 1 ? t('stStreak', s.n) : t('stToday')) }));
@@ -1287,8 +1405,11 @@ html.big .gear { min-width: 34px; }
       h('p', { text: now.toLocaleDateString(LOCALE[state.ui], { day: 'numeric', month: 'long' }) }),
       h('h1', { text: t('dayHeader', days()[idx]) })
     ));
-    var sc = statsCard();
+    // on Friday and Saturday the week card replaces the week line
+    var rc = (now.getDay() >= 5 && state.recapSeen !== weekKey()) ? recapCard(true) : null;
+    var sc = statsCard(!!rc);
     if (sc) app.appendChild(sc);
+    if (rc) app.appendChild(rc);
     var topBar = h('div', { class: 'acts', style: 'margin-top:14px' });
     if (state.items.length) topBar.appendChild(h('button', { class: 'btn solid', type: 'button', onclick: pickBored }, t('bored')));
     topBar.appendChild(h('button', { class: 'btn', type: 'button', onclick: function () { view = 'ideas'; armed = null; render(); window.scrollTo(0, 0); } }, t('tab_ideas')));
@@ -1968,8 +2089,11 @@ html.big .gear { min-width: 34px; }
   }
   function first(x) { return Array.isArray(x) ? x[0] : x; }
 
+  // safe mode: what the sources can filter themselves, plus a word check on what comes back
+  var UNSAFE = /(^|[^\p{L}\p{N}])(porn\w*|porno\w*|xxx|nsfw|nude|nudes|naked|sex|sexy|sexual|erotic\w*|hentai|onlyfans|fetish\w*|camgirl\w*|escort\w*|strip ?tease|sexe|érotique\w*|nue|nues|seins nus|פורנו|סקס|סקסי|עירום|עירומה|ארוטי\S*|זנות)(?=$|[^\p{L}\p{N}])/iu;
+  function unsafe(x) { return state.safe && UNSAFE.test([x.title, x.creator, x.why].join(' ')); }
   function srcApple(q, page) {
-    var base = 'https://itunes.apple.com/search?term=' + encodeURIComponent(q);
+    var base = 'https://itunes.apple.com/search?term=' + encodeURIComponent(q) + (state.safe ? '&explicit=No' : '');
     function one(extra, limit) { return either(base + extra + '&limit=' + limit).catch(function () { return null; }); }
     return Promise.all([one('&media=podcast&entity=podcast', 10 * (page + 1)), one('&media=podcast&entity=podcastEpisode', PAGE * (page + 1))]).then(function (rs) {
       if (!rs[0] && !rs[1]) throw new Error('apple');
@@ -1984,7 +2108,7 @@ html.big .gear { min-width: 34px; }
     });
   }
   function srcMovies(q, page) {
-    var u = 'https://itunes.apple.com/search?media=movie&entity=movie&term=' + encodeURIComponent(q) + '&limit=' + (PAGE * (page + 1));
+    var u = 'https://itunes.apple.com/search?media=movie&entity=movie&term=' + encodeURIComponent(q) + '&limit=' + (PAGE * (page + 1)) + (state.safe ? '&explicit=No' : '');
     return either(u).then(function (d) {
       return (d.results || []).filter(function (x) { return x.trackName; }).map(function (x) {
         return { source: 'Apple TV', kind: 'movie', title: x.trackName, creator: x.artistName || '', why: strip(x.shortDescription || '').slice(0, 160), dur: (x.trackTimeMillis || 0) / 1000, img: String(x.artworkUrl100 || '').replace('100x100', '400x400'), url: x.trackViewUrl || '' };
@@ -2099,7 +2223,7 @@ html.big .gear { min-width: 34px; }
   }
   // episodes from the podcasts' own feeds: the ones that mention the search, else the latest
   function srcEpisodes(q, page) {
-    var u = 'https://itunes.apple.com/search?media=podcast&entity=podcast&limit=15&term=' + encodeURIComponent(q) + (/[֐-׿]/.test(q) ? '&country=il' : '');
+    var u = 'https://itunes.apple.com/search?media=podcast&entity=podcast&limit=15&term=' + encodeURIComponent(q) + (/[֐-׿]/.test(q) ? '&country=il' : '') + (state.safe ? '&explicit=No' : '');
     var words = q.toLowerCase().split(/\s+/).filter(function (w) { return w.length > 1; });
     return either(u).then(function (d) {
       var shows = (d.results || []).filter(function (x) { return x.feedUrl; }).slice(page * 3, page * 3 + 3);
@@ -2160,7 +2284,7 @@ html.big .gear { min-width: 34px; }
   }
   function srcBing(q, page) {
     var lang = /[\u0590-\u05FF]/.test(q) ? 'he' : (state.ui || 'en');
-    return fetchText('https://www.bing.com/search?format=rss&count=30&setlang=' + lang + '&q=' + encodeURIComponent(q)).then(function (text) {
+    return fetchText('https://www.bing.com/search?format=rss&count=30&setlang=' + lang + (state.safe ? '&adlt=strict' : '') + '&q=' + encodeURIComponent(q)).then(function (text) {
       var items = xmlItems(text);
       if (!items.length) throw new Error('bing');
       return items.slice(page * PAGE, (page + 1) * PAGE).map(function (it) {
@@ -2171,7 +2295,7 @@ html.big .gear { min-width: 34px; }
   }
   function srcDdg(q, page) {
     var kl = /[֐-׿]/.test(q) ? 'il-he' : ({ fr: 'fr-fr', en: 'us-en' }[state.ui] || 'wt-wt');
-    return fetchText('https://html.duckduckgo.com/html/?kl=' + kl + '&q=' + encodeURIComponent(q)).then(function (text) {
+    return fetchText('https://html.duckduckgo.com/html/?kl=' + kl + (state.safe ? '&kp=1' : '') + '&q=' + encodeURIComponent(q)).then(function (text) {
       var doc = new DOMParser().parseFromString(text, 'text/html'), out = [];
       Array.prototype.forEach.call(doc.querySelectorAll('.result'), function (el) {
         var a = el.querySelector('a.result__a');
@@ -2194,7 +2318,7 @@ html.big .gear { min-width: 34px; }
     return either(u + '&origin=*', u).then(function (d) { return (d.query && d.query.searchinfo && d.query.searchinfo.suggestion) || ''; });
   }
 
-  function searchKey(q) { return [q, state.langs.slice().sort().join(','), sug.kinds.slice().sort().join(',')].join('|'); }
+  function searchKey(q) { return [q, state.langs.slice().sort().join(','), sug.kinds.slice().sort().join(','), state.safe ? 's' : ''].join('|'); }
 
   // page 0 = a new search; page 1, 2, ... = "more ideas" (added below what is already shown)
   function runSearch(q, topic, force, page) {
@@ -2253,7 +2377,7 @@ html.big .gear { min-width: 34px; }
         if (my !== sr.token) return;
         if (items.suggestion && !sr.suggest && items.suggestion.toLowerCase() !== q.toLowerCase()) sr.suggest = items.suggestion;
         items.forEach(function (x) {
-          if (!x.title || !x.url) return;
+          if (!x.title || !x.url || unsafe(x)) return;
           var okKind = sug.kinds.indexOf(x.kind) !== -1 || (x.kind === 'video' && sug.kinds.indexOf('show') !== -1);
           if (!okKind) return;
           if (sr.items.some(function (y) { return y.url === x.url; })) return;
@@ -2922,6 +3046,9 @@ html.big .gear { min-width: 34px; }
     app.appendChild(tc);
     app.appendChild(h('div', { class: 'chips', style: 'margin-top:10px' },
       h('button', { type: 'button', class: 'chip', 'aria-pressed': state.big ? 'true' : 'false', onclick: function () { state.big = !state.big; save(); applyLook(); render(); } }, 'A\u207A ' + t('stBig'))));
+    app.appendChild(h('h2', { class: 'sec' }, t('sfTitle')));
+    app.appendChild(h('div', { class: 'chips' }, h('button', { type: 'button', class: 'chip', 'aria-pressed': state.safe ? 'true' : 'false', onclick: function () { state.safe = !state.safe; picks.key = ''; save(); render(); } }, t('sfOn'))));
+    app.appendChild(h('p', { class: 'none-line', style: 'margin-top:8px', text: t('sfText') }));
     // ---- backup and restore, about
     app.appendChild(h('h2', { class: 'sec' }, t('bkTitle')));
     app.appendChild(h('p', { class: 'none-line', text: t('bkText') }));
@@ -2932,7 +3059,8 @@ html.big .gear { min-width: 34px; }
     app.appendChild(bacts);
     app.appendChild(fi);
     if (backupMsg) app.appendChild(h('p', { class: 'status', role: 'status', text: backupMsg }));
-    app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about'))));
+    app.appendChild(h('div', { class: 'acts', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'welcome'; render(); window.scrollTo(0, 0); } }, t('w_about')),
+      h('button', { type: 'button', class: 'btn small', onclick: function () { tourStep = 0; tourBack = 'settings'; view = 'tour'; render(); window.scrollTo(0, 0); } }, '🧭 ' + t('trHow'))));
     app.appendChild(h('div', { class: 'acts', style: 'margin-top:12px;justify-content:center' }, h('button', { type: 'button', class: 'btn small', onclick: function () { checkUpdate(true); } }, upMsg === 'checking' ? t('upChecking') : t('upCheck'))));
     if (upMsg === 'latest') app.appendChild(h('p', { class: 'added', role: 'status', style: 'margin:8px 0 0;text-align:center', text: t('upLatest') }));
     app.appendChild(h('p', { class: 'none-line', style: 'margin-top:14px;text-align:center;font-size:12px' }, t('upVer', ''), h('bdi', { text: MY_VERSION })));
@@ -3159,9 +3287,10 @@ html.big .gear { min-width: 34px; }
     if (ub) app.appendChild(ub);
     var ib = installBar();
     if (ib) app.appendChild(ib);
-    document.querySelector('nav.tabs').style.display = (view === 'welcome' || view === 'interests') ? 'none' : '';
-    if (view !== 'welcome') app.appendChild(langBar());
+    document.querySelector('nav.tabs').style.display = (view === 'welcome' || view === 'interests' || view === 'tour') ? 'none' : '';
+    if (view !== 'welcome' && view !== 'tour') app.appendChild(langBar());
     if (view === 'welcome') viewWelcome(app);
+    else if (view === 'tour') viewTour(app);
     else if (view === 'interests') viewInterests(app);
     else if (view === 'library') viewLibrary(app);
     else if (view === 'settings') viewSettings(app);
