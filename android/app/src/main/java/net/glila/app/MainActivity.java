@@ -288,7 +288,12 @@ public class MainActivity extends Activity {
             c.setRequestProperty("User-Agent", USER_AGENT);
             c.setRequestProperty("Accept-Language", "he,fr;q=0.9,en;q=0.8");
             // YouTube asks about cookies first in some countries; this answers "reject all"
-            if (url.getHost().endsWith("youtube.com")) c.setRequestProperty("Cookie", "SOCS=CAI");
+            // ...and with glila_safe=1 in the address (the app's safe mode), also turns on YouTube's Restricted Mode
+            if (url.getHost().endsWith("youtube.com")) {
+                String q = url.getQuery();
+                boolean safe = q != null && ("&" + q + "&").contains("&glila_safe=1&");
+                c.setRequestProperty("Cookie", "SOCS=CAI" + (safe ? "; PREF=f2=8000000" : ""));
+            }
             try {
                 int code = c.getResponseCode();
                 if (code >= 300 && code < 400 && c.getHeaderField("Location") != null) {
