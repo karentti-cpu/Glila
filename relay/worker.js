@@ -31,7 +31,8 @@ export default {
     if (!res) {
       const headers = { 'User-Agent': USER_AGENT, 'Accept-Language': 'he,fr;q=0.9,en;q=0.8' };
       // YouTube asks about cookies first in some countries; this answers "reject all"
-      if (target.hostname.endsWith('youtube.com')) headers.Cookie = 'SOCS=CAI';
+      // ...and with glila_safe=1 in the address (the app's safe mode), also turns on YouTube's Restricted Mode
+      if (target.hostname.endsWith('youtube.com')) headers.Cookie = 'SOCS=CAI' + (target.searchParams.get('glila_safe') === '1' ? '; PREF=f2=8000000' : '');
       let up;
       try {
         up = await fetch(target.toString(), { headers, redirect: 'follow' });

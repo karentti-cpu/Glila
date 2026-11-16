@@ -2122,8 +2122,8 @@ html.big .gear { min-width: 34px; }
   function first(x) { return Array.isArray(x) ? x[0] : x; }
 
   // safe mode: what the sources can filter themselves, plus a word check on what comes back
-  var UNSAFE = /(^|[^\p{L}\p{N}])(porn\w*|porno\w*|xxx|nsfw|nude|nudes|naked|sex|sexy|sexual|erotic\w*|hentai|onlyfans|fetish\w*|camgirl\w*|escort\w*|strip ?tease|sexe|érotique\w*|nue|nues|seins nus|פורנו|סקס|סקסי|עירום|עירומה|ארוטי\S*|זנות)(?=$|[^\p{L}\p{N}])/iu;
-  function unsafe(x) { return state.safe && UNSAFE.test([x.title, x.creator, x.why].join(' ')); }
+  var UNSAFE = /(^|[^\p{L}\p{N}])(porn\w*|porno\w*|xxx|nsfw|nude|nudes|nudity|naked|sex|sexy|sexual\w*|erotic\w*|hentai|onlyfans|fetish\w*|camgirl\w*|cam ?girls?|escort\w*|strip ?tease|stripper\w*|strip ?club\w*|lingerie|bikini haul|milf|bdsm|orgasm\w*|horny|hookup\w*|18\+|\+18|r18|adults? only|uncensored|sexe|sexy|érotique\w*|nue|nues|seins nus|orgasme\w*|coquin\w*|libertin\w*|interdit aux moins de 18|פורנו|סקס|סקסי|עירום|עירומה|עירומים|ארוטי\S*|זנות|אורגזמה|למבוגרים בלבד|בלי צנזורה|ללא צנזורה)(?=$|[^\p{L}\p{N}])/iu;
+  function unsafe(x) { return state.safe && UNSAFE.test([x.title, x.creator, x.why, x.about].join(' ')); }
   function srcApple(q, page) {
     var base = 'https://itunes.apple.com/search?term=' + encodeURIComponent(q) + (state.safe ? '&explicit=No' : '');
     function one(extra, limit) { return either(base + extra + '&limit=' + limit).catch(function () { return null; }); }
@@ -2202,10 +2202,10 @@ html.big .gear { min-width: 34px; }
     });
   }
   function srcDaily(q, page) {
-    var u = 'https://api.dailymotion.com/videos?limit=' + PAGE + '&page=' + (page + 1) + '&fields=title,url,owner.screenname,duration,thumbnail_360_url&search=' + encodeURIComponent(q);
+    var u = 'https://api.dailymotion.com/videos?limit=' + PAGE + '&page=' + (page + 1) + '&fields=title,url,owner.screenname,duration,thumbnail_360_url,description' + (state.safe ? '&family_filter=true' : '&family_filter=false') + '&search=' + encodeURIComponent(q);
     return getJson(u).then(function (d) {
       return (d.list || []).map(function (x) {
-        return { source: 'Dailymotion', kind: 'video', title: x.title, creator: x['owner.screenname'] || '', dur: x.duration || 0, img: x.thumbnail_360_url || '', url: x.url };
+        return { source: 'Dailymotion', kind: 'video', title: x.title, creator: x['owner.screenname'] || '', dur: x.duration || 0, img: x.thumbnail_360_url || '', url: x.url, about: strip(x.description || '').slice(0, 300) };
       });
     });
   }
@@ -2283,7 +2283,7 @@ html.big .gear { min-width: 34px; }
   // YouTube's own results page carries its results as JSON (ytInitialData)
   function ytText(x) { return x ? (x.simpleText || (x.runs || []).map(function (r) { return r.text; }).join('')) : ''; }
   function srcYouTube(q, page) {
-    return fetchText('https://www.youtube.com/results?sp=EgIQAQ%3D%3D&hl=' + state.ui + '&search_query=' + encodeURIComponent(q)).then(function (text) {
+    return fetchText('https://www.youtube.com/results?sp=EgIQAQ%3D%3D&hl=' + state.ui + (state.safe ? '&glila_safe=1' : '') + '&search_query=' + encodeURIComponent(q)).then(function (text) {
       var m = text.match(/ytInitialData\s*=\s*(\{[\s\S]*?\});\s*<\/script>/);
       if (!m) throw new Error('youtube');
       var found = [];
