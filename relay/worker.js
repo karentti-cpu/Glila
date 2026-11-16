@@ -2,7 +2,7 @@
 // (YouTube results, web search, Google News, podcast feeds) and hands them back.
 // Runs on Cloudflare Workers' free plan. Only the Glila website may use it.
 
-const ALLOWED_ORIGINS = ['https://karentti-cpu.github.io'];
+const ALLOWED_ORIGINS = ['https://karentti-cpu.github.io', 'https://karenmor.com', 'https://www.karenmor.com'];
 const MAX_BYTES = 3 * 1024 * 1024;
 const USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36';
