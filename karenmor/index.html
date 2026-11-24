@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>גלילה חכמה</title>
+<meta name="theme-color" content="#1F6F6A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  html, body { margin: 0; background: #EEF2F1; color: #14302E; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
+  .wait { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .wait img { width: 72px; height: 72px; border-radius: 16px; }
+  @media (prefers-color-scheme: dark) { html, body { background: #0F1C1B; color: #E6F0EE; } }
+</style>
+</head>
+<body>
+<div class="wait"><img src="icon-192.png" alt=""><div>גלילה חכמה</div></div>
+<script>
+// karenmor.com/glila: this page stays as it is. It brings the newest Glila from GitHub Pages each time,
+// so updates arrive without uploading anything again. The app runs here, on karenmor.com, with its data
+// saved here. The last copy is kept for when there is no connection; with no copy at all, the GitHub
+// address opens instead.
+(function () {
+  var SRC = 'https://karentti-cpu.github.io/Glila/index.html', KEY = 'glila-shell', done = false;
+  function show(html) { document.open(); document.write(html); document.close(); }
+  function keep(html) { try { localStorage.setItem(KEY, html); } catch (e) {} }
+  function fallback() {
+    var c = null;
+    try { c = localStorage.getItem(KEY); } catch (e) {}
+    if (c) show(c); else location.replace('https://karentti-cpu.github.io/Glila/' + location.search);
+  }
+  var timer = setTimeout(function () { if (!done) { done = true; fallback(); } }, 8000);
+  fetch(SRC + '?t=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); })
+    .then(function (html) {
+      if (html.indexOf('content-planner-v1') === -1) throw new Error('not the app');
+      keep(html);
+      if (done) return;
+      done = true; clearTimeout(timer);
+      show(html);
+    })
+    .catch(function () { if (!done) { done = true; clearTimeout(timer); fallback(); } });
+})();
+</script>
+</body>
+</html>

@@ -3216,7 +3216,10 @@ html.big .gear { min-width: 34px; }
   function checkUpdate(byHand) {
     if (window.location.protocol !== 'https:') return;
     if (byHand) { upMsg = 'checking'; render(); }
-    fetch(window.location.pathname, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
+    // on GitHub Pages (and in the Android app) the page itself; on karenmor.com, where a small page loads
+    // the app from GitHub Pages, the GitHub copy
+    var src = /github\.io$/.test(window.location.hostname) ? window.location.pathname : 'https://karentti-cpu.github.io/Glila/index.html';
+    fetch(src, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
       var code = scriptOf(html);
       if (code && codeHash(code).slice(0, 6) !== MY_VERSION) {
         if (byHand) refreshApp(); else { updateReady = true; render(); }
