@@ -621,6 +621,8 @@ html.big .gear { min-width: 34px; }
     trHow: 'איך זה עובד?', trNext: 'הבא', trSkip: 'דילוג', trGo: 'מתחילים',
     tr1t: 'בוחרים נושאים', tr1: 'מה מעניין אותך? בוחרים כמה תחומים, ומקבלים הצעות לסרטונים, פודקאסטים, סרטים ומאמרים.',
     tr2t: 'מוסיפים להיום', tr2: 'מצאת משהו טוב? לחיצה על ״+ להיום״ שמה אותו ברשימה של היום. אפשר גם לבחור כמה זמן יש לך.',
+    trSt: 'שומרים מכל מקום', trS: 'ראיתם משהו טוב בטיקטוק, באינסטגרם או ביוטיוב? לוחצים שם על ״שיתוף״ ובוחרים ״גלילה חכמה״. כך הרשתות נותנות לכם תוכן טוב, בלי להיתקע בהן.',
+    tipShare: '📲 ראיתם משהו טוב בטיקטוק או באינסטגרם? לוחצים שם על ״שיתוף״ ובוחרים ״גלילה חכמה״. משם בוחרים מתי לראות אותו.', tipOk: 'הבנתי',
     tr3t: 'רואים ומסמנים', tr3: 'סיימת? מסמנים ✓, ואפשר לכתוב משפט על מה שלמדת. כשהכול מסומן, סיימת להיום.',
     mMore: '⋯ עוד', mList: '➕ לרשימה', lsNew: '+ רשימה חדשה', lsNamePh: 'שם הרשימה, למשל: לאוטו', lsCreate: 'יצירה',
     lsDone: '✓ סיימתי', lsUndo: 'החזרה', lsRemove: 'הסרה', lsDel: 'מחיקת הרשימה', lsLeft: 'נותרו: {0}', lsNext: '🎧 הבא בתור:',
@@ -663,6 +665,8 @@ html.big .gear { min-width: 34px; }
     trHow: 'Comment ça marche ?', trNext: 'Suivant', trSkip: 'Passer', trGo: 'C’est parti',
     tr1t: 'Choisir des sujets', tr1: 'Qu’est-ce qui vous intéresse ? Choisissez quelques domaines et recevez des vidéos, podcasts, films et articles.',
     tr2t: 'Ajouter à aujourd’hui', tr2: 'Vous avez trouvé quelque chose ? « + Aujourd’hui » l’ajoute à la liste du jour. Vous pouvez aussi dire combien de temps vous avez.',
+    trSt: 'Garder depuis partout', trS: 'Vu quelque chose de bien sur TikTok, Instagram ou YouTube ? Appuyez sur « Partager » et choisissez l’icône de cette app. Les réseaux vous donnent du bon contenu, sans vous y perdre.',
+    tipShare: '📲 Vu quelque chose de bien sur TikTok ou Instagram ? Appuyez sur « Partager » et choisissez l’icône de cette app, puis le jour où le regarder.', tipOk: 'Compris',
     tr3t: 'Regarder et cocher', tr3: 'Fini ? Cochez ✓, et notez en une phrase ce que vous avez appris. Tout est coché : c’est fini pour aujourd’hui.',
     mMore: '⋯ Plus', mList: '➕ À une liste', lsNew: '+ Nouvelle liste', lsNamePh: 'Nom de la liste, par ex. : en voiture', lsCreate: 'Créer',
     lsDone: '✓ Terminé', lsUndo: 'Remettre', lsRemove: 'Retirer', lsDel: 'Supprimer la liste', lsLeft: 'Reste : {0}', lsNext: '🎧 À suivre :',
@@ -705,6 +709,8 @@ html.big .gear { min-width: 34px; }
     trHow: 'How does it work?', trNext: 'Next', trSkip: 'Skip', trGo: 'Let’s start',
     tr1t: 'Pick topics', tr1: 'What interests you? Pick a few areas and get videos, podcasts, movies and articles.',
     tr2t: 'Add to today', tr2: 'Found something good? “+ Today” puts it on today’s list. You can also say how much time you have.',
+    trSt: 'Save from anywhere', trS: 'Saw something good on TikTok, Instagram or YouTube? Tap “Share” there and choose this app’s icon. The networks give you good content without pulling you in.',
+    tipShare: '📲 Saw something good on TikTok or Instagram? Tap “Share” there and choose this app’s icon, then pick when to watch it.', tipOk: 'Got it',
     tr3t: 'Watch and check off', tr3: 'Done? Check it ✓, and write one sentence about what you learned. All checked: you’re done for today.',
     mMore: '⋯ More', mList: '➕ To a list', lsNew: '+ New list', lsNamePh: 'List name, e.g. for the car', lsCreate: 'Create',
     lsDone: '✓ Done', lsUndo: 'Put back', lsRemove: 'Remove', lsDel: 'Delete list', lsLeft: 'Left: {0}', lsNext: '🎧 Up next:',
@@ -781,7 +787,7 @@ html.big .gear { min-width: 34px; }
         topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null,
         lists: Array.isArray(p.lists) ? p.lists : [],
         theme: p.theme === 'light' || p.theme === 'dark' ? p.theme : 'auto',
-        big: !!p.big, safe: p.safe !== false, toured: !!p.toured, recapSeen: p.recapSeen || '', nope: Array.isArray(p.nope) ? p.nope : [], since: +p.since || Date.now(), lastBackup: +p.lastBackup || 0, bkNagAt: +p.bkNagAt || 0
+        big: !!p.big, safe: p.safe !== false, toured: !!p.toured, recapSeen: p.recapSeen || '', nope: Array.isArray(p.nope) ? p.nope : [], since: +p.since || Date.now(), tipShareOff: !!p.tipShareOff, lastBackup: +p.lastBackup || 0, bkNagAt: +p.bkNagAt || 0
       };
     } catch (e) { return def; }
   }
@@ -1192,7 +1198,8 @@ html.big .gear { min-width: 34px; }
   }
 
   var tourStep = 0, tourBack = 'interests';
-  var TOUR = [['✨', 'tr1t', 'tr1'], ['➕', 'tr2t', 'tr2'], ['✅', 'tr3t', 'tr3']];
+  var CAN_SHARE_IN = /Android/i.test(navigator.userAgent || '') || !!window.GlilaAndroid;
+  var TOUR = [['✨', 'tr1t', 'tr1'], ['➕', 'tr2t', 'tr2']].concat(CAN_SHARE_IN ? [['📲', 'trSt', 'trS']] : [], [['✅', 'tr3t', 'tr3']]);
   function viewTour(app) {
     var s = TOUR[tourStep], last = tourStep === TOUR.length - 1;
     function end() { state.toured = true; save(); view = tourBack; render(); window.scrollTo(0, 0); }
@@ -2907,6 +2914,10 @@ html.big .gear { min-width: 34px; }
   var libFormOpen = false;
   function viewLibrary(app) {
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('lTitle') }), h('p', { text: t('lSub') })));
+    if (CAN_SHARE_IN && !state.tipShareOff) {
+      app.appendChild(h('div', { class: 'stats', role: 'note' }, h('div', { class: 'small', style: 'color:var(--ink)', text: t('tipShare') }),
+        h('div', { class: 'acts', style: 'margin-top:4px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { state.tipShareOff = true; save(); render(); } }, t('tipOk')))));
+    }
     var lc = h('div', { class: 'chips', style: 'margin-top:14px' });
     lc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': libList ? 'false' : 'true', onclick: function () { libList = ''; render(); } }, t('lAll', state.library.length)));
     state.lists.forEach(function (l) {
