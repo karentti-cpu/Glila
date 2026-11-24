@@ -190,6 +190,11 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 .searchbox { margin-top: 18px; padding: 12px; border-radius: 16px; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1.5px solid var(--accent); display: flex; flex-direction: column; gap: 10px; }
 .nope-row { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sb-count { position: absolute; top: -6px; inset-inline-start: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--sun); color: #2A1D00; font-size: 13px; font-weight: 700; line-height: 22px; text-align: center; }
+.spin { width: 20px; height: 20px; border-radius: 50%; border: 3px solid color-mix(in srgb, var(--accent-ink) 35%, transparent); border-top-color: var(--accent-ink); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.sb-status { font-size: 15px; color: var(--muted); }
+.sb-see { background: none; border: 0; padding: 2px 0; font: inherit; font-weight: 700; color: var(--accent); }
 .sb-row { display: flex; gap: 8px; align-items: stretch; }
 .sb-row input { flex: 1 1 auto; min-width: 0; }
 .searchbox .sb-row .btn { width: 52px; min-width: 52px; padding: 0; flex: none; position: relative; }
@@ -621,6 +626,8 @@ html.big .gear { min-width: 34px; }
     trHow: 'איך זה עובד?', trNext: 'הבא', trSkip: 'דילוג', trGo: 'מתחילים',
     tr1t: 'בוחרים נושאים', tr1: 'מה מעניין אותך? בוחרים כמה תחומים, ומקבלים הצעות לסרטונים, פודקאסטים, סרטים ומאמרים.',
     tr2t: 'מוסיפים להיום', tr2: 'מצאת משהו טוב? לחיצה על ״+ להיום״ שמה אותו ברשימה של היום. אפשר גם לבחור כמה זמן יש לך.',
+    trSt: 'שומרים מכל מקום', trS: 'ראיתם משהו טוב בטיקטוק, באינסטגרם או ביוטיוב? לוחצים שם על ״שיתוף״ ובוחרים ״גלילה חכמה״. כך הרשתות נותנות לכם תוכן טוב, בלי להיתקע בהן.',
+    tipShare: '📲 ראיתם משהו טוב בטיקטוק או באינסטגרם? לוחצים שם על ״שיתוף״ ובוחרים ״גלילה חכמה״. משם בוחרים מתי לראות אותו.', tipOk: 'הבנתי',
     tr3t: 'רואים ומסמנים', tr3: 'סיימת? מסמנים ✓, ואפשר לכתוב משפט על מה שלמדת. כשהכול מסומן, סיימת להיום.',
     mMore: '⋯ עוד', mList: '➕ לרשימה', lsNew: '+ רשימה חדשה', lsNamePh: 'שם הרשימה, למשל: לאוטו', lsCreate: 'יצירה',
     lsDone: '✓ סיימתי', lsUndo: 'החזרה', lsRemove: 'הסרה', lsDel: 'מחיקת הרשימה', lsLeft: 'נותרו: {0}', lsNext: '🎧 הבא בתור:',
@@ -628,7 +635,7 @@ html.big .gear { min-width: 34px; }
     hAllTopics: 'כל הנושאים',
     lTopicSel: 'נושא:', lNewShort: '+ רשימה', lManual: '+ הוספה ידנית', lManualTitle: 'הוספה ידנית', surprise: '🎲 הפתעה',
     tdAdd: '+ להיום', tdAdded: '✓ נוסף להיום', coYesterday: 'לא הספקת אתמול', coLater: 'שמרת לאחר כך', coDrop: 'להסיר', coMore: 'עוד {0}', coLess: 'פחות',
-    sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', fltBtn: 'סינון', tpEditHint: 'לחיצה לעריכת השם', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
+    sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', srFound: '✓ נמצאו {0} תוצאות', srFound1: '✓ נמצאה תוצאה אחת', srSee: 'לתוצאות ↓', srNone: 'לא נמצאו תוצאות. אפשר לנסות מילה אחרת.', fltBtn: 'סינון', tpEditHint: 'לחיצה לעריכת השם', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
     mvWhere: '📺 איפה לצפות',
     upNew: '✨ יש גרסה חדשה של האפליקציה', upNow: 'לעדכון עכשיו', upCheck: '🔄 בדיקת עדכונים', upLatest: 'יש לך את הגרסה האחרונה.', upChecking: 'בודקים…', upVer: 'גרסה {0}',
     tEditList: '✏️ עריכת הרשימה', tEditDone: '✓ סיום', tEditHint: 'לחיצה על ✕ מוחקת נושא. לחיצה שנייה מאשרת.', tDelTp: 'למחוק את "{0}"?', tDelTpN: 'למחוק את "{0}" ו־{1} פריטים מהתוכנית?',
@@ -663,6 +670,8 @@ html.big .gear { min-width: 34px; }
     trHow: 'Comment ça marche ?', trNext: 'Suivant', trSkip: 'Passer', trGo: 'C’est parti',
     tr1t: 'Choisir des sujets', tr1: 'Qu’est-ce qui vous intéresse ? Choisissez quelques domaines et recevez des vidéos, podcasts, films et articles.',
     tr2t: 'Ajouter à aujourd’hui', tr2: 'Vous avez trouvé quelque chose ? « + Aujourd’hui » l’ajoute à la liste du jour. Vous pouvez aussi dire combien de temps vous avez.',
+    trSt: 'Garder depuis partout', trS: 'Vu quelque chose de bien sur TikTok, Instagram ou YouTube ? Appuyez sur « Partager » et choisissez l’icône de cette app. Les réseaux vous donnent du bon contenu, sans vous y perdre.',
+    tipShare: '📲 Vu quelque chose de bien sur TikTok ou Instagram ? Appuyez sur « Partager » et choisissez l’icône de cette app, puis le jour où le regarder.', tipOk: 'Compris',
     tr3t: 'Regarder et cocher', tr3: 'Fini ? Cochez ✓, et notez en une phrase ce que vous avez appris. Tout est coché : c’est fini pour aujourd’hui.',
     mMore: '⋯ Plus', mList: '➕ À une liste', lsNew: '+ Nouvelle liste', lsNamePh: 'Nom de la liste, par ex. : en voiture', lsCreate: 'Créer',
     lsDone: '✓ Terminé', lsUndo: 'Remettre', lsRemove: 'Retirer', lsDel: 'Supprimer la liste', lsLeft: 'Reste : {0}', lsNext: '🎧 À suivre :',
@@ -670,7 +679,7 @@ html.big .gear { min-width: 34px; }
     hAllTopics: 'Tous les sujets',
     lTopicSel: 'Sujet :', lNewShort: '+ Liste', lManual: '+ Ajout manuel', lManualTitle: 'Ajout manuel', surprise: '🎲 Surprenez-moi',
     tdAdd: '+ Aujourd’hui', tdAdded: '✓ Ajouté à aujourd’hui', coYesterday: 'Pas eu le temps hier', coLater: 'Gardé pour plus tard', coDrop: 'Retirer', coMore: '{0} de plus', coLess: 'Moins',
-    sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', fltBtn: 'Filtres', tpEditHint: 'Appuyer pour renommer', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
+    sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', srFound: '✓ {0} résultats', srFound1: '✓ Un résultat', srSee: 'Voir ↓', srNone: 'Aucun résultat. Essayez un autre mot.', fltBtn: 'Filtres', tpEditHint: 'Appuyer pour renommer', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
     mvWhere: '📺 Où le regarder',
     upNew: '✨ Une nouvelle version est disponible', upNow: 'Mettre à jour', upCheck: '🔄 Vérifier les mises à jour', upLatest: 'Vous avez la dernière version.', upChecking: 'Vérification…', upVer: 'Version {0}',
     tEditList: '✏️ Modifier la liste', tEditDone: '✓ Terminé', tEditHint: 'Appuyez sur ✕ pour supprimer un sujet, puis une seconde fois pour confirmer.', tDelTp: 'Supprimer « {0} » ?', tDelTpN: 'Supprimer « {0} » et {1} éléments du plan ?',
@@ -705,6 +714,8 @@ html.big .gear { min-width: 34px; }
     trHow: 'How does it work?', trNext: 'Next', trSkip: 'Skip', trGo: 'Let’s start',
     tr1t: 'Pick topics', tr1: 'What interests you? Pick a few areas and get videos, podcasts, movies and articles.',
     tr2t: 'Add to today', tr2: 'Found something good? “+ Today” puts it on today’s list. You can also say how much time you have.',
+    trSt: 'Save from anywhere', trS: 'Saw something good on TikTok, Instagram or YouTube? Tap “Share” there and choose this app’s icon. The networks give you good content without pulling you in.',
+    tipShare: '📲 Saw something good on TikTok or Instagram? Tap “Share” there and choose this app’s icon, then pick when to watch it.', tipOk: 'Got it',
     tr3t: 'Watch and check off', tr3: 'Done? Check it ✓, and write one sentence about what you learned. All checked: you’re done for today.',
     mMore: '⋯ More', mList: '➕ To a list', lsNew: '+ New list', lsNamePh: 'List name, e.g. for the car', lsCreate: 'Create',
     lsDone: '✓ Done', lsUndo: 'Put back', lsRemove: 'Remove', lsDel: 'Delete list', lsLeft: 'Left: {0}', lsNext: '🎧 Up next:',
@@ -712,7 +723,7 @@ html.big .gear { min-width: 34px; }
     hAllTopics: 'All topics',
     lTopicSel: 'Topic:', lNewShort: '+ List', lManual: '+ Add by hand', lManualTitle: 'Add by hand', surprise: '🎲 Surprise me',
     tdAdd: '+ Today', tdAdded: '✓ Added to today', coYesterday: 'Didn’t get to it yesterday', coLater: 'Saved for later', coDrop: 'Remove', coMore: '{0} more', coLess: 'Less',
-    sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', fltBtn: 'Filters', tpEditHint: 'Tap to rename', sgNone: 'No topic with that name yet. “Search” will look for it.',
+    sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', srFound: '✓ {0} results', srFound1: '✓ One result', srSee: 'See them ↓', srNone: 'No results. Try another word.', fltBtn: 'Filters', tpEditHint: 'Tap to rename', sgNone: 'No topic with that name yet. “Search” will look for it.',
     mvWhere: '📺 Where to watch',
     upNew: '✨ A new version of the app is ready', upNow: 'Update now', upCheck: '🔄 Check for updates', upLatest: 'You have the latest version.', upChecking: 'Checking…', upVer: 'Version {0}',
     tEditList: '✏️ Edit list', tEditDone: '✓ Done', tEditHint: 'Tap ✕ to delete a topic, then tap again to confirm.', tDelTp: 'Delete “{0}”?', tDelTpN: 'Delete “{0}” and {1} planned items?',
@@ -781,7 +792,7 @@ html.big .gear { min-width: 34px; }
         topicsOpen: typeof p.topicsOpen === 'boolean' ? p.topicsOpen : null,
         lists: Array.isArray(p.lists) ? p.lists : [],
         theme: p.theme === 'light' || p.theme === 'dark' ? p.theme : 'auto',
-        big: !!p.big, safe: p.safe !== false, toured: !!p.toured, recapSeen: p.recapSeen || '', nope: Array.isArray(p.nope) ? p.nope : [], since: +p.since || Date.now(), lastBackup: +p.lastBackup || 0, bkNagAt: +p.bkNagAt || 0
+        big: !!p.big, safe: p.safe !== false, toured: !!p.toured, recapSeen: p.recapSeen || '', nope: Array.isArray(p.nope) ? p.nope : [], since: +p.since || Date.now(), tipShareOff: !!p.tipShareOff, lastBackup: +p.lastBackup || 0, bkNagAt: +p.bkNagAt || 0
       };
     } catch (e) { return def; }
   }
@@ -1192,7 +1203,8 @@ html.big .gear { min-width: 34px; }
   }
 
   var tourStep = 0, tourBack = 'interests';
-  var TOUR = [['✨', 'tr1t', 'tr1'], ['➕', 'tr2t', 'tr2'], ['✅', 'tr3t', 'tr3']];
+  var CAN_SHARE_IN = /Android/i.test(navigator.userAgent || '') || !!window.GlilaAndroid;
+  var TOUR = [['✨', 'tr1t', 'tr1'], ['➕', 'tr2t', 'tr2']].concat(CAN_SHARE_IN ? [['📲', 'trSt', 'trS']] : [], [['✅', 'tr3t', 'tr3']]);
   function viewTour(app) {
     var s = TOUR[tourStep], last = tourStep === TOUR.length - 1;
     function end() { state.toured = true; save(); view = tourBack; render(); window.scrollTo(0, 0); }
@@ -2360,10 +2372,13 @@ html.big .gear { min-width: 34px; }
   function searchKey(q) { return [q, state.langs.slice().sort().join(','), sug.kinds.slice().sort().join(','), state.safe ? 's' : ''].join('|'); }
 
   // page 0 = a new search; page 1, 2, ... = "more ideas" (added below what is already shown)
+  var srJump = false, srQuiet = false;
   function runSearch(q, topic, force, page) {
     q = norm(q || '');
     if (!q) return;
     page = page || 0;
+    if (page === 0 && !srQuiet) srJump = true;
+    srQuiet = false;
     var key = searchKey(q);
     var my = ++sr.token;
     if (page === 0) {
@@ -2595,7 +2610,13 @@ html.big .gear { min-width: 34px; }
     sug.topics = [tp.id]; sug.all = false;
     runSearch(tp.name, tp.name);
   }
-  function refresh() { if (sr.q && sr.status !== 'idle') runSearch(sr.q, sr.topic); else render(); }
+  function srShown() {
+    var shown = (sr.only ? sr.items.filter(ONLY[sr.only]) : sr.items).filter(function (r) { return r.justNoped || !isNope(r); });
+    if (sug.maxMins) shown = shown.filter(function (r) { var m = minutesOf(r); return !m || m <= sug.maxMins; });
+    return shown;
+  }
+  function toResults() { var a = document.getElementById('res-anchor'); if (a) window.scrollTo(0, a.getBoundingClientRect().top + window.scrollY - 12); }
+  function refresh() { if (sr.q && sr.status !== 'idle') { srQuiet = true; runSearch(sr.q, sr.topic); } else render(); }
 
   function viewIdeas(app) {
     // first visit with topics: pick the first topic and fetch its ideas right away
@@ -2603,7 +2624,7 @@ html.big .gear { min-width: 34px; }
       autoDone = true;
       var first = state.topics[0];
       sug.topics = [first.id];
-      setTimeout(function () { runSearch(first.name, first.name); }, 0);
+      setTimeout(function () { srQuiet = true; runSearch(first.name, first.name); }, 0);
     }
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('ideasTitle') }), h('p', { text: t('ideasSub') })));
 
@@ -2673,10 +2694,19 @@ html.big .gear { min-width: 34px; }
     // filters differ from the usual: a dot on the filter button
     var custom = state.langs.length < 3 || sug.kinds.length < SKINDS.length || !!sug.maxMins || sug.all;
     free.appendChild(h('div', { class: 'sb-row' }, freeIn,
-      h('button', { type: 'submit', class: 'btn solid sb-go', 'aria-label': t('sGoSearch') }, icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>')),
+      h('button', { type: 'submit', class: 'btn solid sb-go', 'aria-label': t('sGoSearch'), 'aria-busy': sr.status === 'loading' ? 'true' : 'false' },
+        sr.status === 'loading' ? h('span', { class: 'spin', 'aria-hidden': 'true' }) : icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'),
+        (sr.status === 'done' && srShown().length) ? h('span', { class: 'sb-count', 'aria-hidden': 'true', text: String(srShown().length) }) : null),
       h('button', { type: 'button', class: 'btn sb-flt' + (custom ? ' on' : ''), 'aria-label': t('fltBtn'), 'aria-expanded': filtersOpen ? 'true' : 'false', title: t('fltBtn'), onclick: function () { filtersOpen = !filtersOpen; render(); } },
         icon('<svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>'))));
     free.appendChild(box);
+    if (sr.status !== 'idle' && sr.q) {
+      var nFound = srShown().length;
+      free.appendChild(h('div', { class: 'sb-status', role: 'status' },
+        sr.status === 'loading' ? h('span', { text: t('sSearching') }) :
+          nFound ? h('button', { type: 'button', class: 'sb-see', onclick: toResults }, (nFound === 1 ? t('srFound1') : t('srFound', nFound)) + ' · ' + t('srSee')) :
+            h('span', { text: t('srNone') })));
+    }
     app.appendChild(free);
 
     // ---- renaming a topic (with spelling help); new topics come from a search or the quick ideas
@@ -2730,6 +2760,7 @@ html.big .gear { min-width: 34px; }
 
     // ---- 2. SUGGESTIONS: the ready list for this topic first, then live results
     var explicit = !!cur;
+    app.appendChild(h('div', { id: 'res-anchor' }));
     var qWords = toks(sr.q), freeQ = sr.status !== 'idle' && sr.q && !(cur && norm(sr.q).toLowerCase() === cur.name.toLowerCase());
     var builtin = LIB.filter(function (x) {
       var catOk = sug.all ? true : (eff.cats.length ? eff.cats.indexOf(x.cat) !== -1 : !explicit);
@@ -2784,8 +2815,7 @@ html.big .gear { min-width: 34px; }
           h('p', { style: 'margin:0', text: t('tHint', sr.suggest) }),
           h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { runSearch(sr.suggest, sr.topic); } }, t('tHintYes', sr.suggest)))));
       }
-      var shown = (sr.only ? sr.items.filter(ONLY[sr.only]) : sr.items).filter(function (r) { return r.justNoped || !isNope(r); });
-      if (sug.maxMins) shown = shown.filter(function (r) { var m = minutesOf(r); return !m || m <= sug.maxMins; });
+      var shown = srShown();
       if (shown.length && sr.status === 'done') {
         app.appendChild(h('div', { class: 'acts', style: 'margin:0 0 8px' }, h('button', { type: 'button', class: 'btn small', onclick: function () {
           var lines = shown.slice(0, 5).map(function (r) { return '• ' + r.title + '\n' + niceUrl(r.site || r.url || searchUrl(r)); }).join('\n\n');
@@ -2907,6 +2937,10 @@ html.big .gear { min-width: 34px; }
   var libFormOpen = false;
   function viewLibrary(app) {
     app.appendChild(h('header', { class: 'head' }, h('h1', { text: t('lTitle') }), h('p', { text: t('lSub') })));
+    if (CAN_SHARE_IN && !state.tipShareOff) {
+      app.appendChild(h('div', { class: 'stats', role: 'note' }, h('div', { class: 'small', style: 'color:var(--ink)', text: t('tipShare') }),
+        h('div', { class: 'acts', style: 'margin-top:4px' }, h('button', { type: 'button', class: 'btn small', onclick: function () { state.tipShareOff = true; save(); render(); } }, t('tipOk')))));
+    }
     var lc = h('div', { class: 'chips', style: 'margin-top:14px' });
     lc.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': libList ? 'false' : 'true', onclick: function () { libList = ''; render(); } }, t('lAll', state.library.length)));
     state.lists.forEach(function (l) {
@@ -3182,7 +3216,10 @@ html.big .gear { min-width: 34px; }
   function checkUpdate(byHand) {
     if (window.location.protocol !== 'https:') return;
     if (byHand) { upMsg = 'checking'; render(); }
-    fetch(window.location.pathname, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
+    // on GitHub Pages (and in the Android app) the page itself; on karenmor.com, where a small page loads
+    // the app from GitHub Pages, the GitHub copy
+    var src = /github\.io$/.test(window.location.hostname) ? window.location.pathname : 'https://karentti-cpu.github.io/Glila/index.html';
+    fetch(src, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
       var code = scriptOf(html);
       if (code && codeHash(code).slice(0, 6) !== MY_VERSION) {
         if (byHand) refreshApp(); else { updateReady = true; render(); }
@@ -3265,6 +3302,8 @@ html.big .gear { min-width: 34px; }
     var jump = planJump && document.getElementById('plan-anchor');
     planJump = false;
     if (jump) window.scrollTo(0, jump.getBoundingClientRect().top + window.scrollY - 12); else window.scrollTo(0, y);
+    // once the first results are in (before that there is nothing to show), once per search
+    if (srJump && view === 'ideas' && (sr.items.length || sr.status === 'done')) { srJump = false; toResults(); }
   }
 
   fixSaved(state.items); fixSaved(state.library);
