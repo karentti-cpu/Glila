@@ -195,6 +195,12 @@ nav.tabs button[aria-current=page] { color: var(--accent); background: color-mix
 @keyframes spin { to { transform: rotate(360deg); } }
 .sb-status { font-size: 15px; color: var(--muted); }
 .sb-see { background: none; border: 0; padding: 2px 0; font: inherit; font-weight: 700; color: var(--accent); }
+.sb-field { position: relative; flex: 1 1 auto; min-width: 0; display: flex; }
+.sb-field input { flex: 1 1 auto; min-width: 0; padding-inline-end: 44px; }
+.sb-field input.is-topic { font-weight: 700; color: var(--accent); }
+.sb-field input::-webkit-search-cancel-button { display: none; }
+.sb-clear { position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 50%; border: 0; background: transparent; color: var(--muted); font-size: 18px; font-weight: 700; }
+.sugbox .sg-edit { background: none; border: 0; min-width: 44px; min-height: 46px; }
 .sb-row { display: flex; gap: 8px; align-items: stretch; }
 .sb-row input { flex: 1 1 auto; min-width: 0; }
 .searchbox .sb-row .btn { width: 52px; min-width: 52px; padding: 0; flex: none; position: relative; }
@@ -635,7 +641,7 @@ html.big .gear { min-width: 34px; }
     hAllTopics: 'כל הנושאים',
     lTopicSel: 'נושא:', lNewShort: '+ רשימה', lManual: '+ הוספה ידנית', lManualTitle: 'הוספה ידנית', surprise: '🎲 הפתעה',
     tdAdd: '+ להיום', tdAdded: '✓ נוסף להיום', coYesterday: 'לא הספקת אתמול', coLater: 'שמרת לאחר כך', coDrop: 'להסיר', coMore: 'עוד {0}', coLess: 'פחות',
-    sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', srFound: '✓ נמצאו {0} תוצאות', srFound1: '✓ נמצאה תוצאה אחת', srSee: 'לתוצאות ↓', srNone: 'לא נמצאו תוצאות. אפשר לנסות מילה אחרת.', fltBtn: 'סינון', tpEditHint: 'לחיצה לעריכת השם', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
+    sgTopics: 'הנושאים שלי', sgPast: 'חיפושים קודמים', sgCur: 'נושא:', sgOff: 'ביטול הבחירה', sbClear: 'ניקוי', tpRename: 'שינוי שם', srFound: '✓ נמצאו {0} תוצאות', srFound1: '✓ נמצאה תוצאה אחת', srSee: 'לתוצאות ↓', srNone: 'לא נמצאו תוצאות. אפשר לנסות מילה אחרת.', fltBtn: 'סינון', tpEditHint: 'לחיצה לעריכת השם', sgNone: 'אין נושא כזה עדיין. לחיצה על "חיפוש" תחפש אותו.',
     mvWhere: '📺 איפה לצפות',
     upNew: '✨ יש גרסה חדשה של האפליקציה', upNow: 'לעדכון עכשיו', upCheck: '🔄 בדיקת עדכונים', upLatest: 'יש לך את הגרסה האחרונה.', upChecking: 'בודקים…', upVer: 'גרסה {0}',
     tEditList: '✏️ עריכת הרשימה', tEditDone: '✓ סיום', tEditHint: 'לחיצה על ✕ מוחקת נושא. לחיצה שנייה מאשרת.', tDelTp: 'למחוק את "{0}"?', tDelTpN: 'למחוק את "{0}" ו־{1} פריטים מהתוכנית?',
@@ -679,7 +685,7 @@ html.big .gear { min-width: 34px; }
     hAllTopics: 'Tous les sujets',
     lTopicSel: 'Sujet :', lNewShort: '+ Liste', lManual: '+ Ajout manuel', lManualTitle: 'Ajout manuel', surprise: '🎲 Surprenez-moi',
     tdAdd: '+ Aujourd’hui', tdAdded: '✓ Ajouté à aujourd’hui', coYesterday: 'Pas eu le temps hier', coLater: 'Gardé pour plus tard', coDrop: 'Retirer', coMore: '{0} de plus', coLess: 'Moins',
-    sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', srFound: '✓ {0} résultats', srFound1: '✓ Un résultat', srSee: 'Voir ↓', srNone: 'Aucun résultat. Essayez un autre mot.', fltBtn: 'Filtres', tpEditHint: 'Appuyer pour renommer', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
+    sgTopics: 'Mes sujets', sgPast: 'Recherches précédentes', sgCur: 'Sujet :', sgOff: 'Désélectionner', sbClear: 'Effacer', tpRename: 'Renommer', srFound: '✓ {0} résultats', srFound1: '✓ Un résultat', srSee: 'Voir ↓', srNone: 'Aucun résultat. Essayez un autre mot.', fltBtn: 'Filtres', tpEditHint: 'Appuyer pour renommer', sgNone: 'Pas encore de sujet de ce nom. « Rechercher » le cherchera.',
     mvWhere: '📺 Où le regarder',
     upNew: '✨ Une nouvelle version est disponible', upNow: 'Mettre à jour', upCheck: '🔄 Vérifier les mises à jour', upLatest: 'Vous avez la dernière version.', upChecking: 'Vérification…', upVer: 'Version {0}',
     tEditList: '✏️ Modifier la liste', tEditDone: '✓ Terminé', tEditHint: 'Appuyez sur ✕ pour supprimer un sujet, puis une seconde fois pour confirmer.', tDelTp: 'Supprimer « {0} » ?', tDelTpN: 'Supprimer « {0} » et {1} éléments du plan ?',
@@ -723,7 +729,7 @@ html.big .gear { min-width: 34px; }
     hAllTopics: 'All topics',
     lTopicSel: 'Topic:', lNewShort: '+ List', lManual: '+ Add by hand', lManualTitle: 'Add by hand', surprise: '🎲 Surprise me',
     tdAdd: '+ Today', tdAdded: '✓ Added to today', coYesterday: 'Didn’t get to it yesterday', coLater: 'Saved for later', coDrop: 'Remove', coMore: '{0} more', coLess: 'Less',
-    sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', srFound: '✓ {0} results', srFound1: '✓ One result', srSee: 'See them ↓', srNone: 'No results. Try another word.', fltBtn: 'Filters', tpEditHint: 'Tap to rename', sgNone: 'No topic with that name yet. “Search” will look for it.',
+    sgTopics: 'My topics', sgPast: 'Past searches', sgCur: 'Topic:', sgOff: 'Unselect', sbClear: 'Clear', tpRename: 'Rename', srFound: '✓ {0} results', srFound1: '✓ One result', srSee: 'See them ↓', srNone: 'No results. Try another word.', fltBtn: 'Filters', tpEditHint: 'Tap to rename', sgNone: 'No topic with that name yet. “Search” will look for it.',
     mvWhere: '📺 Where to watch',
     upNew: '✨ A new version of the app is ready', upNow: 'Update now', upCheck: '🔄 Check for updates', upLatest: 'You have the latest version.', upChecking: 'Checking…', upVer: 'Version {0}',
     tEditList: '✏️ Edit list', tEditDone: '✓ Done', tEditHint: 'Tap ✕ to delete a topic, then tap again to confirm.', tDelTp: 'Delete “{0}”?', tDelTpN: 'Delete “{0}” and {1} planned items?',
@@ -2634,28 +2640,27 @@ html.big .gear { min-width: 34px; }
     function topicNamed(x) { x = norm(x).toLowerCase(); return state.topics.filter(function (tp) { return tp.name.toLowerCase() === x; })[0]; }
     var free = h('form', { class: 'searchbox', role: 'search', novalidate: true, onsubmit: function (e) {
       e.preventDefault();
-      var tp = topicNamed(sug.free);
-      if (tp) { sug.free = ''; if (!(cur && cur.id === tp.id)) selectTopic(tp); return; }
+      var tp = topicNamed(sug.free || (cur ? cur.name : ''));
+      if (tp) { sug.free = ''; if (cur && cur.id === tp.id) runSearch(tp.name, tp.name); else selectTopic(tp); return; }
       sug.topics = [];
       runSearch(sug.free, '');
     } });
     free.appendChild(h('label', { for: 'free-q', class: 'sr-only', text: t('sFree') }));
-    if (cur) {
-      // the chosen topic: a tap on its name renames it, ✕ unselects it (deleting is in the topic list)
-      var cnt = state.items.filter(function (i) { return i.topic === cur.id; }).length;
-      free.appendChild(h('div', { class: 'cur-pill' },
-        h('span', { class: 'tp-sel' },
-          h('button', { type: 'button', class: 'chip', title: t('tpEditHint'), onclick: function () { topicEditId = cur.id; topicHint = null; render(); } }, '📌 ' + cur.name),
-          h('button', { type: 'button', class: 'tp-x', 'aria-label': t('sgOff'), onclick: function () { selectTopic(cur); } }, '\u2715')),
-        cnt ? h('button', { type: 'button', class: 'btn small', onclick: function () { view = 'plan'; armed = null; planMsg = ''; draft.topic = cur.id; render(); } }, t('tToPlan', cnt)) : null));
+    // the chosen topic is shown in the search field itself (in bold); typing replaces it with a free search
+    var asTopic = !!cur && !sug.free;
+    var freeIn = h('input', { id: 'free-q', type: 'search', class: asTopic ? 'is-topic' : '', enterkeyhint: 'search', autocomplete: 'off', dir: 'auto', spellcheck: 'true', value: asTopic ? cur.name : sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
+    function clearField() {
+      sug.free = '';
+      if (cur) { selectTopic(cur); return; }
+      sr.token++; sr.status = 'idle'; sr.items = []; sr.q = ''; render();
     }
-    var freeIn = h('input', { id: 'free-q', type: 'search', enterkeyhint: 'search', autocomplete: 'off', dir: 'auto', spellcheck: 'true', value: sug.free, placeholder: t('sFreePh'), 'aria-label': t('sFree') });
     var box = h('div', { class: 'sugbox', role: 'listbox' });
     // tapping inside the list must not close it before the tap lands
     box.addEventListener('mousedown', function (e) { e.preventDefault(); });
     var boxArmed = '';
     function fillBox() {
       var q = norm(freeIn.value || '').toLowerCase();
+      if (cur && q === cur.name.toLowerCase()) q = '';
       box.textContent = '';
       var tps = state.topics.filter(function (tp) { return !q || tp.name.toLowerCase().indexOf(q) !== -1; }).slice(0, 8);
       var seen = {}, past = [];
@@ -2672,6 +2677,7 @@ html.big .gear { min-width: 34px; }
           var on = boxArmed === tp.id;
           box.appendChild(h('div', { class: 'sg-row' },
             h('button', { type: 'button', class: 'sg-pick', onclick: function () { sug.free = ''; freeIn.blur(); if (!(cur && cur.id === tp.id)) selectTopic(tp); else render(); } }, '📌 ' + tp.name),
+            h('button', { type: 'button', class: 'sg-edit', 'aria-label': t('tpRename') + ': ' + tp.name, title: t('tpRename'), onclick: function () { freeIn.blur(); topicEditId = tp.id; topicHint = null; render(); } }, '✏️'),
             h('button', { type: 'button', class: 'sg-del' + (on ? ' armed' : ''), 'aria-label': t('tDelTp', tp.name), onclick: function () {
               if (on) { boxArmed = ''; deleteTopic(tp.id); } else { boxArmed = tp.id; fillBox(); }
             } }, on ? t('sure') : '\u2715')));
@@ -2688,12 +2694,13 @@ html.big .gear { min-width: 34px; }
       if (q && !tps.length && !past.length) box.appendChild(h('div', { class: 'sg-h', style: 'padding-bottom:8px', text: t('sgNone') }));
       box.appendChild(h('button', { type: 'button', class: 'sg-more', onclick: function () { view = 'interests'; render(); window.scrollTo(0, 0); } }, t('ipMore')));
     }
-    freeIn.addEventListener('focus', function () { fillBox(); box.classList.add('open'); });
+    freeIn.addEventListener('focus', function () { if (asTopic) { try { freeIn.select(); } catch (e) {} } fillBox(); box.classList.add('open'); });
     freeIn.addEventListener('input', function (e) { sug.free = e.target.value; boxArmed = ''; fillBox(); box.classList.add('open'); });
     freeIn.addEventListener('blur', function () { setTimeout(function () { box.classList.remove('open'); boxArmed = ''; }, 150); });
     // filters differ from the usual: a dot on the filter button
     var custom = state.langs.length < 3 || sug.kinds.length < SKINDS.length || !!sug.maxMins || sug.all;
-    free.appendChild(h('div', { class: 'sb-row' }, freeIn,
+    free.appendChild(h('div', { class: 'sb-row' }, h('div', { class: 'sb-field' }, freeIn,
+        (cur || sug.free) ? h('button', { type: 'button', class: 'sb-clear', 'aria-label': t('sbClear'), title: t('sbClear'), onclick: clearField }, '\u2715') : null),
       h('button', { type: 'submit', class: 'btn solid sb-go', 'aria-label': t('sGoSearch'), 'aria-busy': sr.status === 'loading' ? 'true' : 'false' },
         sr.status === 'loading' ? h('span', { class: 'spin', 'aria-hidden': 'true' }) : icon('<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'),
         (sr.status === 'done' && srShown().length) ? h('span', { class: 'sb-count', 'aria-hidden': 'true', text: String(srShown().length) }) : null),
@@ -2810,7 +2817,7 @@ html.big .gear { min-width: 34px; }
             return h('a', { class: 'btn small', href: l[1], target: '_blank', rel: 'noopener noreferrer', onclick: function () { logHistory({ title: sr.q + ' (' + l[0] + ')', url: l[1], kind: 'other', lang: '' }, 'open', sr.topic || ''); } }, l[0]);
           })));
       }
-      if (sr.suggest) {
+      if (sr.suggest && !topicNamed(sr.q)) {
         app.appendChild(h('div', { class: 'card', style: 'margin:8px 0' },
           h('p', { style: 'margin:0', text: t('tHint', sr.suggest) }),
           h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn small solid', onclick: function () { runSearch(sr.suggest, sr.topic); } }, t('tHintYes', sr.suggest)))));
