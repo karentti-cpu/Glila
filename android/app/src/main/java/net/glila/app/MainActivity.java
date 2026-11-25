@@ -3,18 +3,12 @@ package net.glila.app;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.webkit.JavascriptInterface;
 import android.webkit.ServiceWorkerClient;
 import android.webkit.ServiceWorkerController;
@@ -270,41 +264,6 @@ public class MainActivity extends Activity {
                     pendingSave = null;
                 }
             });
-        }
-
-        // A backup kept in the phone's own storage, outside the app (Download/Glila/glila-backup.json),
-        // written without asking, so it is still there if the app is removed. Android 10 and later;
-        // on older phones it answers false and the app keeps reminding to save a backup by hand.
-        @JavascriptInterface
-        public boolean autoBackup(String text) {
-            if (Build.VERSION.SDK_INT < 29) return false;
-            try {
-                ContentResolver cr = getContentResolver();
-                Uri coll = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
-                String name = "glila-backup.json";
-                String dir = Environment.DIRECTORY_DOWNLOADS + "/Glila/";
-                Uri target = null;
-                try (Cursor c = cr.query(coll, new String[] { MediaStore.MediaColumns._ID },
-                        MediaStore.MediaColumns.DISPLAY_NAME + "=? AND " + MediaStore.MediaColumns.RELATIVE_PATH + "=?",
-                        new String[] { name, dir }, null)) {
-                    if (c != null && c.moveToFirst()) target = ContentUris.withAppendedId(coll, c.getLong(0));
-                }
-                if (target == null) {
-                    ContentValues v = new ContentValues();
-                    v.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
-                    v.put(MediaStore.MediaColumns.MIME_TYPE, "application/json");
-                    v.put(MediaStore.MediaColumns.RELATIVE_PATH, dir);
-                    target = cr.insert(coll, v);
-                }
-                if (target == null) return false;
-                try (OutputStream out = cr.openOutputStream(target, "wt")) {
-                    if (out == null) return false;
-                    out.write(text.getBytes(StandardCharsets.UTF_8));
-                }
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
         }
     }
 
